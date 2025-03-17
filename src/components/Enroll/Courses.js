@@ -18,7 +18,24 @@ export default function Courses({ sideCourses, setSideCourses }) {
     const newArr =
       courseInput === ""
         ? allCourses
-        : allCourses.filter((course) => course.name.includes(courseInput));
+        : allCourses.filter(
+            (course) =>
+              // 과목 이름 확인
+              course.name
+                ?.toLowerCase()
+                .replace(" ", "")
+                .includes(courseInput?.toLowerCase().replace(" ", "")) ||
+              // 과목 교수님 확인
+              course.prof
+                ?.toLowerCase()
+                .replace(" ", "")
+                .includes(courseInput?.toLowerCase().replace(" ", "")) ||
+              //과목 코드 확인
+              course.code
+                ?.toLowerCase()
+                .replace(" ", "")
+                .includes(courseInput?.toLowerCase().replace(" ", ""))
+          );
     newArr.map((elem) => {
       result.push([elem.name, elem.code, elem.prof, elem.id]);
     });
@@ -65,7 +82,7 @@ export default function Courses({ sideCourses, setSideCourses }) {
             </InputAdornment>
           ),
         }}
-        placeholder="과목명 검색"
+        placeholder="과목명 | 교수명 | 과목코드"
       />
 
       <CustomTable
