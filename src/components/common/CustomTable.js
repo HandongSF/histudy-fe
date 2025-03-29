@@ -52,7 +52,7 @@ const StyledOptionBox = styled(Box)({
 
 const StyledTypo = styled(Typography)(
   ({ accentColumnNum, idxConverter, idx, longWidthColumnNum }) => ({
-    minWidth: longWidthColumnNum === idxConverter(idx + 1) ? "300px" : "180px",
+    width: longWidthColumnNum === idxConverter(idx + 1) ? "300px" : "180px",
     color: accentColumnNum === idxConverter(idx + 1) && "primary.main",
     fontWeight: accentColumnNum === idxConverter(idx + 1) && "bold",
   })
