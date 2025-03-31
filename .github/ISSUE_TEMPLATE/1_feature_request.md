@@ -1,6 +1,6 @@
 ---
-name: Feature request
-about: Write a feature to work on
+name: 기능
+about: 새로운 기능을 개발하거나 요청 시 작성하세요.
 title: ""
 labels: "feature"
 assignees: ""
