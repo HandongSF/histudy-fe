@@ -21,7 +21,8 @@ import RankGridView from "../../components/Rank/RankGridView";
 const StyledScrollBox = styled(Box)({
   maxWidth: "1280px",
   width: "100%",
-  overflow: "scroll",
+  overflowX: "auto",
+  overflowY: "hidden",
 });
 
 export default function Rank() {
