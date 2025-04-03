@@ -8,7 +8,7 @@ export default function ViewToggleButton({ view, setView }) {
     setView(nextView);
   };
   return (
-    <Stack direction="row" justifyContent="end" width="100%">
+    <Stack direction="row" justifyContent="end" width="99%">
       <ToggleButtonGroup
         size="small"
         orientation="horizontal"
