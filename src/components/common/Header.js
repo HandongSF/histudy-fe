@@ -5,6 +5,7 @@ import GoogleButton from "../../auth/GoogleButton";
 import { authorityState, isLoginState } from "../../store/atom";
 import DarkModeToggle from "./DarkModeToggle";
 import HeaderButton from "./HeaderButton";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const homeMatch = useMatch("/");
@@ -139,6 +140,9 @@ export default function Header() {
             },
           }}
         >
+          <Link to="https://forms.gle/aLLsFtDBcMHqX9eQA" target="_blank">
+            <Button>FeedBack</Button>
+          </Link>
           <DarkModeToggle />
         </Box>
       </Box>
