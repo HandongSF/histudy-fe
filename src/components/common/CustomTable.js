@@ -26,10 +26,10 @@ const StyledCustomTableContainer = styled(Box)(({ theme }) => ({
   overflowY: "scroll",
 }));
 
-const StyledHeaderContainer = styled(Box)(({ theme, $dataLength }) => ({
+const StyledHeaderContainer = styled(Box)(({ theme, datalength }) => ({
   color: theme.palette.text.secondary,
   display: "flex",
-  borderBottom: $dataLength !== 0 ? "1px solid" : "none",
+  borderBottom: datalength !== 0 ? "1px solid" : "none",
   borderColor: theme.palette.primary.border,
   padding: "20px 60px",
   justifyContent: "start",
@@ -51,17 +51,17 @@ const StyledOptionBox = styled(Box)({
 });
 
 const StyledTypo = styled(Typography)(
-  ({ accentColumnNum, idxConverter, idx, longWidthColumnNum }) => ({
-    minWidth: longWidthColumnNum === idxConverter(idx + 1) ? "300px" : "180px",
-    color: accentColumnNum === idxConverter(idx + 1) && "primary.main",
-    fontWeight: accentColumnNum === idxConverter(idx + 1) && "bold",
+  ({ accentcolumnnum, idxconverter, idx, longwidthcolumnnum }) => ({
+    width: longwidthcolumnnum === idxconverter(idx + 1) ? "300px" : "180px",
+    color: accentcolumnnum === idxconverter(idx + 1) && "primary.main",
+    fontWeight: accentcolumnnum === idxconverter(idx + 1) && "bold",
   })
 );
 
 const FieldBoxWithProps = styled(Typography)(
-  ({ idx, longWidthColumnNum, idxConverter, type }) => ({
+  ({ idx, longwidthcolumnnum, idxconverter, type }) => ({
     minWidth:
-      longWidthColumnNum === idxConverter(type === "third" ? idx : idx + 1)
+      longwidthcolumnnum === idxconverter(type === "third" ? idx : idx + 1)
         ? "300px"
         : "180px",
   })
@@ -75,8 +75,8 @@ export default function CustomTable({
   reportData,
   sidebarValues = [],
   type,
-  accentColumnNum,
-  longWidthColumnNum,
+  accentColumnNum: accentcolumnnum,
+  longWidthColumnNum: longwidthcolumnnum,
   data,
   addData,
 }) {
@@ -95,7 +95,7 @@ export default function CustomTable({
     group: ["이름", "학번", "이메일"],
   };
 
-  const idxConverter = (idx) => {
+  const idxconverter = (idx) => {
     if (type === "third" || type === "report") {
       return idx + 1;
     }
@@ -104,13 +104,13 @@ export default function CustomTable({
 
   return (
     <StyledCustomTableContainer>
-      <StyledHeaderContainer $dataLength={data.length}>
+      <StyledHeaderContainer datalength={data.length}>
         {TableHead[type].map((headElement, index) => (
           <FieldBoxWithProps
             type={type}
             idx={index}
-            idxConverter={idxConverter}
-            longWidthColumnNum={longWidthColumnNum}
+            idxconverter={idxconverter}
+            longwidthcolumnnum={longwidthcolumnnum}
             key={index}
           >
             {headElement}
@@ -128,9 +128,9 @@ export default function CustomTable({
                 <StyledTypo
                   key={idx}
                   type={type}
-                  accentColumnNum={accentColumnNum}
-                  longWidthColumnNum={longWidthColumnNum}
-                  idxConverter={idxConverter}
+                  accentcolumnnum={accentcolumnnum}
+                  longwidthcolumnnum={longwidthcolumnnum}
+                  idxconverter={idxconverter}
                   idx={idx}
                 >
                   {maskingData(type, idx, elem)}

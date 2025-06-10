@@ -13,7 +13,7 @@ export default function ProgressBar({ page, setPage }) {
         alignItems: "center",
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
         {[1, 2, 3].map((pageNavNum, index) => (
           <Box
             key={index}

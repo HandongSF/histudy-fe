@@ -161,12 +161,10 @@ export default function Enroll() {
                 animate={{ opacity: 1 }}
               >
                 <CourseDescription />
-
                 <Courses
                   sideCourses={sideCourses}
                   setSideCourses={setSideCourses}
                 />
-
                 <ButtonBox left="이전" right="다음" handleClick={handleClick} />
               </Box>
             )}

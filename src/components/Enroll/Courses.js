@@ -1,41 +1,62 @@
-import { Box, InputAdornment, TextField, useTheme } from "@mui/material";
+import { Box, InputAdornment, useTheme } from "@mui/material";
 import CustomTable from "../common/CustomTable";
 import SearchIcon from "@mui/icons-material/Search";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { autoCourses } from "../../apis/course";
-import styled from "styled-components";
 import { TextFieldWrapper } from "./TextFieldWrapper";
+import { debounce } from "lodash";
+
+const getLowerTrimed = (str) => {
+  return str.toLowerCase().trim().toLowerCase().replace(/\s+/g, "");
+};
+
+const courseConverter = (allCourses, courseInput) => {
+  const result = [];
+
+  const lowerTrimedInput = getLowerTrimed(courseInput);
+
+  const newArr = !!!courseInput
+    ? allCourses
+    : allCourses.filter(
+        (course) =>
+          getLowerTrimed(course.name).includes(lowerTrimedInput) ||
+          getLowerTrimed(course.prof).includes(lowerTrimedInput) ||
+          getLowerTrimed(course.code).includes(lowerTrimedInput)
+      );
+
+  newArr.forEach((elem) =>
+    result.push([elem.name, elem.code, elem.prof, elem.id])
+  );
+
+  return result;
+};
 
 export default function Courses({ sideCourses, setSideCourses }) {
   const [courses, setCourses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
 
   const [courseInput, setCourseInput] = useState("");
-
-  const courseConverter = (allCourses) => {
-    const result = [];
-
-    const newArr =
-      courseInput === ""
-        ? allCourses
-        : allCourses.filter((course) => course.name.includes(courseInput));
-    newArr.map((elem) => {
-      result.push([elem.name, elem.code, elem.prof, elem.id]);
-    });
-
-    return result;
-  };
   const theme = useTheme();
 
+  const updateCourses = useCallback(
+    debounce((allCourses, courseInput) => {
+      setCourses(courseConverter(allCourses, courseInput));
+    }, 300), // 300ms 디바운스 적용
+    []
+  );
+
   useEffect(() => {
-    setCourses(courseConverter(allCourses));
-  }, [allCourses, courseInput]);
+    if (!allCourses) return;
+
+    updateCourses(allCourses, courseInput);
+  }, [allCourses, courseInput, updateCourses]);
 
   useEffect(() => {
     autoCourses().then((res) => {
       setAllCourses(res.courses);
     });
   }, []);
+
   const handleChange = (event) => {
     // if (event.target.id === "friend") setFriendInput(event.target.value);
     // else {
@@ -67,7 +88,6 @@ export default function Courses({ sideCourses, setSideCourses }) {
         }}
         placeholder="과목명 검색"
       />
-
       <CustomTable
         sidebarValues={sideCourses}
         addData={setSideCourses}

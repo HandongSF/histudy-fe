@@ -1,9 +1,10 @@
-import { Box, InputAdornment, TextField, useTheme } from "@mui/material";
+import { Box, InputAdornment, useTheme } from "@mui/material";
 import CustomTable from "../common/CustomTable";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { autoUser } from "../../apis/users";
 import SearchIcon from "@mui/icons-material/Search";
 import { TextFieldWrapper } from "./TextFieldWrapper";
+import { debounce } from "lodash";
 
 export default function Friends({ sideFriends, setSideFriends }) {
   const [friends, setFriends] = useState([]);
@@ -20,11 +21,18 @@ export default function Friends({ sideFriends, setSideFriends }) {
     if (event.target.id === "friend") setFriendInput(event.target.value);
   };
 
+  const debouncedSearch = useCallback(
+    debounce((input) => {
+      autoUser(input).then((res) => {
+        setFriends(friendConverter(res.users));
+      });
+    }, 500),
+    []
+  );
+
   useEffect(() => {
-    autoUser(friendInput).then((res) => {
-      setFriends(friendConverter(res.users));
-    });
-  }, [friendInput]);
+    debouncedSearch(friendInput);
+  }, [friendInput, debouncedSearch]);
 
   const theme = useTheme();
 
