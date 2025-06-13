@@ -1,76 +1,87 @@
-import { styled } from "@mui/material";
-
-import { Box } from "@mui/system";
+import { getAllTeamsForRank } from "@/apis/rank";
+import FullImage from "@/components/Rank/FullImage";
+import GroupGridView from "@/components/Rank/GroupGridView";
+import { GroupListView } from "@/components/Rank/GroupListView";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Box, Modal } from "@mui/material";
+import { LayoutGrid, List } from "lucide-react";
 import { useState } from "react";
-import { getAllTeamsForRank } from "../../apis/rank";
-
-import { motion } from "framer-motion";
-
 import { useQuery } from "react-query";
-import NoDataLottie from "../../components/common/NoDataLottie";
-import { StyledColumnAlignLayout } from "../../components/common/StyledLayout";
-import Title from "../../components/common/Title";
 
-import FullImage from "../../components/Rank/FullImage";
-
-import RankGridView from "../../components/Rank/RankGridView";
-import RankListView from "../../components/Rank/RankListView";
-import ViewToggleButton from "../../components/Rank/ViewToggleButton";
-
-const StyledScrollBox = styled(Box)({
-  maxWidth: "1280px",
-  width: "100%",
-  overflowX: "auto",
-  overflowY: "hidden",
-});
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function Rank() {
-  const [teams, setTeams] = useState([]);
-  const [itemsHover, setItemsHover] = useState([]);
+  //   const [teams, setTeams] = useState([]);
   const [view, setView] = useState("list");
 
-  useQuery(["AllTeamRanks"], getAllTeamsForRank, {
-    casheTime: 10 * 60 * 1000,
-    onSuccess: (data) => {
-      setTeams(data.teams);
-      setItemsHover(new Array(data.teams.length).fill(false));
-    },
+  const { data } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
+    cacheTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
-  const [fullImageUrl, setFullImageUrl] = useState(null);
-
+  const [modalImageUrl, setModalImageUrl] = useState("");
   return (
     <>
-      <FullImage fullImageUrl={fullImageUrl} />
-      <StyledColumnAlignLayout
-        component={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <Modal
+        open={!!modalImageUrl}
+        onClose={() => setModalImageUrl("")}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        <Title text="스터디 그룹 랭킹" />
+        <Box component="img" src={modalImageUrl} sx={style} />
+      </Modal>
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+        <div className="container mx-auto py-8 px-4">
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold tracking-tight mb-2">
+              스터디 랭킹
+            </h1>
+            <p className="text-muted-foreground">
+              최고의 성과를 내고 있는 스터디 그룹들을 확인하세요
+            </p>
+          </header>
 
-        {teams.length === 0 ? (
-          <NoDataLottie />
-        ) : (
-          <StyledScrollBox>
-            <ViewToggleButton view={view} setView={setView} />
-            <Box height="20px" />
-            {view === "list" ? (
-              <RankListView teams={teams} />
-            ) : (
-              <RankGridView
-                setFullImageUrl={setFullImageUrl}
-                setItemsHover={setItemsHover}
-                teams={teams}
-                itemsHover={itemsHover}
-              />
-            )}
-          </StyledScrollBox>
-        )}
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-sm text-muted-foreground">
+              총 {data?.teams.length}개 그룹
+            </div>
+            <Tabs
+              defaultValue={view}
+              onValueChange={(v) => setView(v as "grid" | "list")}
+            >
+              <TabsList>
+                <TabsTrigger value="grid" className="flex items-center gap-2">
+                  <LayoutGrid className="h-4 w-4" />
+                  <span className="hidden sm:inline">그리드 뷰</span>
+                </TabsTrigger>
+                <TabsTrigger value="list" className="flex items-center gap-2">
+                  <List className="h-4 w-4" />
+                  <span className="hidden sm:inline">리스트 뷰</span>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
-        {/* </Grid> */}
-      </StyledColumnAlignLayout>
+          {view === "grid" ? (
+            <GroupGridView
+              studyGroups={data?.teams || []}
+              setModalImageUrl={setModalImageUrl}
+            />
+          ) : (
+            <GroupListView studyGroups={data?.teams || []} />
+          )}
+        </div>
+      </div>
     </>
   );
 }

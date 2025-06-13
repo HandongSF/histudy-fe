@@ -15,7 +15,11 @@ const style = {
   p: 4,
 };
 
-function FullImageComponent({ fullImageUrl }) {
+interface FullImageProps {
+  fullImageUrl: string;
+}
+
+function FullImageComponent({ fullImageUrl }: FullImageProps) {
   const [isShowFullImage, setIsShowFullImage] =
     useRecoilState(isShowFullImageState);
 
