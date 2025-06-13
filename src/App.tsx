@@ -2,7 +2,7 @@ import ARouter from "./components/common/ARouter";
 import ThemeProvider from "./theme";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "react-query";
-
+import "./globals.css";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
