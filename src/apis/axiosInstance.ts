@@ -24,14 +24,19 @@ axiosInstance.interceptors.request.use((config) => {
 // 응답 인터셉터 설정
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response.data;
+    return response;
   },
 
   async (error) => {
     const err = error;
+    // TODO: 점검 필요
     if (err.response?.status === 401) {
       const refreshToken = localStorage.getItem("refreshToken");
-      const res = await tokenRefresh(refreshToken).then((res) => {
+      if (!refreshToken) {
+        // window.location.href = "/login";
+        return;
+      }
+      await tokenRefresh(refreshToken).then((res) => {
         localStorage.setItem("accessToken", res.token);
         window.location.reload();
       });

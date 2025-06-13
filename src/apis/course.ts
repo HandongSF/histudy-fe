@@ -1,6 +1,7 @@
+import { Courses } from "src/interface/course";
 import axiosInstance from "./axiosInstance";
 
-export const importCourses = async (formData) => {
+export const importCourses = async (formData: FormData) => {
   const response = await axiosInstance.post("/api/courses", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -9,12 +10,12 @@ export const importCourses = async (formData) => {
   return response;
 };
 
-export const teamCourses = async () => {
-  const response = await axiosInstance.get(`/api/team/courses`);
-  return response;
+export const teamCourses = async (): Promise<Courses> => {
+  const response = await axiosInstance.get("/api/team/courses");
+  return response.data;
 };
 
-export const autoCourses = async () => {
+export const autoCourses = async (): Promise<Courses> => {
   const response = await axiosInstance.get("/api/courses");
-  return response;
+  return response.data;
 };

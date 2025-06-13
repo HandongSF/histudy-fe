@@ -1,12 +1,16 @@
 import axios from "axios";
 import axiosInstance from "./axiosInstance";
+import { Teams } from "../interface/teams";
 
-export const getAllTeamsForRank = async () => {
+export const getAllTeamsForRank = async (): Promise<Teams> => {
   const response = await axiosInstance.get(`/api/public/teams`);
-  return response;
+  return response.data;
 };
 
-export const ImageUploadApi = async (reportIdOr, formData) => {
+export const ImageUploadApi = async (
+  reportIdOr: number | null,
+  formData: FormData
+) => {
   const response = await axios.post(
     `${import.meta.env.VITE_BACK_BASE_URL}/api/team/reports${
       reportIdOr === null ? "" : `/${reportIdOr}`

@@ -5,7 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import LongButton from "../../components/common/LongButton";
 import SideBar from "../../components/Manager/SideBar";
 import StudentListTable from "../../components/Manager/StudentListTable";
-import { readAllUsers } from "../../apis/manager";
+import { readAllStudyApplyUsers } from "../../apis/manager";
 import { isLoadingState } from "../../store/atom";
 import { useSetRecoilState } from "recoil";
 import Title from "../../components/Manager/Table/Title";
@@ -27,7 +27,7 @@ export default function ManageStudent() {
   const [searchValue, setSearchValue] = useState("");
   const setIsLoading = useSetRecoilState(isLoadingState);
 
-  const { isLoading } = useQuery(["users"], readAllUsers, {
+  const { isLoading } = useQuery(["users"], readAllStudyApplyUsers, {
     cacheTime: 5 * 60 * 1000,
     onSuccess: (data) => {
       console.log("useQuery Data", data);

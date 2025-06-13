@@ -1,40 +1,55 @@
+import { Group } from "src/interface/group";
 import axiosInstance from "./axiosInstance";
+import { SimpleUser, StudyApplyUser, UnAssignedUser } from "src/interface/user";
+import { Report, SimpleReport } from "src/interface/report";
 
-export const readAllGroups = async () => {
+interface EditUserRequest {
+  id: number;
+  team: number;
+  name: string;
+  sid: string;
+}
+
+interface GroupReportResponse {
+  group: number;
+  tag: number;
+  members: SimpleUser[];
+  totalTime: number;
+  reports: SimpleReport[];
+}
+
+export const readAllGroups = async (): Promise<Group[]> => {
   const response = await axiosInstance.get(`/api/admin/manageGroup`);
-  return response;
+  return response.data;
 };
 
-export const readAllUsers = async () => {
+export const readAllStudyApplyUsers = async (): Promise<StudyApplyUser[]> => {
   const response = await axiosInstance.get(`/api/admin/allUsers`);
-  return response;
+  return response.data;
 };
 
-export const readGroupReport = async (id) => {
+export const readGroupReport = async (
+  id: number
+): Promise<GroupReportResponse> => {
   const response = await axiosInstance.get(`/api/admin/groupReport/${id}`);
-  return response;
+  return response.data;
 };
 
-export const readApplicants = async () => {
+export const readApplicants = async (): Promise<UnAssignedUser[]> => {
   const response = await axiosInstance.get(`/api/admin/users/unassigned`);
-  return response;
+  return response.data;
 };
 
-export const autoCourses = async () => {
-  const response = await axiosInstance.get(`/api/courses`);
-  return response;
-};
-
-export const deleteCourse = async (id) => {
+export const deleteCourse = async (id: number) => {
   const response = await axiosInstance.post(`/api/courses/delete`, {
     id: id,
   });
-  return response;
+  return response.data;
 };
 
-export const readReportDetail = async (reportId) => {
+export const readReportDetail = async (reportId: number): Promise<Report> => {
   const response = await axiosInstance.get(`/api/team/reports/${reportId}`);
-  return response;
+  return response.data;
 };
 
 export const teamMatch = async () => {
@@ -42,17 +57,17 @@ export const teamMatch = async () => {
   return response;
 };
 
-export const readUngroup = async () => {
+export const readUngroup = async (): Promise<UnAssignedUser[]> => {
   const response = await axiosInstance.get(`/api/admin/unmatched-users`);
-  return response;
+  return response.data;
 };
 
-export const deleteUserForm = async (sid) => {
+export const deleteUserForm = async (sid: number) => {
   const response = await axiosInstance.delete(`/api/admin/form?sid=${sid}`);
   return response;
 };
 
-export const editUser = async (data) => {
+export const editUser = async (data: EditUserRequest) => {
   const response = await axiosInstance.post(`/api/admin/edit-user`, data);
   return response;
 };

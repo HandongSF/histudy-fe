@@ -42,21 +42,22 @@ export default function GoogleButton() {
     const decodedToken = jwtDecode(
       credentialResponse.credential
     ) as JwtHIStudyPayload;
-
     // handongEmailValidate(decodedToken);
+
+    if (!decodedToken.sub) {
+      alert("로그인에 실패하였습니다.");
+      return;
+    }
 
     userLogin(decodedToken.sub)
       .then((response) => {
-        if (response.data.isRegistered === true) {
-          localStorage.setItem("accessToken", response.data.tokens.accessToken);
-          localStorage.setItem(
-            "refreshToken",
-            response.data.tokens.refreshToken
-          );
+        if (response.isRegistered === true) {
+          localStorage.setItem("accessToken", response.tokens.accessToken);
+          localStorage.setItem("refreshToken", response.tokens.refreshToken);
 
           window.location.href = "/";
           setIsLogin(true);
-          setAuthority(response.data.role);
+          setAuthority(response.role);
         }
       })
       // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생

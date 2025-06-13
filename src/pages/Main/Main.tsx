@@ -12,6 +12,7 @@ import { userSignup } from "../../apis/users";
 import RegisterModal from "../../components/Main/RegisterModal";
 import { motion } from "framer-motion";
 import MainImage from "../../components/Main/MainImage";
+import { RefreshToken } from "src/interface/token";
 
 const nameConverter = (name) => {
   if (name.slice(-3) === "학부생") return name.slice(0, -3);
@@ -69,7 +70,6 @@ export default function Main() {
       component={motion.div}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      
     >
       <MainImage />
 
