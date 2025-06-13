@@ -25,7 +25,6 @@ export default function ReportDetail() {
   const [open, setOpen] = useRecoilState(isDelete);
 
   const { state } = useLocation();
-
   const useUserReportDeatilMatch = useMatch("/report/:id");
 
   useEffect(() => {

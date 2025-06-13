@@ -49,7 +49,10 @@ export default function GoogleButton() {
       return;
     }
 
-    userLogin(decodedToken.sub)
+    userLogin(
+      // decodedToken.sub
+      "test2"
+    )
       .then((response) => {
         if (response.isRegistered === true) {
           localStorage.setItem("accessToken", response.tokens.accessToken);

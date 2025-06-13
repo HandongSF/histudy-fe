@@ -16,7 +16,7 @@ import StudyGroup from "../../pages/Manager/StudyGroup";
 import Post from "../../pages/Post/Post";
 
 import Rank from "@/pages/Rank/Rank";
-import Report from "../../pages/Report/Report";
+import Report from "../../pages/Report/Report_v1";
 import { isDelete, isLoadingState } from "../../store/atom";
 import MainImage from "../Main/MainImage";
 import Footer from "./Footer";
@@ -24,6 +24,7 @@ import Header from "./Header";
 import LoadingLottie from "./LoadingLottie";
 import Profile from "@/pages/Profile/Profile";
 import ApplicationPage from "../Enroll/ApplicationStatusView";
+import ReportListPage from "@/pages/Report/Report";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",
@@ -56,7 +57,7 @@ export default function ARouter() {
           ></Route>
           <Route
             path="/report"
-            element={<PrivateRoute component={<Report />} />}
+            element={<PrivateRoute component={<ReportListPage />} />}
           ></Route>
           <Route path="/report/:id" element={<ReportDetail />}></Route>
           <Route path="/report/modify/:id" element={<Post />}></Route>
