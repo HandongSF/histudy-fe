@@ -14,15 +14,15 @@ import ReportDetail from "../../pages/Manager/ReportDetail";
 import Snackbars from "../../pages/Manager/Snackbars";
 import StudyGroup from "../../pages/Manager/StudyGroup";
 import Post from "../../pages/Post/Post";
-import Profile from "../../pages/Profile/Profile";
-import Rank_v1 from "../../pages/Rank/Rank_v1";
+
+import Rank from "@/pages/Rank/Rank";
 import Report from "../../pages/Report/Report";
 import { isDelete, isLoadingState } from "../../store/atom";
 import MainImage from "../Main/MainImage";
 import Footer from "./Footer";
 import Header from "./Header";
 import LoadingLottie from "./LoadingLottie";
-import Rank from "@/pages/Rank/Rank";
+import Profile from "@/pages/Profile/Profile";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",

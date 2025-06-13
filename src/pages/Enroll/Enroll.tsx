@@ -113,6 +113,7 @@ export default function Enroll() {
     });
     return result;
   };
+  console.log(reApply);
 
   return (
     <StyledCustomTableContainer

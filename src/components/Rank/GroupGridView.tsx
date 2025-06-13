@@ -38,9 +38,11 @@ export default function GroupGridView({
                 <Badge
                   variant={idx + 1 <= 3 ? "default" : "outline"}
                   className={`
+                    bg-slate-100
                   ${idx + 1 === 1 ? "bg-yellow-500 hover:bg-yellow-600" : ""}
                   ${idx + 1 === 2 ? "bg-slate-400 hover:bg-slate-500" : ""}
                   ${idx + 1 === 3 ? "bg-amber-700 hover:bg-amber-800" : ""}
+                  
                 `}
                 >
                   <Trophy className="h-3 w-3 mr-1" />
