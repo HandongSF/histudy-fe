@@ -81,8 +81,6 @@ export default function Footer() {
               </Typography>
             </Box>
           </Box>
-
-          {/* <ExportCSV /> */}
         </Box>
       )}
     </>

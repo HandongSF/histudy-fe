@@ -35,8 +35,6 @@ export default function Footer() {
               />
             </a>
           </Box>
-
-          {/* <ExportCSV /> */}
         </Box>
       )}
     </>

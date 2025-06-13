@@ -1,7 +1,7 @@
 // GoogleButton.js
 
-import { GoogleLogin } from "@react-oauth/google";
-import jwtDecode from "jwt-decode";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { userLogin } from "../apis/users";
@@ -12,7 +12,11 @@ import {
   userLoginInfo,
 } from "../store/atom";
 
-const handongEmailValidate = (decodedToken) => {
+export interface JwtHIStudyPayload extends JwtPayload {
+  hd: string;
+}
+
+const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
   if (
     decodedToken.hd !== "handong.edu" &&
     decodedToken.hd !== "handong.ac.kr"
@@ -30,9 +34,14 @@ export default function GoogleButton() {
   const setIsLogin = useSetRecoilState(isLoginState);
   const setAuthority = useSetRecoilState(authorityState);
   // const { loginWithCredential } = useAuthContext();
-
-  const onSuccess = async (credentialResponse) => {
-    const decodedToken = jwtDecode(credentialResponse.credential);
+  const onSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) {
+      alert("로그인에 실패하였습니다.");
+      return;
+    }
+    const decodedToken = jwtDecode(
+      credentialResponse.credential
+    ) as JwtHIStudyPayload;
 
     // handongEmailValidate(decodedToken);
 
@@ -50,27 +59,23 @@ export default function GoogleButton() {
           setAuthority(response.data.role);
         }
       })
+      // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생
       .catch((error) => {
-        if (error.response.data.isRegistered === false) {
-          console.log("ddd", error.response.data);
-          navigate("/");
+        if (error.response && error.response.data.isRegistered === false) {
+          // navigate("/");
           setRegisterModalState(true);
           setUserLoginInfo(decodedToken);
         }
       });
   };
 
-  const onFailure = (error) => {
-    console.log(error);
-  };
-
   return (
-    <>
-      <GoogleLogin
-        onSuccess={(credentialResponse) => onSuccess(credentialResponse)}
-        onFailure={onFailure}
-        useOneTap
-      />
-    </>
+    <GoogleLogin
+      onSuccess={(credentialResponse) => onSuccess(credentialResponse)}
+      onError={() => {
+        console.log("Login Failed");
+      }}
+      useOneTap
+    />
   );
 }
