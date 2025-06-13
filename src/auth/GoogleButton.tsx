@@ -34,7 +34,7 @@ export default function GoogleButton() {
   const onSuccess = async (credentialResponse) => {
     const decodedToken = jwtDecode(credentialResponse.credential);
 
-    handongEmailValidate(decodedToken);
+    // handongEmailValidate(decodedToken);
 
     userLogin(decodedToken.sub)
       .then((response) => {
