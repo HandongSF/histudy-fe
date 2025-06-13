@@ -29,6 +29,9 @@ dependencies:
   '@mui/x-data-grid':
     specifier: ^6.19.5
     version: 6.19.5(@mui/material@5.15.11)(@mui/system@5.15.11)(@types/react@19.1.8)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-slot':
+    specifier: ^1.2.3
+    version: 1.2.3(@types/react@19.1.8)(react@18.2.0)
   '@react-oauth/google':
     specifier: ^0.11.0
     version: 0.11.1(react-dom@18.2.0)(react@18.2.0)
@@ -50,6 +53,12 @@ dependencies:
   browser-image-compression:
     specifier: ^2.0.2
     version: 2.0.2
+  class-variance-authority:
+    specifier: ^0.7.1
+    version: 0.7.1
+  clsx:
+    specifier: ^2.1.1
+    version: 2.1.1
   firebase:
     specifier: ^9.22.1
     version: 9.23.0
@@ -74,6 +83,9 @@ dependencies:
   lottie-react:
     specifier: ^2.4.0
     version: 2.4.0(react-dom@18.2.0)(react@18.2.0)
+  lucide-react:
+    specifier: ^0.515.0
+    version: 0.515.0(react@18.2.0)
   prop-types:
     specifier: ^15.8.1
     version: 15.8.1
@@ -119,6 +131,9 @@ dependencies:
   styled-components:
     specifier: ^5.3.11
     version: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
+  tailwind-merge:
+    specifier: ^3.3.1
+    version: 3.3.1
   tailwindcss:
     specifier: ^4.1.10
     version: 4.1.10
@@ -151,6 +166,9 @@ devDependencies:
   prettier:
     specifier: 2.8.8
     version: 2.8.8
+  tw-animate-css:
+    specifier: ^1.3.4
+    version: 1.3.4
   typescript:
     specifier: ^5.8.3
     version: 5.8.3
@@ -3028,7 +3046,7 @@ packages:
       '@mui/utils': 5.15.11(@types/react@19.1.8)(react@18.2.0)
       '@popperjs/core': 2.11.8
       '@types/react': 19.1.8
-      clsx: 2.1.0
+      clsx: 2.1.1
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -3082,7 +3100,7 @@ packages:
       '@mui/utils': 5.15.11(@types/react@19.1.8)(react@18.2.0)
       '@types/react': 19.1.8
       '@types/react-transition-group': 4.4.10
-      clsx: 2.1.0
+      clsx: 2.1.1
       csstype: 3.1.3
       prop-types: 15.8.1
       react: 18.2.0
@@ -3170,7 +3188,7 @@ packages:
       '@mui/types': 7.2.13(@types/react@19.1.8)
       '@mui/utils': 5.15.11(@types/react@19.1.8)(react@18.2.0)
       '@types/react': 19.1.8
-      clsx: 2.1.0
+      clsx: 2.1.1
       csstype: 3.1.3
       prop-types: 15.8.1
       react: 18.2.0
@@ -3218,7 +3236,7 @@ packages:
       '@mui/material': 5.15.11(@emotion/react@11.11.4)(@emotion/styled@11.11.0)(@types/react@19.1.8)(react-dom@18.2.0)(react@18.2.0)
       '@mui/system': 5.15.11(@emotion/react@11.11.4)(@emotion/styled@11.11.0)(@types/react@19.1.8)(react@18.2.0)
       '@mui/utils': 5.15.11(@types/react@19.1.8)(react@18.2.0)
-      clsx: 2.1.0
+      clsx: 2.1.1
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -3343,6 +3361,33 @@ packages:
 
   /@protobufjs/utf8@1.1.0:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
+    dev: false
+
+  /@radix-ui/react-compose-refs@1.1.2(@types/react@19.1.8)(react@18.2.0):
+    resolution: {integrity: sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': 19.1.8
+      react: 18.2.0
+    dev: false
+
+  /@radix-ui/react-slot@1.2.3(@types/react@19.1.8)(react@18.2.0):
+    resolution: {integrity: sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.8)(react@18.2.0)
+      '@types/react': 19.1.8
+      react: 18.2.0
     dev: false
 
   /@react-dnd/asap@5.0.2:
@@ -5447,6 +5492,12 @@ packages:
     resolution: {integrity: sha512-0TNiGstbQmCFwt4akjjBg5pLRTSyj/PkWQ1ZoO2zntmg9yLqSRxwEa4iCfQLGjqhiqBfOJa7W/E8wfGrTDmlZQ==}
     dev: false
 
+  /class-variance-authority@0.7.1:
+    resolution: {integrity: sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==}
+    dependencies:
+      clsx: 2.1.1
+    dev: false
+
   /clean-css@5.3.3:
     resolution: {integrity: sha512-D5J+kHaVb/wKSFcyyV75uCn8fiY4sV38XJoe4CUyGQ+mOU/fMVYUdH1hJC+CJQ5uY3EnW27SbJYS4X8BiLrAFg==}
     engines: {node: '>= 10.0'}
@@ -5471,8 +5522,8 @@ packages:
       wrap-ansi: 7.0.0
     dev: false
 
-  /clsx@2.1.0:
-    resolution: {integrity: sha512-m3iNNWpd9rl3jvvcBnu70ylMdrXt8Vlq4HYadnU5fwcOtvkSQWPmj7amUcDT2qYI7risszBjI5AUIUox9D16pg==}
+  /clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
     dev: false
 
@@ -9200,6 +9251,14 @@ packages:
       yallist: 4.0.0
     dev: false
 
+  /lucide-react@0.515.0(react@18.2.0):
+    resolution: {integrity: sha512-Sy7bY0MeicRm2pzrnoHm2h6C1iVoeHyBU2fjdQDsXGP51fhkhau1/ZV/dzrcxEmAKsxYb6bGaIsMnGHuQ5s0dw==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
@@ -12134,6 +12193,10 @@ packages:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
     dev: false
 
+  /tailwind-merge@3.3.1:
+    resolution: {integrity: sha512-gBXpgUm/3rp1lMZZrM/w7D8GKqshif0zAymAhbCyIt8KMe+0v9DQ7cdYLR4FHH/cKpdTXb+A/tKKU3eolfsI+g==}
+    dev: false
+
   /tailwindcss@3.4.1:
     resolution: {integrity: sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==}
     engines: {node: '>=14.0.0'}
@@ -12375,6 +12438,10 @@ packages:
       tslib: 1.14.1
       typescript: 5.8.3
     dev: false
+
+  /tw-animate-css@1.3.4:
+    resolution: {integrity: sha512-dd1Ht6/YQHcNbq0znIT6dG8uhO7Ce+VIIhZUhjsryXsMPJQz3bZg7Q2eNzLwipb25bRZslGb2myio5mScd1TFg==}
+    dev: true
 
   /type-check@0.3.2:
     resolution: {integrity: sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg==}
