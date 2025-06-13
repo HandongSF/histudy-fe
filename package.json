@@ -41,7 +41,6 @@
     "recoil": "^0.7.7",
     "recoil-persist": "^4.2.0",
     "styled-components": "^5.3.11",
-    "vite-tsconfig-paths": "^5.1.4",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
@@ -69,13 +68,9 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^24.0.1",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.41.0",
     "prettier": "2.8.8",
-    "typescript": "^5.8.3",
     "vite": "^5.1.4",
     "vite-plugin-svgr": "^4.2.0"
   }
