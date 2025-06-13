@@ -23,6 +23,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import LoadingLottie from "./LoadingLottie";
 import Profile from "@/pages/Profile/Profile";
+import ApplicationPage from "../Enroll/ApplicationStatusView";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",
@@ -43,7 +44,11 @@ export default function ARouter() {
           <Route path="/rank" element={<Rank />}></Route>
           <Route
             path="/enroll"
-            element={<PrivateRoute component={<Enroll />} />}
+            element={<PrivateRoute component={<ApplicationPage />} />}
+          ></Route>
+          <Route
+            path="/application"
+            element={<PrivateRoute component={<ApplicationPage />} />}
           ></Route>
           <Route
             path="/group"
