@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import PrivateRoute from "../../auth/PrivateRoute";
 import Enroll from "../../pages/Enroll/Enroll";
-import Group from "../../pages/Group/Group";
+import Group from "../../pages/Group/Group_V1";
 import Main from "../../pages/Main/Main";
 import CreateGroup from "../../pages/Manager/CreateGroup";
 import ManageClass from "../../pages/Manager/ManageClass";
@@ -26,6 +26,7 @@ import Profile from "@/pages/Profile/Profile";
 import ApplicationPage from "../Enroll/ApplicationStatusView";
 import ReportListPage from "@/pages/Report/Report";
 import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
+import StudyGroupInfoPage from "@/pages/Group/StudyGroupInfoPage";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",
@@ -54,7 +55,7 @@ export default function ARouter() {
           ></Route>
           <Route
             path="/group"
-            element={<PrivateRoute component={<Group />} />}
+            element={<PrivateRoute component={<StudyGroupInfoPage />} />}
           ></Route>
           <Route
             path="/report"
