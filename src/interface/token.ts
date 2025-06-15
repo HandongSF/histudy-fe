@@ -1,4 +1,4 @@
-import { Authority } from "src/store/atom";
+import { Role } from "src/store/atom";
 
 export interface AuthResponse {
   isRegistered: boolean;
@@ -7,5 +7,5 @@ export interface AuthResponse {
     accessToken: string;
     refreshToken: string;
   };
-  role: Authority;
+  role: Role;
 }

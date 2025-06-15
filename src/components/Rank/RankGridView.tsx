@@ -4,7 +4,7 @@ import Item from "./Item";
 import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { useSetRecoilState } from "recoil";
-import { authorityState, isShowFullImageState } from "../../store/atom";
+import { roleState, isShowFullImageState } from "../../store/atom";
 import { AnimatePresence } from "framer-motion";
 
 const StyledItemSize = styled(Box)({
@@ -20,7 +20,7 @@ export default function RankGridView({
   itemsHover,
 }) {
   const setIsShowFullImage = useSetRecoilState(isShowFullImageState);
-  const myAuthority = useRecoilValue(authorityState);
+  const myAuthority = useRecoilValue(roleState);
 
   const handleFullImageOpen = async (imageUrl) => {
     if (myAuthority !== "ADMIN") return;

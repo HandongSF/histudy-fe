@@ -9,12 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { authorityState } from "@/store/atom";
+import { roleState } from "@/store/atom";
 import { BadgeIcon as IdCard, Mail, User } from "lucide-react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 
-const authorityMap = {
+const roleMap = {
   USER: "학생",
   MEMBER: "스터디원",
   ADMIN: "관리자",
@@ -27,7 +27,7 @@ export default function Profile() {
     refetchOnWindowFocus: false,
   });
 
-  const authority = useRecoilValue(authorityState);
+  const role = useRecoilValue(roleState);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
@@ -37,7 +37,7 @@ export default function Profile() {
             나의 프로필
           </h1>
         </header>
-        <Card className="shadow-md">
+        <Card className="shadow-md py-6">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20 border-2 border-primary/10">
@@ -51,7 +51,7 @@ export default function Profile() {
               </Avatar>
               <div>
                 <CardTitle className="text-2xl">{data?.name}</CardTitle>
-                <CardDescription>{authorityMap[authority]}</CardDescription>
+                <CardDescription>{roleMap[role]}</CardDescription>
               </div>
             </div>
           </CardHeader>

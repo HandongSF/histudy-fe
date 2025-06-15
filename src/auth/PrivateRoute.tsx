@@ -1,13 +1,13 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
-import { Authority, authorityState } from "../store/atom";
+import { Role, roleState } from "../store/atom";
 
 interface PrivateRouteProps {
   component: React.ReactNode;
 }
 
-const validateByAuth = (access: Authority, pathname: string) => {
+const validateByAuth = (access: Role, pathname: string) => {
   switch (pathname) {
     case "/group":
       if (access === "MEMBER") return true;
@@ -30,7 +30,7 @@ const validateByAuth = (access: Authority, pathname: string) => {
 };
 
 function PrivateRoute({ component }: PrivateRouteProps) {
-  const authority = useRecoilValue(authorityState);
+  const authority = useRecoilValue(roleState);
   const location = useLocation();
 
   const isValid = validateByAuth(authority, location.pathname);

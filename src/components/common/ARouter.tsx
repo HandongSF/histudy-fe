@@ -25,6 +25,7 @@ import LoadingLottie from "./LoadingLottie";
 import Profile from "@/pages/Profile/Profile";
 import ApplicationPage from "../Enroll/ApplicationStatusView";
 import ReportListPage from "@/pages/Report/Report";
+import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",
@@ -59,7 +60,7 @@ export default function ARouter() {
             path="/report"
             element={<PrivateRoute component={<ReportListPage />} />}
           ></Route>
-          <Route path="/report/:id" element={<ReportDetail />}></Route>
+          <Route path="/report/:id" element={<ReportDetailPage />}></Route>
           <Route path="/report/modify/:id" element={<Post />}></Route>
           <Route path="/add" element={<Post />}></Route>
 

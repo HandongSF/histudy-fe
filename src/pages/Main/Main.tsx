@@ -2,7 +2,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
-  authorityState,
+  roleState,
   isLoginState,
   isRegisterModalState,
   userLoginInfo,
@@ -27,7 +27,7 @@ export default function Main() {
     useRecoilState(isRegisterModalState);
   const [userLoginInfoState, setUserLoginInfoState] =
     useRecoilState(userLoginInfo);
-  const setAuthority = useSetRecoilState(authorityState);
+  const setAuthority = useSetRecoilState(roleState);
 
   const handleClick = async (e) => {
     e.preventDefault();

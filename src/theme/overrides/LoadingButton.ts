@@ -5,17 +5,17 @@ export default function LoadingButton() {
     MuiLoadingButton: {
       variants: [
         {
-          props: { loading: true, loadingPosition: 'start', size: 'small' },
+          props: { loading: true, loadingPosition: "start", size: "small" },
           style: {
-            '& .MuiLoadingButton-loadingIndicatorStart': {
+            "& .MuiLoadingButton-loadingIndicatorStart": {
               left: 10,
             },
           },
         },
         {
-          props: { loading: true, loadingPosition: 'end', size: 'small' },
+          props: { loading: true, loadingPosition: "end", size: "small" },
           style: {
-            '& .MuiLoadingButton-loadingIndicatorEnd': {
+            "& .MuiLoadingButton-loadingIndicatorEnd": {
               right: 10,
             },
           },
