@@ -26,6 +26,7 @@ import Header from "./Header";
 import LoadingLottie from "./LoadingLottie";
 import PostPage from "@/pages/Post/PostPage";
 import EditReportPage from "@/pages/EditReport/EditReportPage";
+import NotFoundPage from "@/pages/404";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",
@@ -80,6 +81,7 @@ export default function ARouter() {
             path="/profile"
             element={<PrivateRoute component={<Profile />} />}
           ></Route>
+          <Route path="*" element={<NotFoundPage />}></Route>
           {/* TODO: router 아무것도 접근 하지 못하면 404. 히즈스터디 다른 포트로 */}
         </Routes>
       </BrowserRouter>
