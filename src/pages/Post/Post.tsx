@@ -72,7 +72,7 @@ export default function Post({ children }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      {isCodeModal && <CodeModal onClick={() => setIsCodeModal(false)} />}
+      {isCodeModal && <CodeModal closeModal={() => setIsCodeModal(false)} />}
 
       <Title text="스터디 모임 보고서 작성" />
       <FormControl

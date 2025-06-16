@@ -1,5 +1,3 @@
-"use client";
-
 import { getMyTeamReport } from "@/apis/report";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

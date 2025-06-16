@@ -1,4 +1,4 @@
-"use client";
+" ";
 
 import { getProfile } from "@/apis/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -37,7 +37,7 @@ export default function Profile() {
             나의 프로필
           </h1>
         </header>
-        <Card className="shadow-md py-6">
+        <Card className="shadow-md ">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20 border-2 border-primary/10">

@@ -3,6 +3,7 @@ import ThemeProvider from "./theme";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "react-query";
 import "./globals.css";
+import { Toaster } from "sonner";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -17,6 +18,7 @@ function App() {
       <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
         <QueryClientProvider client={queryClient}>
           <ARouter />
+          <Toaster />
         </QueryClientProvider>
       </GoogleOAuthProvider>
     </ThemeProvider>

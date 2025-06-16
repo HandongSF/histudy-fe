@@ -1,6 +1,6 @@
 import heic2any from "heic2any";
 
-export const Heic2Jpg = async (file: File) => {
+export const Heic2Jpg = async (file: Blob) => {
   if (file.type === "image/heic" || file.type === "image/heif") {
     const convertedFile = await heic2any({
       blob: file,

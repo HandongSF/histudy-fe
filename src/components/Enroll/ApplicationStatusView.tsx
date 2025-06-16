@@ -1,4 +1,4 @@
-"use client";
+" ";
 
 import { getMyGroup } from "@/apis/study";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

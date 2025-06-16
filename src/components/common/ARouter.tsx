@@ -2,8 +2,6 @@ import { Box, styled } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import PrivateRoute from "../../auth/PrivateRoute";
-import Enroll from "../../pages/Enroll/Enroll";
-import Group from "../../pages/Group/Group_V1";
 import Main from "../../pages/Main/Main";
 import CreateGroup from "../../pages/Manager/CreateGroup";
 import ManageClass from "../../pages/Manager/ManageClass";
@@ -15,18 +13,18 @@ import Snackbars from "../../pages/Manager/Snackbars";
 import StudyGroup from "../../pages/Manager/StudyGroup";
 import Post from "../../pages/Post/Post";
 
+import StudyGroupInfoPage from "@/pages/Group/StudyGroupInfoPage";
+import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
+import Profile from "@/pages/Profile/Profile";
 import Rank from "@/pages/Rank/Rank";
-import Report from "../../pages/Report/Report_v1";
+import ReportListPage from "@/pages/Report/Report";
 import { isDelete, isLoadingState } from "../../store/atom";
+import ApplicationPage from "../Enroll/ApplicationStatusView";
 import MainImage from "../Main/MainImage";
 import Footer from "./Footer";
 import Header from "./Header";
 import LoadingLottie from "./LoadingLottie";
-import Profile from "@/pages/Profile/Profile";
-import ApplicationPage from "../Enroll/ApplicationStatusView";
-import ReportListPage from "@/pages/Report/Report";
-import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
-import StudyGroupInfoPage from "@/pages/Group/StudyGroupInfoPage";
+import PostPage from "@/pages/Post/PostPage";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",
@@ -43,7 +41,7 @@ export default function ARouter() {
         <Snackbars open={open} setOpen={setOpen} />
         <Routes>
           <Route path="/" element={<Main />}></Route>
-          <Route path="/post" element={<Post />}></Route>
+          <Route path="/post" element={<PostPage />}></Route>
           <Route path="/rank" element={<Rank />}></Route>
           <Route
             path="/enroll"
@@ -62,7 +60,7 @@ export default function ARouter() {
             element={<PrivateRoute component={<ReportListPage />} />}
           ></Route>
           <Route path="/report/:id" element={<ReportDetailPage />}></Route>
-          <Route path="/report/modify/:id" element={<Post />}></Route>
+          <Route path="/report/modify/:id" element={<EditReportPage />}></Route>
           <Route path="/add" element={<Post />}></Route>
 
           <Route

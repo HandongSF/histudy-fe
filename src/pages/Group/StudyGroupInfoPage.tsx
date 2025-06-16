@@ -1,4 +1,4 @@
-"use client";
+" ";
 
 import { getMyTeamUsers } from "@/apis/users";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -40,7 +40,7 @@ export default function StudyGroupInfoPage() {
       </div>
 
       <div className="space-y-4">
-        <Card>
+        <Card className="py-2">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table>

@@ -1,5 +1,3 @@
-"use client";
-
 import { readReportDetail } from "@/apis/manager";
 import { deleteReport } from "@/apis/report";
 import SideBar from "@/components/Manager/SideBar";
@@ -129,7 +127,7 @@ export default function ReportDetailPage() {
       <div className="space-y-4">
         {/* 기본 정보, 참여 멤버, 스터디 과목을 한 줄에 배치 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-1 py-0">
             <CardHeader className="p-4">
               <CardTitle className="text-base flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
@@ -152,7 +150,7 @@ export default function ReportDetailPage() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-1 py-0">
             <CardHeader className="p-4">
               <CardTitle className="text-base flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -174,7 +172,7 @@ export default function ReportDetailPage() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-1 py-0">
             <CardHeader className="p-4">
               <CardTitle className="text-base flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
@@ -196,7 +194,7 @@ export default function ReportDetailPage() {
         </div>
 
         {/* 보고서 내용 */}
-        <Card>
+        <Card className="py-0">
           <CardHeader className="pt-4 ">
             <CardTitle className="text-base">보고서 내용</CardTitle>
           </CardHeader>
@@ -210,7 +208,7 @@ export default function ReportDetailPage() {
         </Card>
 
         {/* 인증 사진 */}
-        <Card>
+        <Card className="py-0">
           <CardHeader className="p-4">
             <CardTitle className="text-base flex items-center gap-2">
               <ImageIcon className="h-4 w-4" />

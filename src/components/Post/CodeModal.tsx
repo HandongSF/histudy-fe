@@ -32,7 +32,11 @@ function updateCurrentTime() {
 // 매 초마다 updateCurrentTime 함수를 실행
 setInterval(updateCurrentTime, 1000);
 
-export function CodeModal({ onClick }) {
+interface CodeModalProps {
+  closeModal: () => void;
+}
+
+export function CodeModal({ closeModal }: CodeModalProps) {
   const [nowTime, setNowTime] = useState(updateCurrentTime());
   useEffect(() => {
     const interval = setInterval(() => {
@@ -55,7 +59,7 @@ export function CodeModal({ onClick }) {
         initial="hidden"
         animate="showing"
         exit="exit"
-        onClick={onClick}
+        onClick={closeModal}
         id="no"
         sx={{
           position: "fixed",
