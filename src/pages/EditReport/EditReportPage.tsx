@@ -41,9 +41,10 @@ import {
 } from "@/components/ui/form";
 import { NewReport } from "@/interface/report";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useRef } from "react";
-import { useQueries } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef } from "react";
+import { useQueries, useQuery } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { readReportDetail } from "@/apis/manager";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -65,8 +66,13 @@ const reportFormSchema = z.object({
 
 type ReportFormState = z.infer<typeof reportFormSchema>;
 
-export default function PostPage() {
+export default function EditReportPage() {
   const navigate = useNavigate();
+  const { id } = useParams() as { id: string };
+  const { data: report } = useQuery({
+    queryKey: ["report", id],
+    queryFn: () => readReportDetail(+id),
+  });
 
   const form = useForm<ReportFormState>({
     resolver: zodResolver(reportFormSchema),
@@ -81,6 +87,21 @@ export default function PostPage() {
       blobImages: [],
     },
   });
+
+  useEffect(() => {
+    if (report) {
+      form.reset({
+        title: report.title,
+        content: report.content,
+        participants: report.participants.map((participant) => participant.id),
+        totalMinutes: String(report.totalMinutes),
+        images: [],
+        courses: report.courses.map((course) => course.id),
+        previewImages: report.images.map((image) => image.url),
+        blobImages: report.images.map((image) => new File([], image.url)),
+      });
+    }
+  }, [report, form]);
 
   form.watch(["previewImages", "blobImages"]);
 
@@ -130,6 +151,7 @@ export default function PostPage() {
     },
   ]);
 
+  console.log(form.getValues());
   const inputRef = useRef<HTMLInputElement>(null);
   const onUploadImageButtonClick = useCallback(() => {
     if (!inputRef.current) {
@@ -279,7 +301,7 @@ export default function PostPage() {
                 name="courses"
                 render={() => (
                   <FormItem className="space-y-2">
-                    {coursesRes?.courses?.map((course) => (
+                    {coursesRes?.courses.map((course) => (
                       <FormField
                         key={course.id}
                         control={form.control}

@@ -25,6 +25,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import LoadingLottie from "./LoadingLottie";
 import PostPage from "@/pages/Post/PostPage";
+import EditReportPage from "@/pages/EditReport/EditReportPage";
 
 const MinWidthLayout = styled(Box)({
   minWidth: "450px",
