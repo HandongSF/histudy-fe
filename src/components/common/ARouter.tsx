@@ -82,7 +82,6 @@ export default function ARouter() {
           ></Route>
           {/* TODO: router 아무것도 접근 하지 못하면 404. 히즈스터디 다른 포트로 */}
         </Routes>
-        <Footer />
       </BrowserRouter>
     </MinWidthLayout>
   );
