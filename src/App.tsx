@@ -1,4 +1,5 @@
 import ARouter from "./components/common/ARouter";
+import { useAxiosInterceptor } from "./hooks/axiosInterceptor";
 import { useRoleInit } from "./hooks/role";
 
 import ThemeProvider from "./theme";

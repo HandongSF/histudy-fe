@@ -12,6 +12,7 @@ import {
   userLoginInfo,
 } from "../../store/atom";
 import "./css/Textfield.css";
+import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
 
 const nameConverter = (name) => {
   if (name.slice(-3) === "학부생") return name.slice(0, -3);
@@ -19,6 +20,7 @@ const nameConverter = (name) => {
 };
 
 export default function Main() {
+  useAxiosInterceptor();
   const [sid, setSid] = useState("");
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
