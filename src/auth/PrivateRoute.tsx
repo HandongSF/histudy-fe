@@ -10,6 +10,9 @@ interface PrivateRouteProps {
 
 const validateByAuth = (access: Role, pathname: string) => {
   switch (pathname) {
+    case paths.application.add:
+      if (access === "USER") return true;
+      return false;
     case paths.myGroup.root:
       if (access === "MEMBER") return true;
       return false;

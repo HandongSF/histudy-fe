@@ -7,7 +7,7 @@ interface StudyEnrollRequest {
   friendIds: string;
 }
 
-interface StudyEnrollResponse {
+export interface StudyEnrollResponse {
   friends: SimpleUser[];
   courses: Course[];
 }

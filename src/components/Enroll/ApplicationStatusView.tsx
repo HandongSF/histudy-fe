@@ -13,7 +13,8 @@ import {
 import { Book, Users } from "lucide-react";
 import { useQuery } from "react-query";
 import { Button } from "../ui/button";
-
+import { Link } from "react-router-dom";
+import { paths } from "@/const/paths";
 export default function ApplicationOverviewPage() {
   const { isLoading, data } = useQuery(["checkMyApplication"], getMyGroup, {
     cacheTime: 1 * 30 * 1000,
@@ -41,9 +42,11 @@ export default function ApplicationOverviewPage() {
             </p>
           </header>
 
-          <Button>
-            {hasNoApplications ? "스터디 그룹 신청" : "스터디 그룹 재신청"}
-          </Button>
+          <Link to={paths.application.add}>
+            <Button>
+              {hasNoApplications ? "스터디 그룹 신청" : "스터디 그룹 재신청"}
+            </Button>
+          </Link>
         </div>
 
         <div className="space-y-6">

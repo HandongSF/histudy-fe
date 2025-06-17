@@ -22,6 +22,7 @@ import ApplicationOverviewPage from "../Enroll/ApplicationStatusView";
 import Layout from "./app-layout";
 import Enroll from "@/pages/Enroll/Enroll";
 import HomePage from "@/pages/Main/HomePage";
+import StudyApplicationPage from "@/pages/Enroll/StudyApplicationPage";
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
       { path: paths.ranks.root, element: <Rank /> },
       {
         path: paths.application.root,
-        element: <PrivateRoute component={<ApplicationOverviewPage />} />,
+        element: <PrivateRoute component={<StudyApplicationPage />} />,
       },
       {
         path: paths.application.add,
