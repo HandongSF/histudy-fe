@@ -1,5 +1,4 @@
 import { getAllTeamsForRank } from "@/apis/rank";
-import FullImage from "@/components/Rank/FullImage";
 import GroupGridView from "@/components/Rank/GroupGridView";
 import { GroupListView } from "@/components/Rank/GroupListView";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,6 +6,8 @@ import { Box, Modal } from "@mui/material";
 import { LayoutGrid, List } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "react-query";
+
+import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
 
 const style = {
   position: "absolute",
@@ -21,6 +22,7 @@ const style = {
 };
 
 export default function Rank() {
+  useAxiosInterceptor();
   //   const [teams, setTeams] = useState([]);
   const [view, setView] = useState("list");
 

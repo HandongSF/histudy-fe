@@ -17,9 +17,11 @@ import { CodeModal } from "../../components/Post/CodeModal";
 import PostCourses from "../../components/Post/PostCourses";
 import PostMember from "../../components/Post/PostMember";
 import PostStudyTime from "../../components/Post/PostStudyTime";
+import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
 import { paths } from "@/const/paths";
 
 export default function Post({ children }) {
+  useAxiosInterceptor();
   const { state } = useLocation();
   console.log(state);
 

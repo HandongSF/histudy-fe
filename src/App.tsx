@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+import ARouter from "./components/common/ARouter";
+import { useAxiosInterceptor } from "./hooks/axiosInterceptor";
+import { useRoleInit } from "./hooks/role";
+
+import ThemeProvider from "./theme";
+>>>>>>> release/v2.0.0
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider } from "react-router-dom";
@@ -14,6 +22,8 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  useRoleInit();
+
   return (
     <ThemeProvider>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>

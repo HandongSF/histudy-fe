@@ -1,20 +1,16 @@
 // GoogleButton.js
 
+import { paths } from "@/const/paths";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import jwtDecode, { JwtPayload } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
+import { useAuth } from "src/hooks/auth";
 import { userLogin } from "../apis/users";
-import {
-  roleState,
-  isLoginState,
-  isRegisterModalState,
-  userLoginInfo,
-} from "../store/atom";
-import { paths } from "@/const/paths";
+import { isRegisterModalState, Role, userLoginInfo } from "../store/atom";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
+  rol: Role;
 }
 
 const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
@@ -29,11 +25,10 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
 };
 
 export default function GoogleButton() {
-  const navigate = useNavigate();
   const setRegisterModalState = useSetRecoilState(isRegisterModalState);
   const setUserLoginInfo = useSetRecoilState(userLoginInfo);
-  const setIsLogin = useSetRecoilState(isLoginState);
-  const setRole = useSetRecoilState(roleState);
+  const { login } = useAuth();
+
   // const { loginWithCredential } = useAuthContext();
   const onSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
@@ -56,12 +51,11 @@ export default function GoogleButton() {
     )
       .then((response) => {
         if (response.isRegistered === true) {
-          localStorage.setItem("accessToken", response.tokens.accessToken);
-          localStorage.setItem("refreshToken", response.tokens.refreshToken);
-
-          window.location.href = paths.root;
-          setIsLogin(true);
-          setRole(response.role);
+          login(
+            response.tokens.accessToken,
+            response.tokens.refreshToken,
+            response.role
+          );
         }
       })
       // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생

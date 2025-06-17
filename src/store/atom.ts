@@ -62,7 +62,6 @@ export type Role = "MEMBER" | "USER" | "ADMIN" | "NONUSER";
 export const roleState = atom<Role>({
   key: "role",
   default: "NONUSER",
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const isShowFullImageState = atom<boolean>({
