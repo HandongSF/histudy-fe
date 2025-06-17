@@ -14,7 +14,7 @@ import { Book, Users } from "lucide-react";
 import { useQuery } from "react-query";
 import { Button } from "../ui/button";
 
-export default function ApplicationPage() {
+export default function ApplicationOverviewPage() {
   const { isLoading, data } = useQuery(["checkMyApplication"], getMyGroup, {
     cacheTime: 1 * 30 * 1000,
     refetchOnWindowFocus: false,

@@ -9,12 +9,13 @@ import Courses from "../../components/Enroll/Courses";
 import { getMyGroup, studyEnroll } from "../../apis/study";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import Group from "../Group/Group_V1";
+
 import { useQuery } from "react-query";
 import FriendDescription from "../../components/common/FriendDescription";
 import CourseDescription from "../../components/common/CourseDescription";
 import ButtonBox from "../../components/Enroll/ButtonBox";
 import { paths } from "@/const/paths";
+import Group from "../Group/GroupV1";
 
 const ResponsiveSidebarContainer = styled("div")({
   "@media (min-width: 1200px)": {

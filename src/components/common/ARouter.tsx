@@ -18,15 +18,17 @@ import PostPage from "@/pages/Post/PostPage";
 import Profile from "@/pages/Profile/Profile";
 import Rank from "@/pages/Rank/Rank";
 import ReportListPage from "@/pages/Report/Report";
-import ApplicationPage from "../Enroll/ApplicationStatusView";
+import ApplicationOverviewPage from "../Enroll/ApplicationStatusView";
 import Layout from "./app-layout";
+import Enroll from "@/pages/Enroll/Enroll";
+import HomePage from "@/pages/Main/HomePage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
-      { path: paths.root, element: <Main /> },
+      { path: paths.root, element: <HomePage /> },
       {
         path: paths.reports.root,
         element: <PrivateRoute component={<ReportListPage />} />,
@@ -37,7 +39,11 @@ export const router = createBrowserRouter([
       { path: paths.ranks.root, element: <Rank /> },
       {
         path: paths.application.root,
-        element: <PrivateRoute component={<ApplicationPage />} />,
+        element: <PrivateRoute component={<ApplicationOverviewPage />} />,
+      },
+      {
+        path: paths.application.add,
+        element: <PrivateRoute component={<Enroll />} />,
       },
       {
         path: paths.myGroup.root,
