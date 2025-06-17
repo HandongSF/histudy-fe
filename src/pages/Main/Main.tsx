@@ -1,18 +1,18 @@
 import { Box } from "@mui/system";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { userSignup } from "../../apis/users";
+import MainImage from "../../components/Main/MainImage";
+import RegisterModal from "../../components/Main/RegisterModal";
 import {
-  authorityState,
   isLoginState,
   isRegisterModalState,
+  roleState,
   userLoginInfo,
 } from "../../store/atom";
 import "./css/Textfield.css";
-import { userSignup } from "../../apis/users";
-import RegisterModal from "../../components/Main/RegisterModal";
-import { motion } from "framer-motion";
-import MainImage from "../../components/Main/MainImage";
-import { RefreshToken } from "src/interface/token";
+import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
 
 const nameConverter = (name) => {
   if (name.slice(-3) === "학부생") return name.slice(0, -3);
@@ -20,6 +20,7 @@ const nameConverter = (name) => {
 };
 
 export default function Main() {
+  useAxiosInterceptor();
   const [sid, setSid] = useState("");
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
@@ -27,7 +28,8 @@ export default function Main() {
     useRecoilState(isRegisterModalState);
   const [userLoginInfoState, setUserLoginInfoState] =
     useRecoilState(userLoginInfo);
-  const setAuthority = useSetRecoilState(authorityState);
+
+  const setAuthority = useSetRecoilState(roleState);
 
   const handleClick = async (e) => {
     e.preventDefault();

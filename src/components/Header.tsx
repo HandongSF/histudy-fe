@@ -4,6 +4,7 @@ import { useRecoilState } from "recoil";
 import { isLoginState } from "../store/atom";
 import DarkModeToggle from "./DarkModeToggle";
 import HeaderButton from "./HeaderButton";
+import { useAuth } from "src/hooks/auth";
 
 export default function Header() {
   const homeMatch = useMatch("/");
@@ -13,15 +14,8 @@ export default function Header() {
   const enrollMatch = useMatch("/enroll");
   const managerMatch = useMatch("/manageClass");
   const profileMatch = useMatch("/profile");
-
+  const { logout } = useAuth();
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
-
-  const handleLogOut = () => {
-    alert("로그아웃 되었습니다.");
-    setIsLogin(false);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-  };
 
   return (
     <Box
@@ -62,7 +56,7 @@ export default function Header() {
 
       <Box sx={{ display: "flex" }}>
         {isLogin && (
-          <Button sx={{ color: "text.header" }} onClick={handleLogOut}>
+          <Button sx={{ color: "text.header" }} onClick={logout}>
             Log out
           </Button>
         )}

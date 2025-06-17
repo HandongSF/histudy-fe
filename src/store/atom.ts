@@ -57,12 +57,11 @@ export const groupAutoCompleteState = atom<any[]>({
   default: [],
 });
 
-export type Authority = "MEMBER" | "USER" | "ADMIN" | "NONUSER";
+export type Role = "MEMBER" | "USER" | "ADMIN" | "NONUSER";
 
-export const authorityState = atom<Authority>({
-  key: "authority",
+export const roleState = atom<Role>({
+  key: "role",
   default: "NONUSER",
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const isShowFullImageState = atom<boolean>({

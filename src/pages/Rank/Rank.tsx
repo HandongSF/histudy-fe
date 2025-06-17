@@ -16,6 +16,7 @@ import FullImage from "../../components/Rank/FullImage";
 import RankGridView from "../../components/Rank/RankGridView";
 import RankListView from "../../components/Rank/RankListView";
 import ViewToggleButton from "../../components/Rank/ViewToggleButton";
+import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
 
 const StyledScrollBox = styled(Box)({
   maxWidth: "1280px",
@@ -25,6 +26,7 @@ const StyledScrollBox = styled(Box)({
 });
 
 export default function Rank() {
+  useAxiosInterceptor();
   const [teams, setTeams] = useState([]);
   const [itemsHover, setItemsHover] = useState([]);
   const [view, setView] = useState("list");

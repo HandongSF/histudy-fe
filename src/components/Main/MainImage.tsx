@@ -2,7 +2,7 @@ import { Box, Button, Typography, styled } from "@mui/material";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { authorityState } from "../../store/atom";
+import { roleState } from "../../store/atom";
 
 const StyledContainer = styled(Box)({
   position: "relative",
@@ -68,7 +68,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function MainImage() {
-  const role = useRecoilValue(authorityState);
+  const role = useRecoilValue(roleState);
   const mainButtonReturner = (type) => {
     if (type === "link") {
       switch (role) {

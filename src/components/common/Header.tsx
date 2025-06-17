@@ -2,9 +2,10 @@ import { Box, Button } from "@mui/material";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import GoogleButton from "../../auth/GoogleButton";
-import { authorityState, isLoginState } from "../../store/atom";
+import { roleState, isLoginState } from "../../store/atom";
 import DarkModeToggle from "./DarkModeToggle";
 import HeaderButton from "./HeaderButton";
+import { useAuth } from "src/hooks/auth";
 
 export default function Header() {
   const homeMatch = useMatch("/");
@@ -18,16 +19,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
-  const [role, setRole] = useRecoilState(authorityState);
-  const handleLogOut = () => {
-    alert("로그아웃 되었습니다.");
-    setIsLogin(false);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setRole("NONUSER");
-    // 메인페이지로이동
-    navigate("/");
-  };
+  const [role, setRole] = useRecoilState(roleState);
 
   /**
    * @breif 해당 컴포넌트가 로그인한 유저의 권한에 맞는지 확인하는 함수
@@ -56,6 +48,8 @@ export default function Header() {
         return null;
     }
   };
+
+  const { logout } = useAuth();
 
   return (
     <Box
@@ -115,7 +109,7 @@ export default function Header() {
               fontSize: { md: "15px", sm: "12px", xs: "12px" },
               whiteSpace: "nowrap",
             }}
-            onClick={handleLogOut}
+            onClick={logout}
           >
             Log out
           </Button>

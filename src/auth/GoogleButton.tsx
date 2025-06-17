@@ -6,14 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { userLogin } from "../apis/users";
 import {
-  authorityState,
+  roleState,
   isLoginState,
   isRegisterModalState,
   userLoginInfo,
+  Role,
 } from "../store/atom";
+import { useAuth } from "src/hooks/auth";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
+  rol: Role;
 }
 
 const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
@@ -28,12 +31,11 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
 };
 
 export default function GoogleButton() {
-  const navigate = useNavigate();
   const setRegisterModalState = useSetRecoilState(isRegisterModalState);
   const setUserLoginInfo = useSetRecoilState(userLoginInfo);
   const setIsLogin = useSetRecoilState(isLoginState);
-  const setAuthority = useSetRecoilState(authorityState);
-  // const { loginWithCredential } = useAuthContext();
+  const setAuthority = useSetRecoilState(roleState);
+  const { login } = useAuth();
   const onSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
       alert("로그인에 실패하였습니다.");
@@ -52,12 +54,11 @@ export default function GoogleButton() {
     userLogin(decodedToken.sub)
       .then((response) => {
         if (response.isRegistered === true) {
-          localStorage.setItem("accessToken", response.tokens.accessToken);
-          localStorage.setItem("refreshToken", response.tokens.refreshToken);
-
-          window.location.href = "/";
-          setIsLogin(true);
-          setAuthority(response.role);
+          login(
+            response.tokens.accessToken,
+            response.tokens.refreshToken,
+            response.role
+          );
         }
       })
       // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생
