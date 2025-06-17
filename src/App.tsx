@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-=======
-import ARouter from "./components/common/ARouter";
-import { useAxiosInterceptor } from "./hooks/axiosInterceptor";
 import { useRoleInit } from "./hooks/role";
 
-import ThemeProvider from "./theme";
->>>>>>> release/v2.0.0
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider } from "react-router-dom";
@@ -13,6 +7,7 @@ import { Toaster } from "sonner";
 import { router } from "./components/common/ARouter";
 import "./globals.css";
 import ThemeProvider from "./theme";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

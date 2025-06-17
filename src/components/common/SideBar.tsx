@@ -21,6 +21,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { paths } from "@/const/paths";
+import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
 import { isLoginState, Role, roleState } from "@/store/atom";
 import {
@@ -145,16 +146,7 @@ export function CommonSidebar() {
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
-
-  const handleLogout = () => {
-    alert("로그아웃 되었습니다.");
-    setIsLogin(false);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setRole("NONUSER");
-    // 메인페이지로이동
-    navigate(paths.root);
-  };
+  const { logout } = useAuth();
 
   // 역할에 따라 네비게이션 그룹 필터링
   const filteredNavGroups = navGroupsData
@@ -265,7 +257,7 @@ export function CommonSidebar() {
             {canShowLogout && (
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  onClick={handleLogout}
+                  onClick={logout}
                   tooltip={{
                     children: "로그아웃",
                     side: "right",
