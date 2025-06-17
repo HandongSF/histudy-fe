@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { paths } from "@/const/paths";
 import animationData from "@/noData.json";
 import Lottie from "lottie-react";
 import { AlertTriangle, Home } from "lucide-react";
@@ -9,7 +10,7 @@ export default function NotFoundPage() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 text-slate-800 flex flex-col items-center justify-center p-6 text-center">
       <div className="relative mb-8">
         {/* <img
-          src="/placeholder.svg?height=250&width=250"
+          src="/img/placeholder.svg?height=250&width=250"
           alt="땀 흘리는 귀여운 우주인"
           className="w-48 h-48 sm:w-64 sm:h-64 animate-bounce-slow"
         />
@@ -91,7 +92,7 @@ export default function NotFoundPage() {
         홈으로 돌아가 안전하게 다시 시작하세요!
       </p>
 
-      <Link to="/">
+      <Link to={paths.root}>
         <Button
           size="lg"
           className="bg-sky-500 hover:bg-sky-600 text-white font-semibold"

@@ -45,6 +45,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useQueries, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { readReportDetail } from "@/apis/manager";
+import { paths } from "@/const/paths";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -135,7 +136,7 @@ export default function EditReportPage() {
     postReport(newReport);
 
     alert("보고서 제출이 완료되었습니다.");
-    navigate("/");
+    navigate(paths.reports.root);
   };
 
   const [{ data: coursesRes }, { data: participants }] = useQueries([
@@ -248,7 +249,7 @@ export default function EditReportPage() {
                           className="relative group aspect-square"
                         >
                           <img
-                            src={url || "/placeholder.svg"}
+                            src={url || "/img/placeholder.svg"}
                             alt={`새 이미지 ${index + 1}`}
                             className="w-full h-full object-cover rounded-md border"
                           />
@@ -308,7 +309,7 @@ export default function EditReportPage() {
                         name="courses"
                         render={({ field }) => {
                           return (
-                            <Label
+                            <FormLabel
                               key={course.id}
                               htmlFor={`course-${course.id}`}
                               className="flex items-center gap-2 p-3 border rounded-md hover:bg-muted/50 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary"
@@ -329,10 +330,13 @@ export default function EditReportPage() {
                                       );
                                 }}
                               />
-                              <FormLabel className="text-sm font-normal">
+                              <FormLabel
+                                htmlFor={`course-${course.id}`}
+                                className="text-sm font-normal"
+                              >
                                 {course.name} ({course.code})
                               </FormLabel>
-                            </Label>
+                            </FormLabel>
                           );
                         }}
                       />
@@ -368,7 +372,7 @@ export default function EditReportPage() {
                         name="participants"
                         render={({ field }) => {
                           return (
-                            <Label
+                            <FormLabel
                               htmlFor={`participant-${participant.id}`}
                               className="flex items-center gap-2 p-3 border rounded-md hover:bg-muted/50 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary"
                             >
@@ -388,10 +392,13 @@ export default function EditReportPage() {
                                       );
                                 }}
                               />
-                              <FormLabel className="text-sm font-normal">
+                              <FormLabel
+                                htmlFor={`participant-${participant.id}`}
+                                className="text-sm font-normal"
+                              >
                                 {participant.name}, {participant.sid}
                               </FormLabel>
-                            </Label>
+                            </FormLabel>
                           );
                         }}
                       />
@@ -496,7 +503,7 @@ export default function EditReportPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/")}
+              onClick={() => navigate(paths.reports.root)}
             >
               취소
             </Button>

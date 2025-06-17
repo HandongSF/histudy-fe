@@ -27,7 +27,7 @@ export default function Main() {
     useRecoilState(isRegisterModalState);
   const [userLoginInfoState, setUserLoginInfoState] =
     useRecoilState(userLoginInfo);
-  const setAuthority = useSetRecoilState(roleState);
+  const setRole = useSetRecoilState(roleState);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -56,7 +56,7 @@ export default function Main() {
     setIsRegisterModal(false);
     setUserLoginInfoState(null);
     setIsLogin(true);
-    setAuthority(response.role);
+    setRole(response.role);
 
     window.location.reload();
   };

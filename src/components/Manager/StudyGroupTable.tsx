@@ -1,3 +1,4 @@
+import { paths } from "@/const/paths";
 import { Cancel, Edit } from "@mui/icons-material";
 import {
   Box,
@@ -34,7 +35,7 @@ export default function StudyGroupTable({
   const navigate = useNavigate();
 
   const handleClick = (id) => {
-    navigate("/manageReport", { state: id });
+    navigate(paths.admin.manageReport, { state: id });
   };
 
   return (

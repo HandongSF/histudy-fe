@@ -25,6 +25,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import Title from "../../components/common/Title";
 import { StyledLayout } from "./style/StyledLatout";
+import { paths } from "@/const/paths";
 
 export default function ReportDetail() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function ReportDetail() {
 
   const role = useRecoilValue(roleState);
 
-  const useUserReportDetailMatch = useMatch("/report/:id");
+  const useUserReportDetailMatch = useMatch(paths.reports.oneReport(":id"));
   if (id === null) {
     navigate(-1);
     return;
@@ -66,7 +67,9 @@ export default function ReportDetail() {
     }
   };
   const handleModify = async () => {
-    navigate(`/report/modify/${reportData.id}`, { state: state });
+    navigate(paths.reports.edit(reportData.id.toString()), {
+      state: state,
+    });
   };
 
   return (

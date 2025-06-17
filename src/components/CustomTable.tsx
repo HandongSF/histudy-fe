@@ -1,3 +1,4 @@
+import { paths } from "@/const/paths";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Box, Button, Typography } from "@mui/material";
@@ -176,7 +177,7 @@ export default function CustomTable({
             {/* 상세보기 */}
             {type === "report" && (
               <Link
-                to={`/report/${reportData[index].id}`}
+                to={paths.reports.oneReport(reportData[index].id.toString())}
                 state={reportData[index]}
               >
                 <Button variant="outlined" sx={{ py: "3px" }}>

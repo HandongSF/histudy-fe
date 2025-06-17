@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { Box } from "@mui/system";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { paths } from "@/const/paths";
 export default function HeaderButton({ link, name, match, color }) {
   return (
     <Link to={link} style={{ textDecoration: "none" }}>
@@ -14,7 +15,7 @@ export default function HeaderButton({ link, name, match, color }) {
           sx={{
             color: color,
             whiteSpace: "nowrap",
-            minWidth: link === "/" && "100px",
+            minWidth: link === paths.root && "100px",
             fontSize: { md: "15px", sm: "12px", xs: "12px" },
           }}
         >

@@ -9,6 +9,7 @@ import LongButton from "../../components/common/LongButton";
 import NoDataLottie from "../../components/common/NoDataLottie";
 import { StyledColumnAlignLayout } from "../../components/common/StyledLayout";
 import Title from "../../components/common/Title";
+import { paths } from "@/const/paths";
 
 const StyledScrollTableSize = styled(Box)({
   width: "90%",
@@ -60,7 +61,7 @@ export default function Report() {
       >
         <Title text="제출한 보고서 목록" />
         <StyleButtonBox>
-          <Link to="/add">
+          <Link to={paths.reports.add}>
             <LongButton
               name="보고서 작성"
               bgColor="primary.main"

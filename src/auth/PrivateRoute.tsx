@@ -2,6 +2,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
 import { Role, roleState } from "../store/atom";
+import { paths } from "@/const/paths";
 
 interface PrivateRouteProps {
   component: React.ReactNode;
@@ -9,19 +10,19 @@ interface PrivateRouteProps {
 
 const validateByAuth = (access: Role, pathname: string) => {
   switch (pathname) {
-    case "/group":
+    case paths.myGroup.root:
       if (access === "MEMBER") return true;
       return false;
-    case "/report":
+    case paths.reports.root:
       if (access === "MEMBER") return true;
       return false;
-    case "/enroll":
+    case paths.application.root:
       if (access === "USER") return true;
       return false;
-    case "/manageClass":
+    case paths.admin.manageClass:
       if (access === "ADMIN") return true;
       return false;
-    case "/profile":
+    case paths.profile.root:
       if (access !== "NONUSER") return true;
       return false;
     default:
@@ -30,13 +31,13 @@ const validateByAuth = (access: Role, pathname: string) => {
 };
 
 function PrivateRoute({ component }: PrivateRouteProps) {
-  const authority = useRecoilValue(roleState);
+  const role = useRecoilValue(roleState);
   const location = useLocation();
 
-  const isValid = validateByAuth(authority, location.pathname);
+  const isValid = validateByAuth(role, location.pathname);
 
   if (!isValid) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={paths.root} replace />;
   }
 
   return component;

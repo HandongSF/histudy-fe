@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMatch } from "react-router-dom";
 import DeleteDataIcon from "./Enroll/DeleteDataIcon";
+import { paths } from "@/const/paths";
 export default function GrayBorderBox({
   setSideFriends,
   setSideCourses,
@@ -9,7 +10,7 @@ export default function GrayBorderBox({
   courses,
   children,
 }) {
-  const enrollMatch = useMatch("/enroll");
+  const enrollMatch = useMatch(paths.application.root);
 
   return (
     <Box

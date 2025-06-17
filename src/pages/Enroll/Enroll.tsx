@@ -14,6 +14,7 @@ import { useQuery } from "react-query";
 import FriendDescription from "../../components/common/FriendDescription";
 import CourseDescription from "../../components/common/CourseDescription";
 import ButtonBox from "../../components/Enroll/ButtonBox";
+import { paths } from "@/const/paths";
 
 const ResponsiveSidebarContainer = styled("div")({
   "@media (min-width: 1200px)": {
@@ -101,7 +102,7 @@ export default function Enroll() {
       }
       alert("스터디 신청이 완료되었습니다.");
       studyEnroll(data);
-      navigate("/");
+      navigate(paths.application.root);
     }
   };
 

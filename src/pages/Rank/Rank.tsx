@@ -40,7 +40,7 @@ export default function Rank() {
       >
         <Box component="img" src={modalImageUrl} sx={style} />
       </Modal>
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+      <div className="min-h-screen ">
         <div className="container mx-auto py-8 px-4">
           <header className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">

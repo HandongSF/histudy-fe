@@ -6,6 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { selectState } from "../../store/atom";
+import { paths } from "@/const/paths";
 
 export default function SideBar() {
   // const [selectedMenu, setSelectedMenu] = useState(null);
@@ -53,7 +54,7 @@ export default function SideBar() {
         >
           <ListItem disablePadding>
             <Link
-              to={"/manageClass"}
+              to={paths.admin.manageClass}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <ListItemButton
@@ -69,7 +70,7 @@ export default function SideBar() {
           </ListItem>
           <ListItem disablePadding>
             <Link
-              to={"/createGroup"}
+              to={paths.admin.createGroup}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <ListItemButton
@@ -85,7 +86,7 @@ export default function SideBar() {
           </ListItem>
           <ListItem disablePadding>
             <Link
-              to={"/manageGroup"}
+              to={paths.admin.manageGroup}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <ListItemButton
@@ -101,7 +102,7 @@ export default function SideBar() {
           </ListItem>
           <ListItem disablePadding>
             <Link
-              to={"/studyGroup"}
+              to={paths.admin.manageStudy}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <ListItemButton
@@ -117,7 +118,7 @@ export default function SideBar() {
           </ListItem>
           <ListItem disablePadding>
             <Link
-              to={"/manageStudent"}
+              to={paths.admin.manageStudent}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <ListItemButton

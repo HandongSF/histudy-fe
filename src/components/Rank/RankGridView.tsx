@@ -20,10 +20,10 @@ export default function RankGridView({
   itemsHover,
 }) {
   const setIsShowFullImage = useSetRecoilState(isShowFullImageState);
-  const myAuthority = useRecoilValue(roleState);
+  const myRole = useRecoilValue(roleState);
 
   const handleFullImageOpen = async (imageUrl) => {
-    if (myAuthority !== "ADMIN") return;
+    if (myRole !== "ADMIN") return;
     if (!imageUrl) {
       setFullImageUrl("/img/mainImg2.png");
     } else setFullImageUrl(imageUrl);

@@ -52,10 +52,7 @@ export default function StudentListTable({
   };
 
   const navigate = useNavigate();
-  const handleDeleteRow = (index) => {};
-  const handleClick = () => {
-    navigate("/manageReport");
-  };
+
   const handleSave = (id) => {
     const newData = {
       name: getValues("name"),

@@ -17,6 +17,7 @@ import { CodeModal } from "../../components/Post/CodeModal";
 import PostCourses from "../../components/Post/PostCourses";
 import PostMember from "../../components/Post/PostMember";
 import PostStudyTime from "../../components/Post/PostStudyTime";
+import { paths } from "@/const/paths";
 
 export default function Post({ children }) {
   const { state } = useLocation();
@@ -63,7 +64,7 @@ export default function Post({ children }) {
     state ? modifyReport(state.id, newReport) : postReport(newReport);
 
     alert("보고서 제출이 완료되었습니다.");
-    navigate("/");
+    navigate(paths.reports.root);
   };
 
   return (

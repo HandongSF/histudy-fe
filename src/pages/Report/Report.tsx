@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { paths } from "@/const/paths";
 import { Report } from "@/interface/report";
 import { ChevronRight, Clock, PlusCircle, Users } from "lucide-react";
 import { useQuery } from "react-query";
@@ -19,7 +20,7 @@ export default function ReportListPage() {
   }
 
   const handleReportClick = (report: Report) => {
-    navigate(`/report/${report.id}`, {
+    navigate(paths.reports.oneReport(report.id.toString()), {
       state: report,
     });
   };
@@ -44,7 +45,7 @@ export default function ReportListPage() {
             </p>
           </header>
 
-          <Link to="/post">
+          <Link to={paths.reports.add}>
             <Button
               // onClick={handleCreateReport}
               className="flex items-center gap-2 w-full sm:w-auto"

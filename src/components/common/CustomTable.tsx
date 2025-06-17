@@ -2,6 +2,7 @@ import { Box, Button, Typography, styled } from "@mui/material";
 import { Link } from "react-router-dom";
 import AddDeleteButton from "./AddDeleteButton";
 import UpDownButton from "./UpDownButton";
+import { paths } from "@/const/paths";
 
 const maskingData = (type, idx, data) => {
   if (type === "first") {
@@ -140,7 +141,7 @@ export default function CustomTable({
           {/* 상세보기 */}
           {type === "report" && (
             <Link
-              to={`/report/${reportData[index].id}`}
+              to={paths.reports.oneReport(reportData[index].id.toString())}
               state={reportData[index]}
             >
               <Button

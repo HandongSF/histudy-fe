@@ -1,9 +1,10 @@
-import ARouter from "./components/common/ARouter";
-import ThemeProvider from "./theme";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "react-query";
-import "./globals.css";
+import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
+import { router } from "./components/common/ARouter";
+import "./globals.css";
+import ThemeProvider from "./theme";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -17,7 +18,7 @@ function App() {
     <ThemeProvider>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
         <QueryClientProvider client={queryClient}>
-          <ARouter />
+          <RouterProvider router={router} />
           <Toaster />
         </QueryClientProvider>
       </GoogleOAuthProvider>

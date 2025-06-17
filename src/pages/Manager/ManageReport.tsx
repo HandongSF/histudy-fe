@@ -76,9 +76,7 @@ export default function ManageReport() {
   const moveToBefore = () => {
     navigate(-1);
   };
-  const clickReport = (index) => {
-    navigate("/reportDetail", { state: index });
-  };
+
   return (
     <Box sx={{ display: "flex", py: "50px", gap: "50px", px: "50px" }}>
       <Box sx={{}}>

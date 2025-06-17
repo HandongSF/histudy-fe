@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { roleState } from "../../store/atom";
+import { paths } from "@/const/paths";
 
 const StyledContainer = styled(Box)({
   position: "relative",
@@ -69,17 +70,17 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 export default function MainImage() {
   const role = useRecoilValue(roleState);
-  const mainButtonReturner = (type) => {
+  const mainButtonReturner = (type: "link" | "text") => {
     if (type === "link") {
       switch (role) {
         case "NONUSER":
-          return "/rank";
+          return paths.ranks.root;
         case "USER":
-          return "/enroll";
+          return paths.application.root;
         case "MEMBER":
-          return "/group";
+          return paths.myGroup.root;
         case "ADMIN":
-          return "/manageClass";
+          return paths.admin.manageClass;
       }
     } else if (type === "text") {
       switch (role) {
@@ -142,7 +143,7 @@ export default function MainImage() {
               delay: 3,
             }}
             variant="outlined"
-            onClick={() => navigate(mainButtonReturner("link"))}
+            onClick={() => navigate(mainButtonReturner("link") as string)}
           >
             {mainButtonReturner("text")}
           </StyledButton>

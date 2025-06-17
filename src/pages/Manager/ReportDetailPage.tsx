@@ -22,6 +22,7 @@ import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import { paths } from "@/const/paths";
 
 export default function ReportDetailPage() {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ export default function ReportDetailPage() {
     if (!report) {
       return;
     }
-    navigate(`/report/modify/${report.id}`, { state: state });
+    navigate(paths.reports.edit(report.id.toString()), { state: state });
   };
   // 시간을 시간과 분으로 포맷팅하는 함수
   const formatStudyTime = (minutes: number) => {
@@ -223,7 +224,7 @@ export default function ReportDetailPage() {
                   className="relative group aspect-w-4 aspect-h-3"
                 >
                   <img
-                    src={image.url || "/placeholder.svg"}
+                    src={image.url || "/img/placeholder.svg"}
                     alt={`인증 사진 ${image.id}`}
                     className="w-full h-full object-cover rounded-md border hover:shadow-md transition-shadow cursor-pointer"
                     onClick={() => {

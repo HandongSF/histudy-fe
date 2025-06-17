@@ -11,6 +11,7 @@ import {
   isRegisterModalState,
   userLoginInfo,
 } from "../store/atom";
+import { paths } from "@/const/paths";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
@@ -22,7 +23,7 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
     decodedToken.hd !== "handong.ac.kr"
   ) {
     alert("한동대학교 이메일로 로그인해주세요.");
-    window.location.href = "/";
+    window.location.href = paths.root;
     return;
   }
 };
@@ -32,7 +33,7 @@ export default function GoogleButton() {
   const setRegisterModalState = useSetRecoilState(isRegisterModalState);
   const setUserLoginInfo = useSetRecoilState(userLoginInfo);
   const setIsLogin = useSetRecoilState(isLoginState);
-  const setAuthority = useSetRecoilState(roleState);
+  const setRole = useSetRecoilState(roleState);
   // const { loginWithCredential } = useAuthContext();
   const onSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
@@ -58,9 +59,9 @@ export default function GoogleButton() {
           localStorage.setItem("accessToken", response.tokens.accessToken);
           localStorage.setItem("refreshToken", response.tokens.refreshToken);
 
-          window.location.href = "/";
+          window.location.href = paths.root;
           setIsLogin(true);
-          setAuthority(response.role);
+          setRole(response.role);
         }
       })
       // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생

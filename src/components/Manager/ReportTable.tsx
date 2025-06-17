@@ -1,3 +1,4 @@
+import { paths } from "@/const/paths";
 import { Box, Chip, Typography } from "@mui/material";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +15,7 @@ export default function ReportTable({
 
   const navigate = useNavigate();
   const clickReport = (index) => {
-    navigate("/reportDetail", { state: index });
+    navigate(paths.reports.oneReport(index));
   };
   const handleDeleteRow = (index) => {};
   // useEffect(() => {

@@ -1,6 +1,4 @@
-import { Box, styled } from "@mui/material";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "../../auth/PrivateRoute";
 import Main from "../../pages/Main/Main";
 import CreateGroup from "../../pages/Manager/CreateGroup";
@@ -9,82 +7,76 @@ import ManageGroup from "../../pages/Manager/ManageGroup";
 import ManageReport from "../../pages/Manager/ManageReport";
 import ManageStudent from "../../pages/Manager/ManageStudent";
 import ReportDetail from "../../pages/Manager/ReportDetail";
-import Snackbars from "../../pages/Manager/Snackbars";
 import StudyGroup from "../../pages/Manager/StudyGroup";
-import Post from "../../pages/Post/Post";
 
+import { paths } from "@/const/paths";
+import NotFoundPage from "@/pages/404";
+import EditReportPage from "@/pages/EditReport/EditReportPage";
 import StudyGroupInfoPage from "@/pages/Group/StudyGroupInfoPage";
 import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
+import PostPage from "@/pages/Post/PostPage";
 import Profile from "@/pages/Profile/Profile";
 import Rank from "@/pages/Rank/Rank";
 import ReportListPage from "@/pages/Report/Report";
-import { isDelete, isLoadingState } from "../../store/atom";
 import ApplicationPage from "../Enroll/ApplicationStatusView";
-import MainImage from "../Main/MainImage";
-import Footer from "./Footer";
-import Header from "./Header";
-import LoadingLottie from "./LoadingLottie";
-import PostPage from "@/pages/Post/PostPage";
-import EditReportPage from "@/pages/EditReport/EditReportPage";
-import NotFoundPage from "@/pages/404";
+import Layout from "./app-layout";
 
-const MinWidthLayout = styled(Box)({
-  minWidth: "450px",
-});
-export default function ARouter() {
-  const isLoading = useRecoilValue(isLoadingState);
-  const [open, setOpen] = useRecoilState(isDelete);
-  return (
-    <MinWidthLayout>
-      <BrowserRouter sx={{ position: "relative" }}>
-        <Header />
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { path: paths.root, element: <Main /> },
+      {
+        path: paths.reports.root,
+        element: <PrivateRoute component={<ReportListPage />} />,
+      },
+      { path: paths.reports.add, element: <PostPage /> },
+      { path: paths.reports.oneReport(":id"), element: <ReportDetailPage /> },
+      { path: paths.reports.edit(":id"), element: <EditReportPage /> },
+      { path: paths.ranks.root, element: <Rank /> },
+      {
+        path: paths.application.root,
+        element: <PrivateRoute component={<ApplicationPage />} />,
+      },
+      {
+        path: paths.myGroup.root,
+        element: <PrivateRoute component={<StudyGroupInfoPage />} />,
+      },
+      {
+        path: paths.profile.root,
+        element: <PrivateRoute component={<Profile />} />,
+      },
 
-        {isLoading && <LoadingLottie />}
-        <Snackbars open={open} setOpen={setOpen} />
-        <Routes>
-          <Route path="/" element={<Main />}></Route>
-          <Route path="/post" element={<PostPage />}></Route>
-          <Route path="/rank" element={<Rank />}></Route>
-          <Route
-            path="/enroll"
-            element={<PrivateRoute component={<ApplicationPage />} />}
-          ></Route>
-          <Route
-            path="/application"
-            element={<PrivateRoute component={<ApplicationPage />} />}
-          ></Route>
-          <Route
-            path="/group"
-            element={<PrivateRoute component={<StudyGroupInfoPage />} />}
-          ></Route>
-          <Route
-            path="/report"
-            element={<PrivateRoute component={<ReportListPage />} />}
-          ></Route>
-          <Route path="/report/:id" element={<ReportDetailPage />}></Route>
-          <Route path="/report/modify/:id" element={<EditReportPage />}></Route>
-          <Route path="/add" element={<Post />}></Route>
+      {
+        path: paths.admin.manageClass,
+        element: <PrivateRoute component={<ManageClass />} />,
+      },
+      {
+        path: paths.admin.manageGroup,
+        element: <PrivateRoute component={<ManageGroup />} />,
+      },
+      {
+        path: paths.admin.manageStudy,
+        element: <PrivateRoute component={<StudyGroup />} />,
+      },
+      {
+        path: paths.admin.createGroup,
+        element: <PrivateRoute component={<CreateGroup />} />,
+      },
+      {
+        path: paths.admin.manageStudent,
+        element: <PrivateRoute component={<ManageStudent />} />,
+      },
+      {
+        path: paths.admin.manageReport,
+        element: <PrivateRoute component={<ManageReport />} />,
+      },
 
-          <Route
-            path="/manageClass"
-            element={<PrivateRoute component={<ManageClass />} />}
-          ></Route>
-          <Route path="/manageGroup" element={<ManageGroup />}></Route>
-          <Route path="/studyGroup" element={<StudyGroup />}></Route>
-          <Route path="/createGroup" element={<CreateGroup />}></Route>
-          <Route path="/manageStudent" element={<ManageStudent />}></Route>
-          <Route path="/manageReport" element={<ManageReport />}></Route>
+      { path: paths.reports.oneReport(":id"), element: <ReportDetail /> },
 
-          <Route path="/reportDetail" element={<ReportDetail />}></Route>
-          <Route path="/test" element={<MainImage />}></Route>
-          <Route
-            path="/profile"
-            element={<PrivateRoute component={<Profile />} />}
-          ></Route>
-          <Route path="*" element={<NotFoundPage />}></Route>
-          {/* TODO: router 아무것도 접근 하지 못하면 404. 히즈스터디 다른 포트로 */}
-        </Routes>
-      </BrowserRouter>
-    </MinWidthLayout>
-  );
-}
+      // Else
+      { path: paths.notFound, element: <NotFoundPage /> },
+    ],
+  },
+]);

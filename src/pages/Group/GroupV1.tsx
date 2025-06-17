@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import Title from "../../components/common/Title";
 import { StyledColumnAlignLayout } from "../../components/common/StyledLayout";
 import { useQueries } from "react-query";
+import { paths } from "@/const/paths";
 
 const StyledScrollTableSize = styled(Box)({
   width: "90%",
@@ -107,7 +108,7 @@ export default function Group({ setReApply }) {
           />
 
           <Link
-            to="/enroll"
+            to={paths.application.root}
             state={{
               courses,
               friends,

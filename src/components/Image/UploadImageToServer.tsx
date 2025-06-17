@@ -5,12 +5,7 @@ import compressedFile from "./compressFile";
 import Heic2Jpg from "./Heic2Jpg";
 import PreviewImage from "./PreviewImage";
 
-function blobToFile(blob, fileName) {
-  return new File([blob], fileName, {
-    type: blob.type,
-    lastModified: new Date().getTime(),
-  });
-}
+
 
 export function ImageUploadToServer({ setValue, getValues }) {
   const [previewUrl, setPreviewUrl] = useState(null);
