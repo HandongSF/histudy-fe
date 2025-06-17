@@ -6,14 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { userLogin } from "../apis/users";
 import {
-  authorityState,
+  roleState,
   isLoginState,
   isRegisterModalState,
   userLoginInfo,
+  Role,
 } from "../store/atom";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
+  rol: Role;
 }
 
 const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
@@ -32,7 +34,7 @@ export default function GoogleButton() {
   const setRegisterModalState = useSetRecoilState(isRegisterModalState);
   const setUserLoginInfo = useSetRecoilState(userLoginInfo);
   const setIsLogin = useSetRecoilState(isLoginState);
-  const setAuthority = useSetRecoilState(authorityState);
+  const setAuthority = useSetRecoilState(roleState);
   // const { loginWithCredential } = useAuthContext();
   const onSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {

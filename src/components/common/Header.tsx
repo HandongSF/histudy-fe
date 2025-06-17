@@ -2,7 +2,7 @@ import { Box, Button } from "@mui/material";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import GoogleButton from "../../auth/GoogleButton";
-import { authorityState, isLoginState } from "../../store/atom";
+import { roleState, isLoginState } from "../../store/atom";
 import DarkModeToggle from "./DarkModeToggle";
 import HeaderButton from "./HeaderButton";
 
@@ -18,7 +18,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
-  const [role, setRole] = useRecoilState(authorityState);
+  const [role, setRole] = useRecoilState(roleState);
   const handleLogOut = () => {
     alert("로그아웃 되었습니다.");
     setIsLogin(false);
