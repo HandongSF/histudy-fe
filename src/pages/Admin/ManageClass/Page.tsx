@@ -1,6 +1,5 @@
 import { searchCourses } from "@/apis/course";
 import Loading from "@/components/Loading";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -21,15 +20,16 @@ export default function ManageClassPage() {
 
   const [debouncedSearchTerm] = useDebounce(searchTerm, 200);
 
-  const { data } = useQuery(["searchCourse", debouncedSearchTerm], () =>
-    searchCourses(debouncedSearchTerm)
+  const { data, refetch } = useQuery(
+    ["searchCourse", debouncedSearchTerm],
+    () => searchCourses(debouncedSearchTerm)
   );
 
   return (
     <div className="container mx-auto p-4 md:p-8  space-y-8">
       <div className="flex justify-between items-center mb-6 ">
         <h1 className="text-2xl font-semibold">등록된 수업 목록</h1>
-        <ClassRegisterButton />
+        <ClassRegisterButton refetch={refetch} />
       </div>
 
       <div className="relative">

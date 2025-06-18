@@ -21,6 +21,7 @@ import ReportListPage from "@/pages/ReportList/Page";
 import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import RootLayout from "./RootLayout";
 import ManageClassPage from "@/pages/Admin/ManageClass/Page";
+import CreateGroupPage from "@/pages/Admin/CreateGroup/Page";
 
 export const router = createBrowserRouter([
   {
@@ -75,7 +76,7 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.admin.createGroup,
-        element: <PrivateRoute component={<CreateGroup />} />,
+        element: <PrivateRoute component={<CreateGroupPage />} />,
       },
       {
         path: paths.admin.manageStudent,

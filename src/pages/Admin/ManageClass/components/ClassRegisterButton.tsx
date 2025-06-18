@@ -2,7 +2,11 @@ import { importCourses } from "@/apis/course";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { toast } from "sonner";
-export default function ClassRegisterButton() {
+export default function ClassRegisterButton({
+  refetch,
+}: {
+  refetch: () => void;
+}) {
   const fileRef = useRef<HTMLInputElement>(null);
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -15,10 +19,9 @@ export default function ClassRegisterButton() {
 
     formData.append("file", event.target.files[0]);
 
-    importCourses(formData).then((res) => {
-      toast.success("성공적으로 등록되었습니다.");
-      window.location.reload();
-    });
+    await importCourses(formData);
+    refetch();
+    toast.success("성공적으로 등록되었습니다.");
   };
 
   const handleClick = () => {

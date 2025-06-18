@@ -62,7 +62,7 @@ export const readUngroup = async (): Promise<UnAssignedUser[]> => {
   return response.data;
 };
 
-export const deleteUserForm = async (sid: number) => {
+export const deleteUserForm = async (sid: string) => {
   const response = await axiosInstance.delete(`/api/admin/form?sid=${sid}`);
   return response;
 };
