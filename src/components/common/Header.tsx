@@ -1,7 +1,7 @@
 import { Box, Button } from "@mui/material";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import GoogleButton from "../../auth/GoogleButton";
+import GoogleButton from "../auth/GoogleButton";
 import { roleState, isLoginState } from "../../store/atom";
 import DarkModeToggle from "./DarkModeToggle";
 import HeaderButton from "./HeaderButton";

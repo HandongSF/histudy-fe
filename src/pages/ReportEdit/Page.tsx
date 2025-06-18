@@ -30,7 +30,7 @@ import { postReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
 import Heic2Jpg from "@/components/Image/Heic2Jpg";
 import compressedFile from "@/components/Image/compressFile";
-import { StudyCertificationDialog } from "@/components/Post/StudyCertificationDialog";
+import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
 import {
   Form,
   FormControl,

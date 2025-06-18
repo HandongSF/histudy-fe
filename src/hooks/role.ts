@@ -1,6 +1,6 @@
 import jwtDecode from "jwt-decode";
 import { useSetRecoilState } from "recoil";
-import { JwtHIStudyPayload } from "src/auth/GoogleButton";
+import { JwtHIStudyPayload } from "@/components/auth/GoogleButton";
 import { roleState } from "src/store/atom";
 
 export function useRoleInit() {

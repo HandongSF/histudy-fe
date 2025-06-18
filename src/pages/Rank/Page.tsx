@@ -1,6 +1,6 @@
 import { getAllTeamsForRank } from "@/apis/rank";
-import GroupGridView from "@/components/Rank/GroupGridView";
-import { GroupListView } from "@/components/Rank/GroupListView";
+import GroupGridView from "@/pages/Rank/components/GroupGridView";
+import { GroupListView } from "@/pages/Rank/components/GroupListView";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Box, Modal } from "@mui/material";
 import { LayoutGrid, List } from "lucide-react";

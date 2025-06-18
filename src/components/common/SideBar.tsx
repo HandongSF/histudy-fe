@@ -1,4 +1,4 @@
-import GoogleButton from "@/auth/GoogleButton";
+import GoogleButton from "@/components/auth/GoogleButton";
 import {
   Select,
   SelectContent,

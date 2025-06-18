@@ -4,7 +4,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
-import { router } from "./components/common/ARouter";
+import { router } from "./components/ARouter";
 import "./globals.css";
 import ThemeProvider from "./theme";
 

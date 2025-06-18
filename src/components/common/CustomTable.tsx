@@ -1,6 +1,6 @@
 import { Box, Button, Typography, styled } from "@mui/material";
 import { Link } from "react-router-dom";
-import AddDeleteButton from "./AddDeleteButton";
+import AddDeleteButton from "../AddDeleteButton";
 import UpDownButton from "./UpDownButton";
 import { paths } from "@/const/paths";
 

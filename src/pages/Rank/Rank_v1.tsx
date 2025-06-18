@@ -11,11 +11,11 @@ import NoDataLottie from "../../components/common/NoDataLottie";
 import { StyledColumnAlignLayout } from "../../components/common/StyledLayout";
 import Title from "../../components/common/Title";
 
-import FullImage from "../../components/Rank/FullImage";
+import FullImage from "./components/FullImage";
 
-import GroupGridView from "@/components/Rank/GroupGridView";
-import RankListView from "../../components/Rank/RankListView";
-import ViewToggleButton from "../../components/Rank/ViewToggleButton";
+import GroupGridView from "@/pages/Rank/components/GroupGridView";
+import RankListView from "./components/RankListView";
+import ViewToggleButton from "./components/ViewToggleButton";
 
 const StyledScrollBox = styled(Box)({
   maxWidth: "1280px",

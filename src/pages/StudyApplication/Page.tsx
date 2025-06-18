@@ -1,4 +1,4 @@
-import { StudyApplicationForm } from "@/components/Enroll/StudyApplicationForm";
+import { StudyApplicationForm } from "./components/StudyApplicationForm";
 
 // 예시: 현재 학기 정보 (실제로는 동적으로 가져오거나 설정 파일 등에서 관리)
 const CURRENT_SEMESTER_INFO = "2025년 2학기";

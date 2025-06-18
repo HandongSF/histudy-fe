@@ -1,10 +1,11 @@
 import { getAllTeamsForRank } from "@/apis/rank";
-import StatsDashboard from "@/components/Main/StatsDashBoard";
-import GroupGridView from "@/components/Rank/GroupGridView";
+
+import GroupGridView from "@/pages/Rank/components/GroupGridView";
 import { Box, Modal } from "@mui/material";
 import { Trophy } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import StatsDashboard from "./components/StatsDashBoard";
 
 const style = {
   position: "absolute",

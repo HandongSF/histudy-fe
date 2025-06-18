@@ -13,10 +13,10 @@ import { modifyReport, postReport } from "../../apis/report";
 import { StyledColumnAlignLayout } from "../../components/common/StyledLayout";
 import Title from "../../components/common/Title";
 import { ImageUploadToServer } from "../../components/Image/UploadImageToServer";
-import { CodeModal } from "../../components/Post/CodeModal";
-import PostCourses from "../../components/Post/PostCourses";
-import PostMember from "../../components/Post/PostMember";
-import PostStudyTime from "../../components/Post/PostStudyTime";
+import { CodeModal } from "./components/CodeModal";
+import PostCourses from "./components/PostCourses";
+import PostMember from "./components/PostMember";
+import PostStudyTime from "./components/PostStudyTime";
 import { paths } from "@/const/paths";
 import { toast } from "sonner";
 
