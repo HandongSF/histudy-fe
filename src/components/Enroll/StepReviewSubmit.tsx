@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Course } from "@/interface/course";
-import { User } from "@/interface/user";
+import { SimpleUser, User } from "@/interface/user";
 import {
   closestCenter,
   DndContext,
@@ -94,7 +94,7 @@ function SortableCourseItem({ course, index }: SortableCourseItemProps) {
 
 interface StepReviewSubmitProps {
   applicationData: {
-    friends: User[];
+    friends: SimpleUser[];
     courses: Course[];
   };
   onUpdateCoursesOrder: (courses: Course[]) => void;
@@ -158,9 +158,6 @@ export function StepReviewSubmit({
                     <p className="font-semibold text-sm">{friend.name}</p>
                     <p className="text-xs text-muted-foreground flex items-center">
                       <Fingerprint className="h-3 w-3 mr-1" /> {friend.sid}
-                    </p>
-                    <p className="text-xs text-muted-foreground flex items-center">
-                      <Mail className="h-3 w-3 mr-1" /> {friend.email}
                     </p>
                   </div>
                 </li>

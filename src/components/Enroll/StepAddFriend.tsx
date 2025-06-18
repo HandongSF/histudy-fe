@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-
+import { searchUser } from "@/apis/users";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,61 +10,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { User } from "@/interface/user";
-import {
-  Fingerprint,
-  Mail,
-  Search,
-  UserPlus,
-  Users,
-  XCircle,
-} from "lucide-react";
+import { SimpleUser, User } from "@/interface/user";
+import { Fingerprint, Search, UserPlus, Users, XCircle } from "lucide-react";
+import { useState } from "react";
+import { useQuery } from "react-query";
 import { toast } from "sonner";
-
-const MOCK_FRIENDS_DB: User[] = [
-  {
-    id: 1,
-    name: "김민준",
-    sid: "20201234",
-    email: "minjun.kim@example.com",
-  },
-  {
-    id: 2,
-    name: "이서아",
-    sid: "20212345",
-    email: "seoa.lee@example.com",
-  },
-  {
-    id: 3,
-    name: "박도윤",
-    sid: "20193456",
-    email: "doyoon.park@example.com",
-  },
-  {
-    id: 4,
-    name: "최지우",
-    sid: "20224567",
-    email: "jiwoo.choi@example.com",
-  },
-  {
-    id: 5,
-    name: "정하은",
-    sid: "20205678",
-    email: "haeun.jung@example.com",
-  },
-  {
-    id: 6,
-    name: "윤태양",
-    sid: "20216789",
-    email: "taeyang.yun@example.com ",
-  },
-];
+import { useDebounce } from "use-debounce";
 
 const MAX_FRIENDS = 3;
 
 interface StepAddFriendsProps {
-  selectedFriends: User[];
-  onUpdateFriends: (friends: User[]) => void;
+  selectedFriends: SimpleUser[];
+  onUpdateFriends: (friends: SimpleUser[]) => void;
 }
 
 export function StepAddFriends({
@@ -73,28 +29,19 @@ export function StepAddFriends({
   onUpdateFriends,
 }: StepAddFriendsProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<User[]>([]);
 
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setSearchResults([]);
-      return;
-    }
-    const results = MOCK_FRIENDS_DB.filter(
-      (friend) =>
-        (friend.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          friend.sid.includes(searchTerm) ||
-          friend.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        !selectedFriends.find((sf) => sf.id === friend.id)
-    );
-    setSearchResults(results);
-  }, [searchTerm, selectedFriends]);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+
+  const { data: searchResults } = useQuery(
+    ["searchUser", debouncedSearchTerm],
+    () => searchUser(debouncedSearchTerm)
+  );
 
   const handleAddFriend = (friend: User) => {
+    const { email, ...simpleFriendInfo } = friend;
     if (selectedFriends.length < MAX_FRIENDS) {
-      onUpdateFriends([...selectedFriends, friend]);
+      onUpdateFriends([...selectedFriends, simpleFriendInfo]);
       setSearchTerm("");
-      setSearchResults([]);
     } else {
       toast.error(`최대 ${MAX_FRIENDS}명의 친구만 추가할 수 있습니다.`);
     }
@@ -103,6 +50,11 @@ export function StepAddFriends({
   const handleRemoveFriend = (friendId: number) => {
     onUpdateFriends(selectedFriends.filter((friend) => friend.id !== friendId));
   };
+
+  const filteredSearchResults = searchResults?.users.filter(
+    (friend) =>
+      !selectedFriends.some((selectedFriend) => selectedFriend.id === friend.id)
+  );
 
   return (
     <div className="space-y-6">
@@ -127,11 +79,11 @@ export function StepAddFriends({
       </div>
 
       <ScrollArea className="h-[400px] border rounded-md p-1 bg-background relative">
-        {searchTerm && searchResults.length > 0 && (
+        {filteredSearchResults && filteredSearchResults.length > 0 && (
           <ul className="space-y-2 p-2">
-            {searchResults.map((friend) => (
+            {filteredSearchResults.map((friend, idx) => (
               <li
-                key={friend.id}
+                key={friend.sid + "_" + idx}
                 className="flex items-center justify-between p-2 hover:bg-muted rounded-md transition-colors"
                 onClick={() => handleAddFriend(friend)}
               >
@@ -144,7 +96,7 @@ export function StepAddFriends({
                   <div>
                     <p className="font-medium text-sm">{friend.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {friend.sid} / {friend.email}
+                      {friend.sid}
                     </p>
                   </div>
                 </div>
@@ -159,20 +111,15 @@ export function StepAddFriends({
             ))}
           </ul>
         )}
-        {searchTerm && searchResults.length === 0 && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <p className="text-sm text-muted-foreground text-center">
-              검색 결과가 없습니다.
-            </p>
-          </div>
-        )}
-        {!searchTerm && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <p className="text-sm text-muted-foreground text-center">
-              친구를 검색해주세요.
-            </p>
-          </div>
-        )}
+        {searchTerm &&
+          filteredSearchResults &&
+          filteredSearchResults.length === 0 && (
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <p className="text-sm text-muted-foreground text-center">
+                검색 결과가 없습니다.
+              </p>
+            </div>
+          )}
       </ScrollArea>
 
       {selectedFriends.length > 0 && (
@@ -201,9 +148,6 @@ export function StepAddFriends({
                       <p className="font-semibold text-sm">{friend.name}</p>
                       <p className="text-xs text-muted-foreground flex items-center">
                         <Fingerprint className="h-3 w-3 mr-1" /> {friend.sid}
-                      </p>
-                      <p className="text-xs text-muted-foreground flex items-center">
-                        <Mail className="h-3 w-3 mr-1" /> {friend.email}
                       </p>
                     </div>
                   </div>

@@ -2,7 +2,7 @@ import { Box, InputAdornment, useTheme } from "@mui/material";
 import CustomTable from "../common/CustomTable";
 import SearchIcon from "@mui/icons-material/Search";
 import { useCallback, useEffect, useState } from "react";
-import { autoCourses } from "../../apis/course";
+import { searchCourses } from "../../apis/course";
 import { TextFieldWrapper } from "./TextFieldWrapper";
 import { debounce } from "lodash";
 
@@ -52,7 +52,7 @@ export default function Courses({ sideCourses, setSideCourses }) {
   }, [allCourses, courseInput, updateCourses]);
 
   useEffect(() => {
-    autoCourses().then((res) => {
+    searchCourses().then((res) => {
       setAllCourses(res.courses);
     });
   }, []);

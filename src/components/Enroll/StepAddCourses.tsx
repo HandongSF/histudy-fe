@@ -21,58 +21,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Course } from "@/interface/course";
-
-const MOCK_COURSES_DB: Course[] = [
-  {
-    semester: 1,
-    year: 2024,
-
-    name: "웹 프로그래밍 기초",
-    code: "CSE1001",
-    prof: "이현우 교수",
-    id: 1,
-  },
-  {
-    semester: 1,
-    year: 2024,
-    name: "자료구조와 알고리즘",
-    code: "CSE2003",
-    prof: "박지영 교수",
-    id: 2,
-  },
-  {
-    semester: 1,
-    year: 2024,
-    name: "데이터베이스 시스템",
-    code: "SWE2001",
-    prof: "최민석 교수",
-    id: 3,
-  },
-  {
-    semester: 1,
-    year: 2024,
-    name: "운영체제",
-    code: "CSE3005",
-    prof: "김수현 교수",
-    id: 4,
-  },
-  {
-    semester: 1,
-    year: 2024,
-    name: "인공지능 개론",
-    code: "AI1001",
-    prof: "정예린 교수",
-    id: 5,
-  },
-  {
-    semester: 1,
-    year: 2024,
-    name: "선형대수학",
-    code: "MAT2002",
-    prof: "홍길동 교수",
-    id: 6,
-  },
-];
+import { useDebounce } from "use-debounce";
+import { useQuery } from "react-query";
+import { searchCourses } from "@/apis/course";
 
 const MAX_COURSES = 3;
 
@@ -86,28 +37,18 @@ export function StepAddCourses({
   onUpdateCourses,
 }: StepAddCoursesProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<Course[]>([]);
 
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setSearchResults([]);
-      return;
-    }
-    const results = MOCK_COURSES_DB.filter(
-      (course) =>
-        (course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.prof.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        !selectedCourses.find((sc) => sc.id === course.id)
-    );
-    setSearchResults(results);
-  }, [searchTerm, selectedCourses]);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+
+  const { data: searchResults } = useQuery(
+    ["searchCourse", debouncedSearchTerm],
+    () => searchCourses(debouncedSearchTerm)
+  );
 
   const handleAddCourse = (course: Course) => {
     if (selectedCourses.length < MAX_COURSES) {
       onUpdateCourses([...selectedCourses, course]);
       setSearchTerm("");
-      setSearchResults([]);
     } else {
       toast.error(`최대 ${MAX_COURSES}개의 수업만 추가할 수 있습니다.`);
     }
@@ -116,6 +57,10 @@ export function StepAddCourses({
   const handleRemoveCourse = (courseId: number) => {
     onUpdateCourses(selectedCourses.filter((course) => course.id !== courseId));
   };
+
+  const filteredSearchResults = searchResults?.courses.filter(
+    (course) => !selectedCourses.some((sc) => sc.id === course.id)
+  );
 
   return (
     <div className="space-y-6">
@@ -140,9 +85,9 @@ export function StepAddCourses({
       </div>
 
       <ScrollArea className="h-[400px] border rounded-md p-1 bg-background">
-        {searchTerm && searchResults.length > 0 && (
+        {filteredSearchResults && filteredSearchResults.length > 0 && (
           <ul className="space-y-2 p-2">
-            {searchResults.map((course) => (
+            {filteredSearchResults.map((course) => (
               <li
                 key={course.id}
                 className="flex items-center justify-between p-2 hover:bg-muted rounded-md transition-colors"
@@ -168,20 +113,15 @@ export function StepAddCourses({
             ))}
           </ul>
         )}
-        {searchTerm && searchResults.length === 0 && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <p className="text-sm text-muted-foreground text-center">
-              검색 결과가 없습니다.
-            </p>
-          </div>
-        )}
-        {!searchTerm && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <p className="text-sm text-muted-foreground text-center">
-              수업을 검색해주세요.
-            </p>
-          </div>
-        )}
+        {searchTerm &&
+          filteredSearchResults &&
+          filteredSearchResults.length === 0 && (
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <p className="text-sm text-muted-foreground text-center">
+                검색 결과가 없습니다.
+              </p>
+            </div>
+          )}
       </ScrollArea>
 
       {selectedCourses.length > 0 && (

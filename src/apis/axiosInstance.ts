@@ -23,36 +23,4 @@ const axiosInstance = axios.create({
 // 응답 인터셉터 적용
 axiosInstance.interceptors.request.use(requestHandler);
 
-// 응답 인터셉터 설정
-// axiosInstance.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-
-//   async (error) => {
-//     const err = error;
-//     // TODO: 점검 필요
-//     if (err.response?.status === 401) {
-//       console.log(err.response);
-//       // 토큰 만료 or 토큰 없음
-//       const refreshToken = localStorage.getItem("refreshToken");
-//       const { logout } = useAuth();
-//       if (!refreshToken) {
-//         logout();
-//         return;
-//       }
-//       await tokenRefresh(refreshToken)
-//         .then((res) => {
-//           localStorage.setItem("accessToken", res.token);
-//           window.location.reload();
-//         })
-//         .catch(() => {
-//           logout();
-//           return;
-//         });
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
 export default axiosInstance;

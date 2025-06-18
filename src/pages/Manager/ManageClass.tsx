@@ -17,7 +17,7 @@ import YearSelectButton from "../../components/Manager/YearSelectButton";
 import SemesterSelectButton from "../../components/Manager/SemesterSelectButton";
 import RegisterClassButton from "../../components/Manager/RegisterClassButton";
 import ManagerTable from "../../components/Manager/ManagerTable";
-import { autoCourses } from "../../apis/course";
+import { searchCourses } from "../../apis/course";
 import { useSetRecoilState } from "recoil";
 import { isLoadingState } from "../../store/atom";
 import { motion } from "framer-motion";
@@ -30,7 +30,7 @@ import LoadingLayout from "../../components/Manager/Loading/LoadingLayout";
 export default function ManageClass() {
   const [classData, setClassData] = useState();
 
-  const { isLoading } = useQuery(["courses"], autoCourses, {
+  const { isLoading } = useQuery(["courses"], searchCourses, {
     casheTime: 5 * 60 * 1000,
     onSuccess: (data) => {
       setClassData(data.courses);

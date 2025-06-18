@@ -1,7 +1,7 @@
 import { Box, InputAdornment, useTheme } from "@mui/material";
 import CustomTable from "../common/CustomTable";
 import { useCallback, useEffect, useState } from "react";
-import { autoUser } from "../../apis/users";
+import { searchUser } from "../../apis/users";
 import SearchIcon from "@mui/icons-material/Search";
 import { TextFieldWrapper } from "./TextFieldWrapper";
 import { debounce } from "lodash";
@@ -23,7 +23,7 @@ export default function Friends({ sideFriends, setSideFriends }) {
 
   const debouncedSearch = useCallback(
     debounce((input) => {
-      autoUser(input).then((res) => {
+      searchUser(input).then((res) => {
         setFriends(friendConverter(res.users));
       });
     }, 500),

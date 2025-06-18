@@ -64,6 +64,7 @@
     "styled-components": "^5.3.11",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.10",
+    "use-debounce": "^10.0.5",
     "vite-tsconfig-paths": "^5.1.4",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5",

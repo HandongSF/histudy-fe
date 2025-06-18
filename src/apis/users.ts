@@ -8,7 +8,7 @@ type SignUpRequest = Pick<User, "email" | "name" | "sid"> & {
 };
 
 interface SearchFriendResponse {
-  users: Pick<User, "email" | "name" | "sid">[];
+  users: User[];
 }
 
 export const userLogin = async (sub: string): Promise<AuthResponse> => {
@@ -28,10 +28,10 @@ export const userSignup = async (
   return response.data;
 };
 
-export const autoUser = async (
+export const searchUser = async (
   search: string
 ): Promise<SearchFriendResponse> => {
-  const response = await axiosInstance.get(`/api/users?search=${search}`);
+  const response = await axiosInstance.get(`/api/v2/users?search=${search}`);
   return response.data;
 };
 

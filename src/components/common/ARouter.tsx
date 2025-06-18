@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "../../auth/PrivateRoute";
-import Main from "../../pages/Main/Main";
 import CreateGroup from "../../pages/Manager/CreateGroup";
 import ManageClass from "../../pages/Manager/ManageClass";
 import ManageGroup from "../../pages/Manager/ManageGroup";
@@ -12,17 +11,16 @@ import StudyGroup from "../../pages/Manager/StudyGroup";
 import { paths } from "@/const/paths";
 import NotFoundPage from "@/pages/404";
 import EditReportPage from "@/pages/EditReport/EditReportPage";
+import Enroll from "@/pages/Enroll/Enroll";
+import StudyApplicationPage from "@/pages/Enroll/StudyApplicationPage";
 import StudyGroupInfoPage from "@/pages/Group/StudyGroupInfoPage";
+import HomePage from "@/pages/Main/HomePage";
 import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
 import PostPage from "@/pages/Post/PostPage";
 import Profile from "@/pages/Profile/Profile";
 import Rank from "@/pages/Rank/Rank";
 import ReportListPage from "@/pages/Report/Report";
-import ApplicationOverviewPage from "../Enroll/ApplicationStatusView";
 import Layout from "./app-layout";
-import Enroll from "@/pages/Enroll/Enroll";
-import HomePage from "@/pages/Main/HomePage";
-import StudyApplicationPage from "@/pages/Enroll/StudyApplicationPage";
 
 export const router = createBrowserRouter([
   {

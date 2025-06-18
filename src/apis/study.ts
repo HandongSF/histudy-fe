@@ -4,7 +4,7 @@ import axiosInstance from "./axiosInstance";
 
 interface StudyEnrollRequest {
   courseIds: number[];
-  friendIds: string;
+  friendIds: number[];
 }
 
 export interface StudyEnrollResponse {
@@ -15,11 +15,11 @@ export interface StudyEnrollResponse {
 export const studyEnroll = async (
   data: StudyEnrollRequest
 ): Promise<StudyEnrollResponse> => {
-  const response = await axiosInstance.post(`/api/forms`, data);
+  const response = await axiosInstance.post(`/api/v2/forms`, data);
   return response.data;
 };
 
 export const getMyGroup = async (): Promise<StudyEnrollResponse> => {
-  const response = await axiosInstance.get(`/api/users/me/forms`);
+  const response = await axiosInstance.get(`/api/v2/users/me/forms`);
   return response.data;
 };

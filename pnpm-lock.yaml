@@ -185,6 +185,9 @@ dependencies:
   tailwindcss:
     specifier: ^4.1.10
     version: 4.1.10
+  use-debounce:
+    specifier: ^10.0.5
+    version: 10.0.5(react@18.2.0)
   vite-tsconfig-paths:
     specifier: ^5.1.4
     version: 5.1.4(typescript@5.8.3)(vite@5.1.4)
@@ -13531,6 +13534,15 @@ packages:
       '@types/react': 19.1.8
       react: 18.2.0
       tslib: 2.6.2
+    dev: false
+
+  /use-debounce@10.0.5(react@18.2.0):
+    resolution: {integrity: sha512-Q76E3lnIV+4YT9AHcrHEHYmAd9LKwUAbPXDm7FlqVGDHiSOhX3RDjT8dm0AxbJup6WgOb1YEcKyCr11kBJR5KQ==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /use-sidecar@1.1.3(@types/react@19.1.8)(react@18.2.0):

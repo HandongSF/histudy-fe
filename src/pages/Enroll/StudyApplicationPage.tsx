@@ -1,24 +1,9 @@
 import { StudyApplicationForm } from "@/components/Enroll/StudyApplicationForm";
-import { getMyGroup } from "@/apis/study";
-import { useQuery } from "react-query";
 
 // 예시: 현재 학기 정보 (실제로는 동적으로 가져오거나 설정 파일 등에서 관리)
 const CURRENT_SEMESTER_INFO = "2025년 2학기";
 
 export default function StudyApplicationPage() {
-  const { data: myStudyApplication } = useQuery("getMyStudyApplication", () =>
-    getMyGroup()
-  );
-
-  if (!myStudyApplication) {
-    return <div>로딩중...</div>;
-  }
-
-  const courses = myStudyApplication.courses;
-  const friends = myStudyApplication.friends;
-
-  const alreadyApplied = courses.length > 0 || friends.length > 0;
-
   return (
     <div className="min-h-screen ">
       <div className="container mx-auto py-8 px-4">
