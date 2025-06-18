@@ -2,6 +2,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import * as React from "react";
 import { importCourses } from "../../apis/course";
+import { toast } from "sonner";
 
 export default function RegisterClassButton() {
   const [selectedFile, setSelectedFile] = React.useState();
@@ -18,7 +19,7 @@ export default function RegisterClassButton() {
     formData.append("file", event.target.files[0]);
 
     importCourses(formData).then((res) => {
-      alert("성공적으로 등록되었습니다.");
+      toast.success("성공적으로 등록되었습니다.");
       window.location.reload();
     });
   };

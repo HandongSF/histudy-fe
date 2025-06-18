@@ -7,8 +7,6 @@ import { LayoutGrid, List } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "react-query";
 
-import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
-
 const style = {
   position: "absolute",
   top: "50%",
@@ -21,9 +19,7 @@ const style = {
   p: 4,
 };
 
-export default function Rank() {
-  useAxiosInterceptor();
-  //   const [teams, setTeams] = useState([]);
+export default function RankPage() {
   const [view, setView] = useState("list");
 
   const { data } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {

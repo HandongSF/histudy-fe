@@ -9,27 +9,17 @@ interface PrivateRouteProps {
 }
 
 const validateByAuth = (access: Role, pathname: string) => {
-  switch (pathname) {
-    case paths.application.add:
-      if (access === "USER") return true;
-      return false;
-    case paths.myGroup.root:
-      if (access === "MEMBER") return true;
-      return false;
-    case paths.reports.root:
-      if (access === "MEMBER") return true;
-      return false;
-    case paths.application.root:
-      if (access === "USER") return true;
-      return false;
-    case paths.admin.manageClass:
-      if (access === "ADMIN") return true;
-      return false;
-    case paths.profile.root:
-      if (access !== "NONUSER") return true;
-      return false;
+  switch (true) {
+    case pathname.includes(paths.reports.root):
+      return access === "MEMBER" || access === "ADMIN";
+    case pathname.includes(paths.application.root):
+      return access === "USER";
+    case pathname === paths.myGroup.root:
+      return access === "MEMBER";
+    case pathname === paths.profile.root:
+      return access === "MEMBER" || access === "ADMIN" || access === "USER";
     default:
-      return null;
+      return access === "ADMIN";
   }
 };
 

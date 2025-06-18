@@ -23,7 +23,7 @@ import {
 import { paths } from "@/const/paths";
 import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
-import { isLoginState, Role, roleState } from "@/store/atom";
+import { Role, roleState } from "@/store/atom";
 import {
   FileText,
   LifeBuoy,
@@ -33,9 +33,8 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { Link, useLocation } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 interface NavItem {
   name: string;
@@ -129,23 +128,15 @@ function RoleSwitcher() {
 
 export function CommonSidebar() {
   const pathname = useLocation().pathname;
-  const [role, setRole] = useRecoilState(roleState);
+  const role = useRecoilValue(roleState);
 
   const isActive = (href: string) => {
-    // 정확히 일치하거나, 해당 경로로 시작하고 다음 문자가 '/' 또는 경로 끝인 경우 active 처리
-    // 예: href="/dashboard", pathname="/dashboard" -> true
-    // 예: href="/dashboard", pathname="/dashboard/settings" -> true
-    // 예: href="/dashboard/settings", pathname="/dashboard" -> false
     if (href === paths.root) {
-      // 루트 대시보드 경로는 정확히 일치할 때만 active
       return pathname === href;
     }
     return pathname.startsWith(href);
   };
 
-  const navigate = useNavigate();
-
-  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
   const { logout } = useAuth();
 
   // 역할에 따라 네비게이션 그룹 필터링
@@ -176,7 +167,7 @@ export function CommonSidebar() {
                 "transition-opacity duration-200 ease-in-out"
               )}
             >
-              Histudy
+              HIStudy
             </span>
           </Link>
 

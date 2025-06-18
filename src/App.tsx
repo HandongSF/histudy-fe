@@ -11,7 +11,7 @@ import ThemeProvider from "./theme";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // window focus 만으로도 refetch를 발생시키는 조건 해제
+      refetchOnWindowFocus: false,
     },
   },
 });

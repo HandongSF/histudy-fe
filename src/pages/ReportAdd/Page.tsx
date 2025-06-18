@@ -45,6 +45,7 @@ import { useCallback, useRef } from "react";
 import { useQueries } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/const/paths";
+import { toast } from "sonner";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -66,7 +67,7 @@ const reportFormSchema = z.object({
 
 type ReportFormState = z.infer<typeof reportFormSchema>;
 
-export default function PostPage() {
+export default function ReportAddPage() {
   const navigate = useNavigate();
 
   const form = useForm<ReportFormState>({
@@ -114,7 +115,7 @@ export default function PostPage() {
     //  modifyReport(state.id, newReport) :
     postReport(newReport);
 
-    alert("보고서 제출이 완료되었습니다.");
+    toast.success("보고서 제출이 완료되었습니다.");
     navigate(paths.reports.root);
   };
 
@@ -150,7 +151,7 @@ export default function PostPage() {
   const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (form.getValues("previewImages").length >= 3) {
-      alert("최대 3개의 이미지만 업로드 가능합니다.");
+      toast.warning("최대 3개의 이미지만 업로드 가능합니다.");
       return;
     }
     const file = e.target.files;

@@ -2,6 +2,7 @@ import { Cancel, Edit } from "@mui/icons-material";
 import { Box, Chip, IconButton, Typography, createTheme } from "@mui/material";
 import { useState } from "react";
 import GroupSelector from "./GroupSelector";
+import { toast } from "sonner";
 
 const theme = createTheme({
   typography: {
@@ -22,7 +23,7 @@ export default function GroupTable({
   const [studentEdit, setStudentEdit] = useState([false]);
 
   const handleSave = (index) => {
-    alert("저장되었습니다!");
+    toast.success("저장되었습니다!");
   };
   const handleDeleteRow = (index) => {};
 

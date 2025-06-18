@@ -3,6 +3,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 const GroupRanking = [
   {
     rank: 1,
@@ -209,9 +210,9 @@ export default function CustomTable({
                     key={index}
                     onClick={() => {
                       if (type === "second" && sidebarValues.length >= 3)
-                        alert("최대 3명까지만 선택 가능합니다.");
+                        toast.warning("최대 3명까지만 선택 가능합니다.");
                       else if (type === "first" && sidebarValues.length >= 4)
-                        alert("최대 4개까지만 선택 가능합니다.");
+                        toast.warning("최대 4개까지만 선택 가능합니다.");
                       else addData((prev) => [...prev, row]);
                     }}
                     sx={{

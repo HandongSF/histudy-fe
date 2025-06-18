@@ -12,11 +12,12 @@ import {
 } from "@/components/ui/table";
 import { Book, Users } from "lucide-react";
 import { useQuery } from "react-query";
-import { Button } from "../ui/button";
+
 import { Link } from "react-router-dom";
 import { paths } from "@/const/paths";
-export default function ApplicationOverviewPage() {
-  const { isLoading, data } = useQuery(["checkMyApplication"], getMyGroup, {
+import { Button } from "@/components/ui/button";
+export default function OverviewApplicationPage() {
+  const { data } = useQuery(["checkMyApplication"], getMyGroup, {
     cacheTime: 1 * 30 * 1000,
     refetchOnWindowFocus: false,
   });
@@ -112,6 +113,7 @@ export default function ApplicationOverviewPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-[100px]">우선 순위</TableHead>
                     <TableHead className="w-[100px]">강의 코드</TableHead>
                     <TableHead className="w-[120px]">교수님</TableHead>
                     <TableHead>과목명</TableHead>
@@ -120,6 +122,7 @@ export default function ApplicationOverviewPage() {
                 <TableBody>
                   {data.courses.map((course, index) => (
                     <TableRow key={index}>
+                      <TableCell className="font-mono">{index + 1}</TableCell>
                       <TableCell className="font-mono">{course.code}</TableCell>
                       <TableCell>{course.prof}</TableCell>
                       <TableCell>{course.name}</TableCell>

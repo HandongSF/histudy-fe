@@ -1,27 +1,27 @@
-import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from './CustomIcons';
+import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from "./CustomIcons";
 
 // ----------------------------------------------------------------------
 
-const COLORS = ['info', 'success', 'warning', 'error'];
+const COLORS = ["info", "success", "warning", "error"];
 
 export default function Alert(theme) {
-  const isLight = theme.palette.mode === 'light';
+  const isLight = theme.palette.mode === "light";
 
   const rootStyle = (ownerState) => {
-    const standardVariant = ownerState.variant === 'standard';
+    const standardVariant = ownerState.variant === "standard";
 
-    const filledVariant = ownerState.variant === 'filled';
+    const filledVariant = ownerState.variant === "filled";
 
-    const outlinedVariant = ownerState.variant === 'outlined';
+    const outlinedVariant = ownerState.variant === "outlined";
 
     const colorStyle = COLORS.map((color) => ({
       ...(ownerState.severity === color && {
         // STANDARD
         ...(standardVariant && {
-          color: theme.palette[color][isLight ? 'darker' : 'lighter'],
-          backgroundColor: theme.palette[color][isLight ? 'lighter' : 'darker'],
-          '& .MuiAlert-icon': {
-            color: theme.palette[color][isLight ? 'main' : 'light'],
+          color: theme.palette[color][isLight ? "darker" : "lighter"],
+          backgroundColor: theme.palette[color][isLight ? "lighter" : "darker"],
+          "& .MuiAlert-icon": {
+            color: theme.palette[color][isLight ? "main" : "light"],
           },
         }),
         // FILLED
@@ -31,9 +31,9 @@ export default function Alert(theme) {
         }),
         // OUTLINED
         ...(outlinedVariant && {
-          color: theme.palette[color][isLight ? 'dark' : 'light'],
+          color: theme.palette[color][isLight ? "dark" : "light"],
           border: `solid 1px ${theme.palette[color].main}`,
-          '& .MuiAlert-icon': {
+          "& .MuiAlert-icon": {
             color: theme.palette[color].main,
           },
         }),

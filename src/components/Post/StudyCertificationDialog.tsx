@@ -33,15 +33,11 @@ export function StudyCertificationDialog() {
         <DialogTrigger asChild>
           <Button variant="outline">인증 코드 생성</Button>
         </DialogTrigger>
-        <DialogContent className="">
-          <div className="flex flex-col items-center justify-center w-full h-full p-6 pt-10 space-y-6">
-            <img
-              src="/img/study-certification.png"
-              alt="study-certification"
-              className="w-full h-full object-cover"
-            />
+        <DialogContent className="w-full md:min-w-[700px]">
+          <div className="flex flex-col items-center justify-center w-full h-full py-10 space-y-8">
+            <div className="text-blue-400 text-7xl md:text-8xl">HIStudy</div>
 
-            <div className="text-2xl font-bold">{nowTime}</div>
+            <div className="text-3xl md:text-5xl font-bold">{nowTime}</div>
           </div>
         </DialogContent>
       </form>

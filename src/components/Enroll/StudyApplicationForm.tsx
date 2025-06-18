@@ -90,15 +90,14 @@ export function StudyApplicationForm({
   };
 
   const handleSubmit = async () => {
-    toast.success(
-      `${applicationData.semesterInfo} 스터디 신청이 성공적으로 제출되었습니다.`
-    );
-
     try {
       await studyEnroll({
         courseIds: applicationData.courses.map((course) => course.id),
         friendIds: applicationData.friends.map((friend) => friend.id),
       });
+      toast.success(
+        `${applicationData.semesterInfo} 스터디 신청이 성공적으로 제출되었습니다.`
+      );
       navigate(paths.application.root);
     } catch (error) {
       console.error("스터디 신청 실패:", error);

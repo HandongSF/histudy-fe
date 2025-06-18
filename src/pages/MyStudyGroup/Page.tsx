@@ -14,7 +14,7 @@ import {
 import { GroupIcon } from "lucide-react";
 import { useQuery } from "react-query";
 
-export default function StudyGroupInfoPage() {
+export default function MyStudyGroupPage() {
   const { data: studyGroupInfo } = useQuery(
     ["studyGroupInfo"],
     getMyTeamUsers,

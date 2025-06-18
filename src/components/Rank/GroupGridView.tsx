@@ -51,8 +51,8 @@ export default function GroupGridView({
               </div>
             </div>
 
-            {/* 정보 패널 - 호버 시 아래로 슬라이드 */}
-            <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-900 p-4 transform translate-y-0 group-hover:translate-y-full transition-transform duration-300 ease-in-out">
+            {/* 정보 패널 - 호버 시 위로 슬라이드 */}
+            <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-900 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold">{group.id}</h3>
                 <div className="flex items-center text-sm text-muted-foreground">

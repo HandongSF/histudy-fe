@@ -23,6 +23,7 @@ import { useQuery } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { paths } from "@/const/paths";
+import { toast } from "sonner";
 
 export default function ReportDetailPage() {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ export default function ReportDetailPage() {
       // TODO: 매니저가 접근했을 때는 파라메터로 state 자체를 넣어줘야 작동하던데... 이거 수정필요
       // 수정은 했는데 확인필요 (reportData.id 로 잘 수정한듯)
       deleteReport(report.id).then(() => {
-        alert("성공적으로 삭제되었습니다.");
+        toast.success("성공적으로 삭제되었습니다.");
         navigate(-1);
       });
     }

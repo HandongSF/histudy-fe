@@ -10,17 +10,17 @@ import StudyGroup from "../../pages/Manager/StudyGroup";
 
 import { paths } from "@/const/paths";
 import NotFoundPage from "@/pages/404";
-import EditReportPage from "@/pages/EditReport/EditReportPage";
-import Enroll from "@/pages/Enroll/Enroll";
-import StudyApplicationPage from "@/pages/Enroll/StudyApplicationPage";
-import StudyGroupInfoPage from "@/pages/Group/StudyGroupInfoPage";
-import HomePage from "@/pages/Main/HomePage";
+import ReportEditPage from "@/pages/ReportEdit/Page";
+import StudyApplicationPage from "@/pages/StudyApplication/Page";
+import StudyGroupInfoPage from "@/pages/MyStudyGroup/Page";
+import HomePage from "@/pages/Home/Page";
 import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
-import PostPage from "@/pages/Post/PostPage";
-import Profile from "@/pages/Profile/Profile";
-import Rank from "@/pages/Rank/Rank";
-import ReportListPage from "@/pages/Report/Report";
+import ReportAddPage from "@/pages/ReportAdd/Page";
+import ProfilePage from "@/pages/Profile/Page";
+import RankPage from "@/pages/Rank/Page";
+import ReportListPage from "@/pages/ReportList/Page";
 import Layout from "./app-layout";
+import OverviewApplicationPage from "@/pages/OverviewApplication/Page";
 
 export const router = createBrowserRouter([
   {
@@ -28,21 +28,30 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: paths.root, element: <HomePage /> },
+      { path: paths.ranks.root, element: <RankPage /> },
       {
         path: paths.reports.root,
         element: <PrivateRoute component={<ReportListPage />} />,
       },
-      { path: paths.reports.add, element: <PostPage /> },
-      { path: paths.reports.oneReport(":id"), element: <ReportDetailPage /> },
-      { path: paths.reports.edit(":id"), element: <EditReportPage /> },
-      { path: paths.ranks.root, element: <Rank /> },
+      {
+        path: paths.reports.add,
+        element: <PrivateRoute component={<ReportAddPage />} />,
+      },
+      {
+        path: paths.reports.oneReport(":id"),
+        element: <PrivateRoute component={<ReportDetailPage />} />,
+      },
+      {
+        path: paths.reports.edit(":id"),
+        element: <PrivateRoute component={<ReportEditPage />} />,
+      },
       {
         path: paths.application.root,
-        element: <PrivateRoute component={<StudyApplicationPage />} />,
+        element: <PrivateRoute component={<OverviewApplicationPage />} />,
       },
       {
         path: paths.application.add,
-        element: <PrivateRoute component={<Enroll />} />,
+        element: <PrivateRoute component={<StudyApplicationPage />} />,
       },
       {
         path: paths.myGroup.root,
@@ -50,9 +59,8 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.profile.root,
-        element: <PrivateRoute component={<Profile />} />,
+        element: <PrivateRoute component={<ProfilePage />} />,
       },
-
       {
         path: paths.admin.manageClass,
         element: <PrivateRoute component={<ManageClass />} />,
@@ -77,8 +85,6 @@ export const router = createBrowserRouter([
         path: paths.admin.manageReport,
         element: <PrivateRoute component={<ManageReport />} />,
       },
-
-      { path: paths.reports.oneReport(":id"), element: <ReportDetail /> },
 
       // Else
       { path: paths.notFound, element: <NotFoundPage /> },

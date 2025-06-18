@@ -1,4 +1,5 @@
 import { Button, styled } from "@mui/material";
+import { toast } from "sonner";
 
 const StyledAddButton = styled(Button)(({ theme }) => ({
   borderRadius: "15px",
@@ -33,9 +34,9 @@ export default function AddDeleteButton({
 
   const handleAddButtonClick = (row) => {
     if (type === "second" && sidebarValues.length >= 3)
-      alert("최대 3개까지만 선택 가능합니다.");
+      toast.warning("최대 3개까지만 선택 가능합니다.");
     else if (type === "first" && sidebarValues.length >= 4)
-      alert("최대 4개까지만 선택 가능합니다.");
+      toast.warning("최대 4개까지만 선택 가능합니다.");
     else addData((prev) => [...prev, row]);
   };
 

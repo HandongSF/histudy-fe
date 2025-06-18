@@ -21,7 +21,7 @@ const roleMap = {
   NONUSER: "비회원",
 };
 
-export default function Profile() {
+export default function ProfilePage() {
   const { data } = useQuery(["profile"], getProfile, {
     cacheTime: 24 * 60 * 60 * 1000,
     refetchOnWindowFocus: false,

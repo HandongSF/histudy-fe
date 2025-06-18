@@ -12,6 +12,7 @@ import { useSetRecoilState } from "recoil";
 import { editUser } from "../../apis/manager";
 import { isLoadingState } from "../../store/atom";
 import GroupSelector from "./GroupSelector";
+import { toast } from "sonner";
 
 export default function UnGroupTable({
   type,
@@ -342,11 +343,11 @@ export default function UnGroupTable({
 
                       editUser(newData)
                         .then((res) => {
-                          alert("변경되었습니다!");
+                          toast.success("변경되었습니다!");
                           window.location.reload();
                         })
                         .catch((err) => {
-                          alert("변경에 실패했습니다!");
+                          toast.error("변경에 실패했습니다!");
                         });
                     }}
                     label="저장"

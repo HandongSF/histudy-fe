@@ -16,6 +16,7 @@ import CourseDescription from "../../components/common/CourseDescription";
 import ButtonBox from "../../components/Enroll/ButtonBox";
 import { paths } from "@/const/paths";
 import Group from "../Group/GroupV1";
+import { toast } from "sonner";
 
 const ResponsiveSidebarContainer = styled("div")({
   "@media (min-width: 1200px)": {
@@ -98,10 +99,10 @@ export default function Enroll() {
         courseIds: sideCourses.map((elem) => elem[3]),
       };
       if (data.courseIds.length === 0) {
-        alert("과목을 최소 1개는 선택해야 합니다.");
+        toast.warning("과목을 최소 1개는 선택해야 합니다.");
         return;
       }
-      alert("스터디 신청이 완료되었습니다.");
+      toast.success("스터디 신청이 완료되었습니다.");
       studyEnroll(data);
       navigate(paths.application.root);
     }
@@ -138,7 +139,7 @@ export default function Enroll() {
             />
           </ResponsiveSidebarContainer>
           <Box>
-            <StyledTitle>Histudy 신청하기</StyledTitle>
+            <StyledTitle>HIStudy 신청하기</StyledTitle>
 
             {page === 1 && (
               <Box

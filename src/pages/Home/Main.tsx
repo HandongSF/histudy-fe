@@ -12,7 +12,7 @@ import {
   userLoginInfo,
 } from "../../store/atom";
 import "./css/Textfield.css";
-import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
+import { toast } from "sonner";
 
 const nameConverter = (name) => {
   if (name.slice(-3) === "학부생") return name.slice(0, -3);
@@ -20,7 +20,6 @@ const nameConverter = (name) => {
 };
 
 export default function Main() {
-  useAxiosInterceptor();
   const [sid, setSid] = useState("");
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
 
@@ -41,17 +40,17 @@ export default function Main() {
     };
 
     if (sid.length === 0) {
-      alert("학번을 입력해주세요");
+      toast.warning("학번을 입력해주세요");
       return;
     }
     if (sid.length !== 8) {
-      alert("학번을 정확히 입력해주세요.");
+      toast.warning("학번을 정확히 입력해주세요.");
       return;
     }
 
     const response = await userSignup(newUser);
 
-    alert("회원가입이 완료되었습니다.");
+    toast.success("회원가입이 완료되었습니다.");
     localStorage.setItem("accessToken", response.tokens.accessToken);
     localStorage.setItem("refreshToken", response.tokens.refreshToken);
     setIsRegisterModal(false);

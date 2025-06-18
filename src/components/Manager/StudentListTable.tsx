@@ -13,6 +13,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { useNavigate } from "react-router-dom";
 import { editUser } from "../../apis/manager";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function StudentListTable({
   type,
@@ -63,11 +64,11 @@ export default function StudentListTable({
 
     editUser(newData)
       .then(() => {
-        alert("변경되었습니다!");
+        toast.success("변경되었습니다!");
         window.location.reload();
       })
-      .catch((err) => {
-        alert("변경에 실패했습니다.");
+      .catch(() => {
+        toast.error("변경에 실패했습니다.");
       });
   };
 

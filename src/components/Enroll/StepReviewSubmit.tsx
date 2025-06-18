@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Course } from "@/interface/course";
-import { SimpleUser, User } from "@/interface/user";
+import { SimpleUser } from "@/interface/user";
 import {
   closestCenter,
   DndContext,
@@ -32,7 +32,6 @@ import {
   BookOpenCheck,
   Fingerprint,
   GripVertical,
-  Mail,
   Tag,
   UserCircle,
   Users,

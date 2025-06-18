@@ -1,6 +1,7 @@
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { teamMatch } from "../../apis/manager";
+import { toast } from "sonner";
 
 export default function MatchStartButton() {
   return (
@@ -17,7 +18,7 @@ export default function MatchStartButton() {
         }}
         onClick={() => {
           teamMatch();
-          alert("매칭 완료!");
+          toast.success("매칭 완료!");
         }}
       >
         그룹 매칭하기

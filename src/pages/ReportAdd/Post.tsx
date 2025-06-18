@@ -17,11 +17,10 @@ import { CodeModal } from "../../components/Post/CodeModal";
 import PostCourses from "../../components/Post/PostCourses";
 import PostMember from "../../components/Post/PostMember";
 import PostStudyTime from "../../components/Post/PostStudyTime";
-import { useAxiosInterceptor } from "src/hooks/axiosInterceptor";
 import { paths } from "@/const/paths";
+import { toast } from "sonner";
 
 export default function Post({ children }) {
-  useAxiosInterceptor();
   const { state } = useLocation();
   console.log(state);
 
@@ -65,7 +64,7 @@ export default function Post({ children }) {
     };
     state ? modifyReport(state.id, newReport) : postReport(newReport);
 
-    alert("보고서 제출이 완료되었습니다.");
+    toast.success("보고서 제출이 완료되었습니다.");
     navigate(paths.reports.root);
   };
 

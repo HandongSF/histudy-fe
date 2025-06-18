@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   BookOpen,
@@ -25,6 +24,7 @@ import {
 import * as z from "zod";
 
 import { teamCourses } from "@/apis/course";
+import { readReportDetail } from "@/apis/manager";
 import { ImageUploadApi as ImageUploadToServer } from "@/apis/rank";
 import { postReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
@@ -39,13 +39,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { paths } from "@/const/paths";
 import { NewReport } from "@/interface/report";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useRef } from "react";
 import { useQueries, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { readReportDetail } from "@/apis/manager";
-import { paths } from "@/const/paths";
+import { toast } from "sonner";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -67,7 +67,7 @@ const reportFormSchema = z.object({
 
 type ReportFormState = z.infer<typeof reportFormSchema>;
 
-export default function EditReportPage() {
+export default function ReportEditPage() {
   const navigate = useNavigate();
   const { id } = useParams() as { id: string };
   const { data: report } = useQuery({
@@ -135,7 +135,7 @@ export default function EditReportPage() {
     //  modifyReport(state.id, newReport) :
     postReport(newReport);
 
-    alert("보고서 제출이 완료되었습니다.");
+    toast.success("보고서 제출이 완료되었습니다.");
     navigate(paths.reports.root);
   };
 
@@ -172,7 +172,7 @@ export default function EditReportPage() {
   const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (form.getValues("previewImages").length >= 3) {
-      alert("최대 3개의 이미지만 업로드 가능합니다.");
+      toast.warning("최대 3개의 이미지만 업로드 가능합니다.");
       return;
     }
     const file = e.target.files;

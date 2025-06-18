@@ -7,6 +7,7 @@ import { useSetRecoilState } from "recoil";
 import { useAuth } from "src/hooks/auth";
 import { userLogin } from "../apis/users";
 import { isRegisterModalState, Role, userLoginInfo } from "../store/atom";
+import { toast } from "sonner";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
@@ -18,7 +19,7 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
     decodedToken.hd !== "handong.edu" &&
     decodedToken.hd !== "handong.ac.kr"
   ) {
-    alert("한동대학교 이메일로 로그인해주세요.");
+    toast.error("한동대학교 이메일로 로그인해주세요.");
     window.location.href = paths.root;
     return;
   }
@@ -32,7 +33,7 @@ export default function GoogleButton() {
   // const { loginWithCredential } = useAuthContext();
   const onSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
-      alert("로그인에 실패하였습니다.");
+      toast.error("로그인에 실패하였습니다.");
       return;
     }
     const decodedToken = jwtDecode(
@@ -41,13 +42,13 @@ export default function GoogleButton() {
     // handongEmailValidate(decodedToken);
 
     if (!decodedToken.sub) {
-      alert("로그인에 실패하였습니다.");
+      toast.error("로그인에 실패하였습니다.");
       return;
     }
 
     userLogin(
-      decodedToken.sub
-      // "test2"
+      // decodedToken.sub
+      "test2"
     )
       .then((response) => {
         if (response.isRegistered === true) {

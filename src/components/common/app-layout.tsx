@@ -2,8 +2,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { CommonSidebar } from "./SideBar";
 import { Outlet } from "react-router-dom";
+import { useAxiosInterceptor } from "@/hooks/axiosInterceptor";
 
 export default function Layout() {
+  useAxiosInterceptor();
   const defaultOpen = true;
   return (
     <SidebarProvider defaultOpen={defaultOpen}>

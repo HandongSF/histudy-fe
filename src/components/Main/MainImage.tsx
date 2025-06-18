@@ -119,7 +119,7 @@ export default function MainImage() {
             }}
             sx={{}}
           >
-            Histudy
+            HIStudy
           </StyledFirstTypo>
           <StyledSecondTypo
             component={motion.div}

@@ -14,6 +14,7 @@ import { useSetRecoilState } from "recoil";
 import { editUser } from "../../apis/manager";
 import { isLoadingState } from "../../store/atom";
 import GroupSelector from "./GroupSelector";
+import { toast } from "sonner";
 
 const theme = createTheme({
   typography: {
@@ -50,7 +51,7 @@ export default function GroupTables({
   const [studentEdit, setStudentEdit] = useState([false]);
 
   const handleSave = (index) => {
-    alert("저장되었습니다!");
+    toast.success("저장되었습니다!");
   };
   const handleDeleteRow = (index) => {};
 
@@ -376,11 +377,11 @@ export default function GroupTables({
                                 };
                                 editUser(newData)
                                   .then(() => {
-                                    alert("변경되었습니다!");
+                                    toast.success("변경되었습니다!");
                                     window.location.reload();
                                   })
-                                  .catch((error) => {
-                                    alert("변경에 실패했습니다.");
+                                  .catch(() => {
+                                    toast.error("변경에 실패했습니다.");
                                   });
                               }}
                               label="저장"
