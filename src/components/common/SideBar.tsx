@@ -25,12 +25,17 @@ import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
 import { Role, roleState } from "@/store/atom";
 import {
+  BookOpen,
   FileText,
   LifeBuoy,
+  ListCheck,
   LogOut,
   Pen,
+  UserCheck,
   UserCog,
+  UserPlus,
   Users,
+  UsersRound,
   type LucideIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -58,7 +63,7 @@ const navGroupsData: NavGroup[] = [
         name: "마이 스터디",
         icon: Pen,
         href: paths.myGroup.root,
-        allowedRoles: ["USER", "MEMBER", "ADMIN"],
+        allowedRoles: ["MEMBER"],
       },
       {
         name: "보고서",
@@ -67,7 +72,7 @@ const navGroupsData: NavGroup[] = [
         allowedRoles: ["MEMBER"],
       },
       {
-        name: "모든 스터디",
+        name: "스터디 랭킹",
         icon: Users,
         href: paths.ranks.root,
         allowedRoles: ["MEMBER", "NONUSER", "USER", "ADMIN"],
@@ -85,16 +90,46 @@ const navGroupsData: NavGroup[] = [
     allowedRoles: ["MEMBER", "ADMIN", "USER"],
     items: [
       {
-        name: "스터디 관리",
-        icon: Users,
-        href: paths.admin.manageClass,
-        allowedRoles: ["ADMIN"],
-      }, // Users는 ADMIN만
-      {
         name: "프로필 관리",
         icon: UserCog,
         href: paths.profile.root,
         allowedRoles: ["MEMBER", "USER", "ADMIN"],
+      },
+    ],
+  },
+  {
+    title: "관리자",
+    allowedRoles: ["ADMIN"],
+    items: [
+      {
+        name: "현재 학기 수업 조회",
+        icon: BookOpen,
+        href: paths.admin.manageClass,
+        allowedRoles: ["ADMIN"],
+      },
+      {
+        name: "스터디 그룹 생성",
+        icon: UserPlus,
+        href: paths.admin.createGroup,
+        allowedRoles: ["ADMIN"],
+      },
+      {
+        name: "스터디 그룹 매칭 관리",
+        icon: UsersRound,
+        href: paths.admin.manageGroup,
+        allowedRoles: ["ADMIN"],
+      },
+      {
+        name: "그룹별 활동 조회",
+        icon: UserCheck,
+        href: paths.admin.manageStudy,
+        allowedRoles: ["ADMIN"],
+      },
+      {
+        name: "스터디 신청자 정보 조회",
+        icon: ListCheck,
+        href: paths.admin.manageStudent,
+        allowedRoles: ["ADMIN"],
       },
     ],
   },

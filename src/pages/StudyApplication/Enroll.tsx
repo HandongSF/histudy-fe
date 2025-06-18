@@ -1,22 +1,22 @@
 import { Typography, styled } from "@mui/material";
 import { Box } from "@mui/system";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getMyGroup, studyEnroll } from "../../apis/study";
 import CustomTable from "../../components/common/CustomTable";
 import GrayBorderBox from "../../components/common/GrayBorderBox";
 import ProgressBar from "../../components/common/ProgressBar";
-import Friends from "../../components/Enroll/Friends";
 import Courses from "../../components/Enroll/Courses";
-import { getMyGroup, studyEnroll } from "../../apis/study";
-import { useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import Friends from "../../components/Enroll/Friends";
 
-import { useQuery } from "react-query";
-import FriendDescription from "../../components/common/FriendDescription";
-import CourseDescription from "../../components/common/CourseDescription";
-import ButtonBox from "../../components/Enroll/ButtonBox";
 import { paths } from "@/const/paths";
-import Group from "../Group/GroupV1";
+import { useQuery } from "react-query";
 import { toast } from "sonner";
+import CourseDescription from "../../components/common/CourseDescription";
+import FriendDescription from "../../components/common/FriendDescription";
+import ButtonBox from "../../components/Enroll/ButtonBox";
+import Group from "../Group/GroupV1";
 
 const ResponsiveSidebarContainer = styled("div")({
   "@media (min-width: 1200px)": {
@@ -71,7 +71,7 @@ export default function Enroll() {
    */
 
   const { isLoading } = useQuery(["checkMyApplication"], getMyGroup, {
-    casheTime: 1 * 30 * 1000,
+    cacheTime: 1 * 30 * 1000,
     onSuccess: (data) => {
       if (data.courses.length !== 0) {
         setReApply(true);

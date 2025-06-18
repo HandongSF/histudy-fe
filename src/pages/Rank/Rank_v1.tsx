@@ -13,10 +13,9 @@ import Title from "../../components/common/Title";
 
 import FullImage from "../../components/Rank/FullImage";
 
-import RankGridView from "../../components/Rank/RankGridView";
+import GroupGridView from "@/components/Rank/GroupGridView";
 import RankListView from "../../components/Rank/RankListView";
 import ViewToggleButton from "../../components/Rank/ViewToggleButton";
-import GroupGridView from "@/components/Rank/GroupGridView";
 
 const StyledScrollBox = styled(Box)({
   maxWidth: "1280px",
@@ -31,7 +30,7 @@ export default function Rank_v1() {
   const [view, setView] = useState("list");
 
   useQuery(["AllTeamRanks"], getAllTeamsForRank, {
-    casheTime: 10 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
     onSuccess: (data) => {
       setTeams(data.teams);
       setItemsHover(new Array(data.teams.length).fill(false));

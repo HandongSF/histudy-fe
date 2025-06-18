@@ -1,3 +1,4 @@
+import { paths } from "@/const/paths";
 import { Box, styled } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -9,7 +10,6 @@ import LongButton from "../../components/common/LongButton";
 import NoDataLottie from "../../components/common/NoDataLottie";
 import { StyledColumnAlignLayout } from "../../components/common/StyledLayout";
 import Title from "../../components/common/Title";
-import { paths } from "@/const/paths";
 
 const StyledScrollTableSize = styled(Box)({
   width: "90%",
@@ -39,7 +39,7 @@ export default function Report() {
   const [convertedReports, setConvertedReports] = useState([]);
 
   const { isLoading } = useQuery(["courses"], getMyTeamReport, {
-    casheTime: 1 * 30 * 1000,
+    cacheTime: 1 * 30 * 1000,
     onSuccess: (data) => {
       setReports(data.reports);
       setConvertedReports(

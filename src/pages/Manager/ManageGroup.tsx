@@ -1,17 +1,16 @@
 import { styled } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import SideBar from "../../components/Manager/SideBar";
-import UnGroupTable from "../../components/Manager/UnGroupTable";
-import GroupTables from "../../components/Manager/GroupTables";
-import { readAllGroups, readUngroup } from "../../apis/manager";
+import { useQueries } from "react-query";
 import { useSetRecoilState } from "recoil";
-import { groupAutoCompleteState, isLoadingState } from "../../store/atom";
+import { readAllGroups, readUngroup } from "../../apis/manager";
+import GroupTables from "../../components/Manager/GroupTables";
+import LoadingLayout from "../../components/Manager/Loading/LoadingLayout";
 import Title from "../../components/Manager/Table/Title";
+import UnGroupTable from "../../components/Manager/UnGroupTable";
+import { groupAutoCompleteState } from "../../store/atom";
 import { StyledLayout } from "./style/StyledLatout";
 import { StyledTitleFlexBox } from "./style/StyledTitleFlexBox";
-import { useQueries } from "react-query";
-import LoadingLayout from "../../components/Manager/Loading/LoadingLayout";
 
 const SizedBox = styled(Box)({
   height: "50px",
@@ -54,8 +53,6 @@ export default function ManageGroup() {
   return (
     <StyledLayout>
       <LoadingLayout results={results}>
-        <SideBar />
-
         <Box sx={{ width: "100%" }}>
           <StyledTitleFlexBox>
             <Title text="매칭된 그룹 목록" />

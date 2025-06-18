@@ -5,22 +5,21 @@ import ManageClass from "../../pages/Manager/ManageClass";
 import ManageGroup from "../../pages/Manager/ManageGroup";
 import ManageReport from "../../pages/Manager/ManageReport";
 import ManageStudent from "../../pages/Manager/ManageStudent";
-import ReportDetail from "../../pages/Manager/ReportDetail";
 import StudyGroup from "../../pages/Manager/StudyGroup";
 
 import { paths } from "@/const/paths";
 import NotFoundPage from "@/pages/404";
-import ReportEditPage from "@/pages/ReportEdit/Page";
-import StudyApplicationPage from "@/pages/StudyApplication/Page";
-import StudyGroupInfoPage from "@/pages/MyStudyGroup/Page";
 import HomePage from "@/pages/Home/Page";
 import ReportDetailPage from "@/pages/Manager/ReportDetailPage";
-import ReportAddPage from "@/pages/ReportAdd/Page";
+import StudyGroupInfoPage from "@/pages/MyStudyGroup/Page";
+import OverviewApplicationPage from "@/pages/OverviewApplication/Page";
 import ProfilePage from "@/pages/Profile/Page";
 import RankPage from "@/pages/Rank/Page";
+import ReportAddPage from "@/pages/ReportAdd/Page";
+import ReportEditPage from "@/pages/ReportEdit/Page";
 import ReportListPage from "@/pages/ReportList/Page";
+import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import Layout from "./app-layout";
-import OverviewApplicationPage from "@/pages/OverviewApplication/Page";
 
 export const router = createBrowserRouter([
   {

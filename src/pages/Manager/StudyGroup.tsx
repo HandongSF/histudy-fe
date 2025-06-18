@@ -1,17 +1,16 @@
+import SearchIcon from "@mui/icons-material/Search";
 import { InputAdornment, TextField, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import LongButton from "../../components/common/LongButton";
-import SideBar from "../../components/Manager/SideBar";
-import StudyGroupTable from "../../components/Manager/StudyGroupTable";
+import { useQuery } from "react-query";
+import * as xlsx from "xlsx";
 import { readAllGroups } from "../../apis/manager";
-import { StyledTitleFlexBox } from "./style/StyledTitleFlexBox";
+import LongButton from "../../components/common/LongButton";
+import LoadingLayout from "../../components/Manager/Loading/LoadingLayout";
+import StudyGroupTable from "../../components/Manager/StudyGroupTable";
 import Title from "../../components/Manager/Table/Title";
 import { StyledLayout } from "./style/StyledLatout";
-import { useQuery } from "react-query";
-import LoadingLayout from "../../components/Manager/Loading/LoadingLayout";
-import * as xlsx from "xlsx";
+import { StyledTitleFlexBox } from "./style/StyledTitleFlexBox";
 
 export default function StudyGroup() {
   const [groupData, setGroupData] = useState();
@@ -19,7 +18,7 @@ export default function StudyGroup() {
   const [searchValue, setSearchValue] = useState("");
 
   const { isLoading } = useQuery(["courses"], readAllGroups, {
-    casheTime: 5 * 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
     onSuccess: (data) => {
       setSearchResult(data);
       setGroupData(data);
@@ -87,8 +86,6 @@ export default function StudyGroup() {
   return (
     <StyledLayout>
       <LoadingLayout isLoading={isLoading}>
-        <SideBar />
-
         <Box sx={{ width: "100%" }}>
           <StyledTitleFlexBox>
             <Title text={"그룹 활동 목록"} />

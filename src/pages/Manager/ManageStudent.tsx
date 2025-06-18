@@ -1,19 +1,18 @@
+import SearchIcon from "@mui/icons-material/Search";
 import { InputAdornment, TextField, styled, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import LongButton from "../../components/common/LongButton";
-import SideBar from "../../components/Manager/SideBar";
-import StudentListTable from "../../components/Manager/StudentListTable";
-import { readAllStudyApplyUsers } from "../../apis/manager";
-import { isLoadingState } from "../../store/atom";
-import { useSetRecoilState } from "recoil";
-import Title from "../../components/Manager/Table/Title";
-import { StyledTitleFlexBox } from "./style/StyledTitleFlexBox";
-import { StyledLayout } from "./style/StyledLatout";
 import { useQuery } from "react-query";
-import LoadingLayout from "../../components/Manager/Loading/LoadingLayout";
+import { useSetRecoilState } from "recoil";
 import * as xlsx from "xlsx";
+import { readAllStudyApplyUsers } from "../../apis/manager";
+import LongButton from "../../components/common/LongButton";
+import LoadingLayout from "../../components/Manager/Loading/LoadingLayout";
+import StudentListTable from "../../components/Manager/StudentListTable";
+import Title from "../../components/Manager/Table/Title";
+import { isLoadingState } from "../../store/atom";
+import { StyledLayout } from "./style/StyledLatout";
+import { StyledTitleFlexBox } from "./style/StyledTitleFlexBox";
 
 const StyledFlexButtonBox = styled(Box)({
   display: "flex",
@@ -86,8 +85,6 @@ export default function ManageStudent() {
   return (
     <StyledLayout>
       <LoadingLayout isLoading={isLoading}>
-        <SideBar />
-
         <Box sx={{ width: "100%" }}>
           <>
             <StyledTitleFlexBox>

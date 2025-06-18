@@ -1,10 +1,10 @@
-import { Box, InputAdornment, useTheme } from "@mui/material";
-import CustomTable from "../common/CustomTable";
 import SearchIcon from "@mui/icons-material/Search";
+import { Box, InputAdornment, useTheme } from "@mui/material";
+import { debounce } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { searchCourses } from "../../apis/course";
+import CustomTable from "../common/CustomTable";
 import { TextFieldWrapper } from "./TextFieldWrapper";
-import { debounce } from "lodash";
 
 const getLowerTrimed = (str) => {
   return str.toLowerCase().trim().toLowerCase().replace(/\s+/g, "");
@@ -52,7 +52,7 @@ export default function Courses({ sideCourses, setSideCourses }) {
   }, [allCourses, courseInput, updateCourses]);
 
   useEffect(() => {
-    searchCourses().then((res) => {
+    searchCourses("").then((res) => {
       setAllCourses(res.courses);
     });
   }, []);

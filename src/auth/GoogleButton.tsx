@@ -48,7 +48,7 @@ export default function GoogleButton() {
 
     userLogin(
       // decodedToken.sub
-      "test2"
+      "test3"
     )
       .then((response) => {
         if (response.isRegistered === true) {
