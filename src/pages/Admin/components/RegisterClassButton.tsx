@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import * as React from "react";
-import { importCourses } from "../../../apis/course";
+import { importCourses } from "../../apis/course";
 import { toast } from "sonner";
 
 export default function RegisterClassButton() {

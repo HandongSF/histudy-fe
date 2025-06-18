@@ -10,7 +10,7 @@ import LoadingLayout from "./components/Loading/LoadingLayout";
 import Title from "./components/Table/Title";
 import ManagerTable from "./components/ManagerTable";
 
-export default function ManageClass() {
+export default function ManageClassPage() {
   const [classData, setClassData] = useState();
 
   const { isLoading } = useQuery(["courses"], () => searchCourses(""), {

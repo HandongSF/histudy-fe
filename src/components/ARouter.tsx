@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./auth/PrivateRoute";
 import CreateGroup from "../pages/Admin/CreateGroup";
-import ManageClass from "../pages/Admin/ManageClass";
+
 import ManageGroup from "../pages/Admin/ManageGroup";
 import ManageReport from "../pages/Admin/ManageReport";
 import ManageStudent from "../pages/Admin/ManageStudent";
@@ -20,6 +20,7 @@ import ReportEditPage from "@/pages/ReportEdit/Page";
 import ReportListPage from "@/pages/ReportList/Page";
 import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import RootLayout from "./RootLayout";
+import ManageClassPage from "@/pages/Admin/ManageClass/Page";
 
 export const router = createBrowserRouter([
   {
@@ -62,7 +63,7 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.admin.manageClass,
-        element: <PrivateRoute component={<ManageClass />} />,
+        element: <PrivateRoute component={<ManageClassPage />} />,
       },
       {
         path: paths.admin.manageGroup,
