@@ -22,6 +22,7 @@ import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import RootLayout from "./RootLayout";
 import ManageClassPage from "@/pages/Admin/ManageClass/Page";
 import CreateGroupPage from "@/pages/Admin/CreateGroup/Page";
+import ManageStudyPage from "@/pages/Admin/ManageStudy/Page";
 
 export const router = createBrowserRouter([
   {
@@ -72,7 +73,7 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.admin.manageStudy,
-        element: <PrivateRoute component={<StudyGroup />} />,
+        element: <PrivateRoute component={<ManageStudyPage />} />,
       },
       {
         path: paths.admin.createGroup,

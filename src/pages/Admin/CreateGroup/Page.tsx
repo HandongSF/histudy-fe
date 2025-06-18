@@ -58,7 +58,9 @@ export default function CreateGroupPage() {
         <Button onClick={handleMatchGroups}>그룹 매칭하기</Button>
       </div>
       {!applicants ? (
-        <Loading />
+        <div className="flex min-h-[500px] justify-center items-center">
+          <Loading />
+        </div>
       ) : (
         <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
           <Table>

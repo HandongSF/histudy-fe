@@ -89,8 +89,6 @@ export default function ReportDetailPage() {
 
   return (
     <div className="container mx-auto py-6 px-4 max-w-4xl">
-      {/* TODO: 추후 개선 필요 */}
-      <Box>{isAdmin && <SideBar />}</Box>
       {/* 헤더 */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
         <div className="flex items-center gap-4">
