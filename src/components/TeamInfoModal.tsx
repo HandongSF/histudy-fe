@@ -1,8 +1,8 @@
-import { Circle, Clock, FileText, Square, Users, X } from "lucide-react";
+import { Clock, FileText, Square, Users, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { Team } from "@/interface/teams";
-import { addImagePrefix } from "./Image/imagePrefix";
+import { addImagePrefix } from "@/utils/Image/imagePrefix";
 
 interface TeamInfoModalProps {
   selectedTeam: Team | null;

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-import { Input } from "@/components/ui/input";
+import { searchCourses } from "@/apis/course";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,21 +9,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Course } from "@/interface/course";
 import {
   BookMarked,
+  BookOpen,
   PlusCircle,
   Search,
-  XCircle,
-  BookOpen,
   Tag,
   UserCircle,
+  XCircle,
 } from "lucide-react";
-import { toast } from "sonner";
-import { Course } from "@/interface/course";
-import { useDebounce } from "use-debounce";
 import { useQuery } from "react-query";
-import { searchCourses } from "@/apis/course";
+import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
 
 const MAX_COURSES = 3;
 

@@ -5,13 +5,13 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useAuth } from "src/hooks/auth";
-import { userLogin } from "../../apis/users";
+import { userLogin } from "../apis/users";
 import {
   isRegisterModalState,
   Role,
   roleState,
   userLoginInfo,
-} from "../../store/atom";
+} from "../store/atom";
 import { toast } from "sonner";
 
 export interface JwtHIStudyPayload extends JwtPayload {

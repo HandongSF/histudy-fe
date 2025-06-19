@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { JwtHIStudyPayload } from "@/components/auth/GoogleButton";
+import { JwtHIStudyPayload } from "@/components/GoogleButton";
 
 const { persistAtom } = recoilPersist({
   key: "localStorage", //원하는 key 값 입력

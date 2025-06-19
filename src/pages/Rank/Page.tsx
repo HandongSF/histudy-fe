@@ -1,25 +1,12 @@
 import { getAllTeamsForRank } from "@/apis/rank";
+import TeamInfoModal from "@/components/TeamInfoModal";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Team } from "@/interface/teams";
 import GroupGridView from "@/pages/Rank/components/GroupGridView";
 import { GroupListView } from "@/pages/Rank/components/GroupListView";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Box, Modal } from "@mui/material";
 import { LayoutGrid, List } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { Team } from "@/interface/teams";
-import TeamInfoModal from "@/components/TeamInfoModal";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 export default function RankPage() {
   const [view, setView] = useState("list");

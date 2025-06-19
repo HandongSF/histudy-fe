@@ -10,12 +10,12 @@ export default function NotFoundPage() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 text-slate-800 flex flex-col items-center justify-center p-6 text-center">
       <div className="relative mb-8">
         <Lottie animationData={animationData} style={{ width: "250px" }} />
-        {/* 땀방울 효과 */}
+
         <div className="absolute top-1/4 left-1/4 w-3 h-5 bg-sky-400 rounded-full opacity-80 animate-sweat-drop-1"></div>
         <div className="absolute top-1/3 right-1/4 w-2.5 h-4 bg-sky-400 rounded-full opacity-70 animate-sweat-drop-2 animation-delay-300"></div>
       </div>
 
-      <style jsx global>{`
+      <style>{`
         @keyframes bounce-slow {
           0%,
           100% {

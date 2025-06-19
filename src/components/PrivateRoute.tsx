@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
-import { Role, roleState } from "../../store/atom";
+import { Role, roleState } from "../store/atom";
 import { paths } from "@/const/paths";
 
 interface PrivateRouteProps {

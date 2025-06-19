@@ -1,7 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import PrivateRoute from "./auth/PrivateRoute";
-
-import ManageReport from "../pages/Admin/ManageReport";
+import PrivateRoute from "./PrivateRoute";
 
 import { paths } from "@/const/paths";
 import NotFoundPage from "@/pages/404";
@@ -10,18 +8,18 @@ import ManageClassPage from "@/pages/Admin/ManageClass/Page";
 import MatchedGroupListPage from "@/pages/Admin/ManageGroup/Page";
 import ManageStudentPage from "@/pages/Admin/ManageStudent/Page";
 import ManageStudyPage from "@/pages/Admin/ManageStudy/Page";
-import ReportDetailPage from "@/pages/ReportDetail/Page";
+import ReportListAdminPage from "@/pages/Admin/ReportList/Page";
 import HomePage from "@/pages/Home/Page";
 import StudyGroupInfoPage from "@/pages/MyStudyGroup/Page";
 import OverviewApplicationPage from "@/pages/OverviewApplication/Page";
 import ProfilePage from "@/pages/Profile/Page";
 import RankPage from "@/pages/Rank/Page";
 import ReportAddPage from "@/pages/ReportAdd/Page";
+import ReportDetailPage from "@/pages/ReportDetail/Page";
 import ReportEditPage from "@/pages/ReportEdit/Page";
 import ReportListUserPage from "@/pages/ReportList/Page";
 import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import RootLayout from "./RootLayout";
-import ReportListAdminPage from "@/pages/Admin/ReportList/Page";
 
 export const router = createBrowserRouter([
   {
