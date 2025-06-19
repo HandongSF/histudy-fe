@@ -26,8 +26,8 @@ import { readReportDetail } from "@/apis/manager";
 import { ImageUploadApi as ImageUploadToServer } from "@/apis/rank";
 import { postReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
-import Heic2Jpg from "@/components/Image/Heic2Jpg";
-import compressedFile from "@/components/Image/compressFile";
+import Heic2Jpg from "@/utils/Image/Heic2Jpg";
+import compressedFile from "@/utils/Image/compressFile";
 import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
 import {
   Form,
@@ -44,7 +44,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useQueries, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { addImagePrefix } from "@/components/Image/imagePrefix";
+import { addImagePrefix } from "@/utils/Image/imagePrefix";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({

@@ -6,7 +6,6 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import { router } from "./components/ARouter";
 import "./globals.css";
-import ThemeProvider from "./theme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,14 +19,12 @@ function App() {
   useRoleInit();
 
   return (
-    <ThemeProvider>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <Toaster />
-        </QueryClientProvider>
-      </GoogleOAuthProvider>
-    </ThemeProvider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster />
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 }
 

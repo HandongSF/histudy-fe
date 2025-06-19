@@ -4,7 +4,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-import { CommonSidebar } from "./common/SideBar";
+import { CommonSidebar } from "./SideBar";
 import { Outlet } from "react-router-dom";
 import { useAxiosInterceptor } from "@/hooks/axiosInterceptor";
 
