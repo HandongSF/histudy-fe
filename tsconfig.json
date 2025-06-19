@@ -10,7 +10,7 @@
     "strict": true,
     "noEmit": true,
     "allowJs": true,
-    "module": "esnext",
+    "module": "ESNext",
     "jsx": "react-jsx",
     "skipLibCheck": true,
     "noImplicitAny": true,
