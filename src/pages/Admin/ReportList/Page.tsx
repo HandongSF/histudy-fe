@@ -1,22 +1,22 @@
-import { getMyTeamReport } from "@/apis/report";
+import { readGroupReport } from "@/apis/manager";
 import Loading from "@/components/Loading";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { paths } from "@/const/paths";
-import { Report } from "@/interface/report";
-import { ChevronRight, Clock, PlusCircle, Users } from "lucide-react";
+import { SimpleReport } from "@/interface/report";
+import { ChevronRight, Clock, PlusCircle } from "lucide-react";
 import { useQuery } from "react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-export default function ReportListUserPage() {
+export default function ReportListAdminPage() {
+  const { state: groupId } = useLocation();
   const navigate = useNavigate();
-  const { data } = useQuery(["reports"], getMyTeamReport, {
+  const { data } = useQuery(["reports"], () => readGroupReport(groupId), {
     cacheTime: 1 * 30 * 1000,
   });
 
-  const handleReportClick = (report: Report) => {
+  const handleReportClick = (report: SimpleReport) => {
     navigate(paths.reports.oneReport(report.id.toString()), {
       state: report,
     });
@@ -35,22 +35,12 @@ export default function ReportListUserPage() {
         <div className="flex justify-between items-center">
           <header className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              레포트 목록
+              {data?.tag} 그룹의 레포트 목록
             </h1>
             <p className="text-muted-foreground">
               총 {data?.reports.length}개의 레포트가 있습니다.
             </p>
           </header>
-
-          <Link to={paths.reports.add}>
-            <Button
-              // onClick={handleCreateReport}
-              className="flex items-center gap-2 w-full sm:w-auto"
-            >
-              <PlusCircle className="h-4 w-4" />
-              레포트 작성
-            </Button>
-          </Link>
         </div>
         <Card className="py-0">
           <CardContent className="p-0">
@@ -63,18 +53,15 @@ export default function ReportListUserPage() {
                 <Table className="w-full">
                   <thead>
                     <tr className="bg-muted/50 border-b border-border">
-                      <th className="w-[60px] h-12 px-4 text-center align-middle text-xs font-medium text-muted-foreground tracking-wider ">
+                      <th className="w-[60px] min-w-[60px] h-12 px-4 text-center align-middle text-xs font-medium text-muted-foreground tracking-wider ">
                         순서
                       </th>
-                      <th className="h-12 px-4 text-left align-middle text-xs font-medium text-muted-foreground tracking-wider">
+                      <th className="w-[200px] h-12 px-4 text-left align-middle text-xs font-medium text-muted-foreground tracking-wider">
                         제목
                       </th>
 
                       <th className="h-12 w-[140px] px-4 text-left align-middle text-xs font-medium text-muted-foreground tracking-wider ">
                         스터디 시간
-                      </th>
-                      <th className="h-12 px-4 text-left align-middle text-xs font-medium text-muted-foreground tracking-wider">
-                        참여자
                       </th>
 
                       <th className="h-12 px-4 w-[120px] text-left align-middle text-xs font-medium text-muted-foreground tracking-wider">
@@ -101,38 +88,16 @@ export default function ReportListUserPage() {
                               <Clock className="h-3 w-3 mr-1" />
                               {formatStudyTime(report.totalMinutes)}
                             </div>
-                            <div className="sm:hidden text-xs text-muted-foreground flex items-center mt-1">
-                              <Users className="h-3 w-3 mr-1" />
-                              {report.participants.length}명 참여 ·{" "}
-                              {report.regDate}
-                            </div>
                           </div>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">
+                        <TableCell>
                           <div className="flex items-center">
                             <Clock className="h-4 w-4 text-muted-foreground mr-2" />
                             {formatStudyTime(report.totalMinutes)}
                           </div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <div className="flex items-center gap-1">
-                            <Users className="h-4 w-4 text-muted-foreground mr-1" />
-                            <div className="flex flex-wrap gap-1">
-                              {report.participants.map((participant, i) => (
-                                <Badge
-                                  key={i}
-                                  variant="outline"
-                                  className="font-normal"
-                                >
-                                  {participant.name}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {report.regDate}
-                        </TableCell>
+
+                        <TableCell>{report.regDate}</TableCell>
                         <TableCell>
                           <ChevronRight className="h-4 w-4 text-muted-foreground" />
                         </TableCell>

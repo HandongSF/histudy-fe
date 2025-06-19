@@ -110,9 +110,9 @@ export default function ManageStudyPage() {
             <TableBody>
               {filteredActivities.length > 0 ? (
                 filteredActivities.map((activity) => (
-                  <TableRow key={activity.group}>
+                  <TableRow key={activity.tag}>
                     <TableCell className="font-medium">
-                      {activity.group}
+                      {activity.tag}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">

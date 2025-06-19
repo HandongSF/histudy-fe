@@ -1,30 +1,27 @@
 import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./auth/PrivateRoute";
-import CreateGroup from "../pages/Admin/CreateGroup";
 
-import ManageGroup from "../pages/Admin/ManageGroup";
 import ManageReport from "../pages/Admin/ManageReport";
-import ManageStudent from "../pages/Admin/ManageStudent";
-import StudyGroup from "../pages/Admin/StudyGroup";
 
 import { paths } from "@/const/paths";
 import NotFoundPage from "@/pages/404";
+import CreateGroupPage from "@/pages/Admin/CreateGroup/Page";
+import ManageClassPage from "@/pages/Admin/ManageClass/Page";
+import MatchedGroupListPage from "@/pages/Admin/ManageGroup/Page";
+import ManageStudentPage from "@/pages/Admin/ManageStudent/Page";
+import ManageStudyPage from "@/pages/Admin/ManageStudy/Page";
+import ReportDetailPage from "@/pages/ReportDetail/Page";
 import HomePage from "@/pages/Home/Page";
-import ReportDetailPage from "@/pages/Admin/ReportDetailPage";
 import StudyGroupInfoPage from "@/pages/MyStudyGroup/Page";
 import OverviewApplicationPage from "@/pages/OverviewApplication/Page";
 import ProfilePage from "@/pages/Profile/Page";
 import RankPage from "@/pages/Rank/Page";
 import ReportAddPage from "@/pages/ReportAdd/Page";
 import ReportEditPage from "@/pages/ReportEdit/Page";
-import ReportListPage from "@/pages/ReportList/Page";
+import ReportListUserPage from "@/pages/ReportList/Page";
 import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import RootLayout from "./RootLayout";
-import ManageClassPage from "@/pages/Admin/ManageClass/Page";
-import CreateGroupPage from "@/pages/Admin/CreateGroup/Page";
-import ManageStudyPage from "@/pages/Admin/ManageStudy/Page";
-import ManageStudentPage from "@/pages/Admin/ManageStudent/Page";
-import MatchedGroupListPage from "@/pages/Admin/ManageGroup/Page";
+import ReportListAdminPage from "@/pages/Admin/ReportList/Page";
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +32,7 @@ export const router = createBrowserRouter([
       { path: paths.ranks.root, element: <RankPage /> },
       {
         path: paths.reports.root,
-        element: <PrivateRoute component={<ReportListPage />} />,
+        element: <PrivateRoute component={<ReportListUserPage />} />,
       },
       {
         path: paths.reports.add,
@@ -87,7 +84,7 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.admin.manageReport,
-        element: <PrivateRoute component={<ManageReport />} />,
+        element: <PrivateRoute component={<ReportListAdminPage />} />,
       },
 
       // Else

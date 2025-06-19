@@ -1,13 +1,14 @@
 import { readReportDetail } from "@/apis/manager";
 import { deleteReport } from "@/apis/report";
 
+import { addImagePrefix } from "@/components/Image/imagePrefix";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SimpleUser } from "@/interface/user";
+import { paths } from "@/const/paths";
 import { Report } from "@/interface/report";
+import { SimpleUser } from "@/interface/user";
 import { roleState } from "@/store/atom";
-import { Box } from "@mui/material";
 import {
   ArrowLeft,
   BookOpen,
@@ -22,10 +23,7 @@ import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { paths } from "@/const/paths";
 import { toast } from "sonner";
-import SideBar from "./components/SideBar";
-import { addImagePrefix } from "@/components/Image/imagePrefix";
 
 export default function ReportDetailPage() {
   const navigate = useNavigate();
