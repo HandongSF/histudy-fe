@@ -46,6 +46,7 @@ import { useQueries } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/const/paths";
 import { toast } from "sonner";
+import { addImagePrefix } from "@/components/Image/imagePrefix";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -222,40 +223,42 @@ export default function ReportAddPage() {
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                      {form.getValues("previewImages").map((url, index) => (
-                        <div
-                          key={`new-${index}`}
-                          className="relative group aspect-square"
-                        >
-                          <img
-                            src={url || "/img/placeholder.svg"}
-                            alt={`새 이미지 ${index + 1}`}
-                            className="w-full h-full object-cover rounded-md border"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-1 right-1 h-6 w-6 opacity-70 group-hover:opacity-100"
-                            onClick={() => {
-                              form.setValue(
-                                "blobImages",
-                                form
-                                  .getValues("blobImages")
-                                  .filter((_, i) => i !== index)
-                              );
-                              form.setValue(
-                                "previewImages",
-                                form
-                                  .getValues("previewImages")
-                                  .filter((_, i) => i !== index)
-                              );
-                            }}
+                      {form
+                        .getValues("previewImages")
+                        .map((url: string, index) => (
+                          <div
+                            key={`new-${index}`}
+                            className="relative group aspect-square"
                           >
-                            <XCircle className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
+                            <img
+                              src={addImagePrefix(url)}
+                              alt={`새 이미지 ${index + 1}`}
+                              className="w-full h-full object-cover rounded-md border"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-1 right-1 h-6 w-6 opacity-70 group-hover:opacity-100"
+                              onClick={() => {
+                                form.setValue(
+                                  "blobImages",
+                                  form
+                                    .getValues("blobImages")
+                                    .filter((_, i) => i !== index)
+                                );
+                                form.setValue(
+                                  "previewImages",
+                                  form
+                                    .getValues("previewImages")
+                                    .filter((_, i) => i !== index)
+                                );
+                              }}
+                            >
+                              <XCircle className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
                     </div>
                     <FormMessage />
                   </FormItem>

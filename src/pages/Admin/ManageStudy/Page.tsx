@@ -59,7 +59,7 @@ export default function ManageStudyPage() {
       const wb = xlsx.utils.book_new();
       xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
 
-      xlsx.writeFile(wb, "dramatis_personae.xlsx");
+      xlsx.writeFile(wb, "스터디그룹활동.xlsx");
     } else {
       console.log("데이터가 비어있습니다.");
     }

@@ -9,12 +9,6 @@ export default function NotFoundPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 text-slate-800 flex flex-col items-center justify-center p-6 text-center">
       <div className="relative mb-8">
-        {/* <img
-          src="/img/placeholder.svg?height=250&width=250"
-          alt="땀 흘리는 귀여운 우주인"
-          className="w-48 h-48 sm:w-64 sm:h-64 animate-bounce-slow"
-        />
-         */}
         <Lottie animationData={animationData} style={{ width: "250px" }} />
         {/* 땀방울 효과 */}
         <div className="absolute top-1/4 left-1/4 w-3 h-5 bg-sky-400 rounded-full opacity-80 animate-sweat-drop-1"></div>

@@ -25,6 +25,7 @@ import { useRecoilValue } from "recoil";
 import { paths } from "@/const/paths";
 import { toast } from "sonner";
 import SideBar from "./components/SideBar";
+import { addImagePrefix } from "@/components/Image/imagePrefix";
 
 export default function ReportDetailPage() {
   const navigate = useNavigate();
@@ -224,7 +225,7 @@ export default function ReportDetailPage() {
                   className="relative group aspect-w-4 aspect-h-3"
                 >
                   <img
-                    src={image.url || "/img/placeholder.svg"}
+                    src={addImagePrefix(image.url)}
                     alt={`인증 사진 ${image.id}`}
                     className="w-full h-full object-cover rounded-md border hover:shadow-md transition-shadow cursor-pointer"
                     onClick={() => {

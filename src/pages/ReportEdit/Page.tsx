@@ -46,6 +46,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useQueries, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { addImagePrefix } from "@/components/Image/imagePrefix";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -249,7 +250,7 @@ export default function ReportEditPage() {
                           className="relative group aspect-square"
                         >
                           <img
-                            src={url || "/img/placeholder.svg"}
+                            src={addImagePrefix(url)}
                             alt={`새 이미지 ${index + 1}`}
                             className="w-full h-full object-cover rounded-md border"
                           />

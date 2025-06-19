@@ -6,6 +6,8 @@ import { Box, Modal } from "@mui/material";
 import { LayoutGrid, List } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { Team } from "@/interface/teams";
+import TeamInfoModal from "@/components/TeamInfoModal";
 
 const style = {
   position: "absolute",
@@ -27,17 +29,21 @@ export default function RankPage() {
     refetchOnWindowFocus: false,
   });
 
-  const [modalImageUrl, setModalImageUrl] = useState("");
+  const [modalInfo, setModalInfo] = useState<Team | null>(null);
   return (
     <>
-      <Modal
-        open={!!modalImageUrl}
-        onClose={() => setModalImageUrl("")}
+      {/* <Modal
+        open={!!modalInfo}
+        onClose={() => setModalInfo(null)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box component="img" src={modalImageUrl} sx={style} />
-      </Modal>
+        <Box component="img" src={modalInfo} sx={style} />
+      </Modal> */}
+      <TeamInfoModal
+        selectedTeam={modalInfo}
+        closeModal={() => setModalInfo(null)}
+      />
       <div className="min-h-screen ">
         <div className="container mx-auto py-8 px-4">
           <header className="mb-8">
@@ -73,7 +79,7 @@ export default function RankPage() {
           {view === "grid" ? (
             <GroupGridView
               studyGroups={data?.teams || []}
-              setModalImageUrl={setModalImageUrl}
+              setModalInfo={setModalInfo}
             />
           ) : (
             <GroupListView studyGroups={data?.teams || []} />

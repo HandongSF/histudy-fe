@@ -15,13 +15,14 @@ import { editUser, readAllStudyApplyUsers } from "@/apis/manager";
 import { useQuery } from "react-query";
 import { StudyApplyUser } from "@/interface/user";
 import Loading from "@/components/Loading";
+import { toast } from "sonner";
 
 // Helper function to clean course names
 const cleanCourseName = (name: string) => name.replace(/\n/g, " ");
 const cleanProfName = (prof: string) => prof.replace(/\n/g, "").trim();
 
 export default function ManageStudentPage() {
-  const { data: applicants } = useQuery(
+  const { data: applicants, refetch } = useQuery(
     ["allStudyApplyUsers"],
     readAllStudyApplyUsers,
     {
@@ -48,15 +49,20 @@ export default function ManageStudentPage() {
     setFormData({});
   };
 
-  const handleSave = () => {
-    editUser({
-      id: formData.id!,
-      name: formData.name!,
-      sid: formData.sid!,
-      team: formData.group!,
-    });
-    setEditingId(null);
-    setFormData({});
+  const handleSave = async () => {
+    try {
+      await editUser({
+        id: formData.id!,
+        name: formData.name!,
+        sid: formData.sid!,
+        team: formData.group!,
+      });
+      refetch();
+      setEditingId(null);
+      setFormData({});
+    } catch (error) {
+      toast.error("사용자 정보 수정에 실패했습니다.");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,12 +113,12 @@ export default function ManageStudentPage() {
       const wb = xlsx.utils.book_new();
       xlsx.utils.book_append_sheet(wb, ws, "Sheet1");
 
-      xlsx.writeFile(wb, "manage_student.xlsx");
+      xlsx.writeFile(wb, "스터디신청자목록.xlsx");
     }
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-8 bg-white">
+    <div className="container mx-auto p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-2xl font-semibold">스터디 신청자 목록</h1>
         <div className="flex flex-row gap-4">
@@ -179,31 +185,18 @@ export default function ManageStudentPage() {
                         className="h-8"
                       />
                     </TableCell>
+                    <TableCell>{applicant.email}</TableCell>
                     <TableCell>
-                      <Input
-                        type="email"
-                        name="email"
-                        value={formData.email ?? ""}
-                        onChange={handleChange}
-                        className="h-8"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        name="courseName"
-                        value={
-                          formData.courses && formData.courses.length > 0
-                            ? cleanCourseName(formData.courses[0].name)
-                            : ""
-                        }
-                        onChange={handleChange}
-                        className="h-8"
-                        placeholder="과목명"
-                      />
-                      {applicant.courses.length > 0 && (
-                        <span className="text-xs text-muted-foreground ml-1">
-                          ({cleanProfName(applicant.courses[0].prof)})
-                        </span>
+                      {applicant.courses.length > 0 ? (
+                        <>
+                          {cleanCourseName(applicant.courses[0].name)}
+                          <span className="text-xs text-muted-foreground">
+                            {" "}
+                            ({cleanProfName(applicant.courses[0].prof)})
+                          </span>
+                        </>
+                      ) : (
+                        "-"
                       )}
                     </TableCell>
                     <TableCell className="text-center space-x-1">

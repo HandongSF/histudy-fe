@@ -2,16 +2,17 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, FileText, Trophy, Users } from "lucide-react";
 import { Team } from "@/interface/teams";
+import { addImagePrefix } from "@/components/Image/imagePrefix";
 
 interface GroupGridViewProps {
   studyGroups: Team[];
 
-  setModalImageUrl: (imageUrl: string) => void;
+  setModalInfo: (teamInfo: Team) => void;
 }
 
 export default function GroupGridView({
   studyGroups,
-  setModalImageUrl,
+  setModalInfo,
 }: GroupGridViewProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -20,7 +21,7 @@ export default function GroupGridView({
           key={group.id}
           className="overflow-hidden hover:shadow-lg transition-shadow group py-0"
           onClick={() => {
-            setModalImageUrl(group.thumbnail || "");
+            setModalInfo(group);
           }}
         >
           {/* 카드 전체를 감싸는 컨테이너 */}
@@ -28,7 +29,11 @@ export default function GroupGridView({
             {/* 이미지 컨테이너 */}
             <div className="absolute inset-0 z-0">
               <img
-                src={group.thumbnail || "/img/mainImg2.png"}
+                src={
+                  group.thumbnail
+                    ? addImagePrefix(group.thumbnail)
+                    : "/img/mainImg2.png"
+                }
                 alt={`${group.id} 팀 사진`}
                 className="w-full h-full object-cover"
               />

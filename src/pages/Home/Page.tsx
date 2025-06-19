@@ -6,6 +6,9 @@ import { Trophy } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import StatsDashboard from "./components/StatsDashBoard";
+import { addImagePrefix } from "@/components/Image/imagePrefix";
+import { Team } from "@/interface/teams";
+import TeamInfoModal from "@/components/TeamInfoModal";
 
 const style = {
   position: "absolute",
@@ -24,7 +27,7 @@ export default function HomePage() {
     cacheTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
-  const [modalImageUrl, setModalImageUrl] = useState("");
+  const [modalInfo, setModalInfo] = useState<Team | null>(null);
 
   return (
     <div className="flex flex-col min-h-screen bg-muted/40">
@@ -45,18 +48,14 @@ export default function HomePage() {
               <Trophy className="inline-block w-10 h-10 mr-3 text-amber-500" />
               현재 활발한 스터디 그룹
             </h2>
-            <Modal
-              open={!!modalImageUrl}
-              onClose={() => setModalImageUrl("")}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box component="img" src={modalImageUrl} sx={style} />
-            </Modal>
+            <TeamInfoModal
+              selectedTeam={modalInfo}
+              closeModal={() => setModalInfo(null)}
+            />
 
             <GroupGridView
               studyGroups={data?.teams.slice(0, 3) || []}
-              setModalImageUrl={setModalImageUrl}
+              setModalInfo={setModalInfo}
             />
           </section>
 

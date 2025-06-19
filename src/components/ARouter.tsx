@@ -24,6 +24,7 @@ import ManageClassPage from "@/pages/Admin/ManageClass/Page";
 import CreateGroupPage from "@/pages/Admin/CreateGroup/Page";
 import ManageStudyPage from "@/pages/Admin/ManageStudy/Page";
 import ManageStudentPage from "@/pages/Admin/ManageStudent/Page";
+import MatchedGroupListPage from "@/pages/Admin/ManageGroup/Page";
 
 export const router = createBrowserRouter([
   {
@@ -70,7 +71,7 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.admin.manageGroup,
-        element: <PrivateRoute component={<ManageGroup />} />,
+        element: <PrivateRoute component={<MatchedGroupListPage />} />,
       },
       {
         path: paths.admin.manageStudy,

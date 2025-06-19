@@ -3,9 +3,9 @@ import axiosInstance from "./axiosInstance";
 import { SimpleUser, StudyApplyUser, UnAssignedUser } from "src/interface/user";
 import { Report, SimpleReport } from "src/interface/report";
 
-interface EditUserRequest {
+export interface EditUserRequest {
   id: number;
-  team: number;
+  team: number | null;
   name: string;
   sid: string;
 }
