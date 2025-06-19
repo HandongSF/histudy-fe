@@ -23,7 +23,7 @@ import {
 import { paths } from "@/const/paths";
 import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
-import { Role, roleState } from "@/store/atom";
+import { isLoginState, Role, roleState } from "@/store/atom";
 import {
   BookOpen,
   FileText,
@@ -165,6 +165,7 @@ export function CommonSidebar() {
   const pathname = useLocation().pathname;
   const role = useRecoilValue(roleState);
 
+  const isLogin = useRecoilValue(isLoginState);
   const isActive = (href: string) => {
     if (href === paths.root) {
       return pathname === href;
@@ -184,9 +185,6 @@ export function CommonSidebar() {
       ),
     }))
     .filter((group) => group.items.length > 0);
-
-  const canShowFeedback = ["USER", "MEMBER", "ADMIN"].includes(role);
-  const canShowLogout = ["USER", "MEMBER", "ADMIN"].includes(role);
 
   return (
     <Sidebar collapsible="icon" className="border-r">
@@ -259,7 +257,7 @@ export function CommonSidebar() {
         ))}
       </SidebarContent>
 
-      {canShowFeedback || canShowLogout ? (
+      {isLogin ? (
         <SidebarFooter className="p-3 border-t space-y-2">
           <SidebarMenu>
             <SidebarMenuItem>
@@ -280,23 +278,21 @@ export function CommonSidebar() {
               </Link>
             </SidebarMenuItem>
 
-            {canShowLogout && (
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={logout}
-                  tooltip={{
-                    children: "로그아웃",
-                    side: "right",
-                    align: "center",
-                    className: "bg-foreground text-background",
-                  }}
-                  className="h-10 justify-start gap-3 px-3 text-red-500 hover:bg-red-500/10 hover:text-red-600"
-                >
-                  <LogOut className="size-5 shrink-0" />
-                  <span className="truncate text-sm font-medium">로그아웃</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            )}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={logout}
+                tooltip={{
+                  children: "로그아웃",
+                  side: "right",
+                  align: "center",
+                  className: "bg-foreground text-background",
+                }}
+                className="h-10 justify-start gap-3 px-3 text-red-500 hover:bg-red-500/10 hover:text-red-600"
+              >
+                <LogOut className="size-5 shrink-0" />
+                <span className="truncate text-sm font-medium">로그아웃</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
       ) : (

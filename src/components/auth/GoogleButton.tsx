@@ -3,17 +3,22 @@
 import { paths } from "@/const/paths";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import jwtDecode, { JwtPayload } from "jwt-decode";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useAuth } from "src/hooks/auth";
 import { userLogin } from "../../apis/users";
-import { isRegisterModalState, Role, userLoginInfo } from "../../store/atom";
+import {
+  isRegisterModalState,
+  Role,
+  roleState,
+  userLoginInfo,
+} from "../../store/atom";
 import { toast } from "sonner";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
   rol: Role;
 }
-
+// TODO: 테스트 후 적용
 const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
   if (
     decodedToken.hd !== "handong.edu" &&
@@ -26,6 +31,7 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
 };
 
 export default function GoogleButton() {
+  const role = useRecoilValue(roleState);
   const setRegisterModalState = useSetRecoilState(isRegisterModalState);
   const setUserLoginInfo = useSetRecoilState(userLoginInfo);
   const { login } = useAuth();
@@ -45,11 +51,14 @@ export default function GoogleButton() {
       toast.error("로그인에 실패하였습니다.");
       return;
     }
+    // TODO: 테스트 후 삭제
+    const testSub = {
+      ADMIN: "test3",
+      MEMBER: "test2",
+      USER: "test1",
+    } as Record<Role, string>;
 
-    userLogin(
-      // decodedToken.sub
-      "test3"
-    )
+    userLogin(testSub[role] || decodedToken.sub)
       .then((response) => {
         if (response.isRegistered === true) {
           login(
