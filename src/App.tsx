@@ -1,15 +1,16 @@
-import ARouter from "./components/common/ARouter";
-import { useAxiosInterceptor } from "./hooks/axiosInterceptor";
 import { useRoleInit } from "./hooks/role";
 
-import ThemeProvider from "./theme";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { RouterProvider } from "react-router-dom";
+import { Toaster } from "sonner";
+import { router } from "./components/ARouter";
+import "./globals.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // window focus 만으로도 refetch를 발생시키는 조건 해제
+      refetchOnWindowFocus: false,
     },
   },
 });
@@ -18,13 +19,12 @@ function App() {
   useRoleInit();
 
   return (
-    <ThemeProvider>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
-        <QueryClientProvider client={queryClient}>
-          <ARouter />
-        </QueryClientProvider>
-      </GoogleOAuthProvider>
-    </ThemeProvider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster />
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 }
 

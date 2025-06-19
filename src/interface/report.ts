@@ -1,4 +1,4 @@
-import { Course, SimpleCourse } from "./course";
+import { SimpleCourse } from "./course";
 import { SimpleUser } from "./user";
 
 export interface NewReport {

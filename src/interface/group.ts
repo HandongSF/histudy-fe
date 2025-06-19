@@ -1,3 +1,5 @@
+import { GroupMemberWithStudyInfo } from "./user";
+
 export interface Group {
   group: number;
   tag: number;

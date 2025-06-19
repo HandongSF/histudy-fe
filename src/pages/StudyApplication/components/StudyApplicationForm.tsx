@@ -1,0 +1,149 @@
+import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
+
+import { getMyGroup, studyEnroll } from "@/apis/study";
+import { Course } from "@/interface/course";
+import { SimpleUser } from "@/interface/user";
+import { useQuery } from "react-query";
+import { StepAddCourses } from "./StepAddCourses";
+import { StepAddFriends } from "./StepAddFriend";
+import { StepReviewSubmit } from "./StepReviewSubmit";
+import { paths } from "@/const/paths";
+import { useNavigate } from "react-router-dom";
+
+export interface ApplicationData {
+  friends: SimpleUser[];
+  courses: Course[];
+  semesterInfo: string;
+}
+
+const TOTAL_STEPS = 3;
+
+interface StudyApplicationFormProps {
+  currentSemesterInfo: string;
+}
+
+export function StudyApplicationForm({
+  currentSemesterInfo,
+}: StudyApplicationFormProps) {
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [applicationData, setApplicationData] = useState<ApplicationData>({
+    friends: [],
+    courses: [],
+    semesterInfo: currentSemesterInfo,
+  });
+
+  const { data: myStudyApplication } = useQuery(
+    "getMyStudyApplication",
+    getMyGroup
+  );
+
+  useEffect(() => {
+    if (
+      myStudyApplication &&
+      (myStudyApplication.courses.length > 0 ||
+        myStudyApplication.friends.length > 0)
+    ) {
+      setApplicationData({
+        friends: myStudyApplication.friends,
+        courses: myStudyApplication.courses,
+        semesterInfo: currentSemesterInfo,
+      });
+    }
+  }, [myStudyApplication, currentSemesterInfo]);
+
+  if (!myStudyApplication) {
+    return <div>로딩중...</div>;
+  }
+
+  const handleClickNextStep = () => {
+    if (currentStep < TOTAL_STEPS) {
+      if (currentStep === 1 && applicationData.friends.length === 0) {
+        toast("최소 한 명의 친구를 추가해주세요.");
+        return;
+      }
+      if (currentStep === 2 && applicationData.courses.length === 0) {
+        toast("최소 하나의 수업을 추가해주세요.");
+        return;
+      }
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  const handleClickPrevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  const updateFriends = (friends: SimpleUser[]) => {
+    setApplicationData((prev) => ({ ...prev, friends }));
+  };
+
+  const updateCourses = (courses: Course[]) => {
+    setApplicationData((prev) => ({ ...prev, courses }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await studyEnroll({
+        courseIds: applicationData.courses.map((course) => course.id),
+        friendIds: applicationData.friends.map((friend) => friend.id),
+      });
+      toast.success(
+        `${applicationData.semesterInfo} 스터디 신청이 성공적으로 제출되었습니다.`
+      );
+      navigate(paths.application.root);
+    } catch (error) {
+      console.error("스터디 신청 실패:", error);
+      toast.error("스터디 신청에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const progressValue = (currentStep / TOTAL_STEPS) * 100;
+
+  return (
+    <Card className="p-0">
+      <CardContent className="p-6">
+        <Progress value={progressValue} className="mb-8" />
+        {currentStep === 1 && (
+          <StepAddFriends
+            selectedFriends={applicationData.friends}
+            onUpdateFriends={updateFriends}
+          />
+        )}
+        {currentStep === 2 && (
+          <StepAddCourses
+            selectedCourses={applicationData.courses}
+            onUpdateCourses={updateCourses}
+          />
+        )}
+        {currentStep === 3 && (
+          <StepReviewSubmit
+            applicationData={applicationData}
+            onUpdateCoursesOrder={updateCourses}
+          />
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-between p-6 border-t">
+        <Button
+          variant="outline"
+          onClick={handleClickPrevStep}
+          disabled={currentStep === 1}
+        >
+          이전
+        </Button>
+        {currentStep < TOTAL_STEPS ? (
+          <Button onClick={handleClickNextStep}>다음</Button>
+        ) : (
+          <Button onClick={handleSubmit}>제출</Button>
+        )}
+      </CardFooter>
+    </Card>
+  );
+}

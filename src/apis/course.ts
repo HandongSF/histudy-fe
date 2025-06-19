@@ -15,7 +15,7 @@ export const teamCourses = async (): Promise<Courses> => {
   return response.data;
 };
 
-export const autoCourses = async (): Promise<Courses> => {
-  const response = await axiosInstance.get("/api/courses");
+export const searchCourses = async (search: string): Promise<Courses> => {
+  const response = await axiosInstance.get(`/api/courses?search=${search}`);
   return response.data;
 };

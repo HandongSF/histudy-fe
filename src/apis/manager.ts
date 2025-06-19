@@ -3,9 +3,9 @@ import axiosInstance from "./axiosInstance";
 import { SimpleUser, StudyApplyUser, UnAssignedUser } from "src/interface/user";
 import { Report, SimpleReport } from "src/interface/report";
 
-interface EditUserRequest {
+export interface EditUserRequest {
   id: number;
-  team: number;
+  team: number | null;
   name: string;
   sid: string;
 }
@@ -62,7 +62,7 @@ export const readUngroup = async (): Promise<UnAssignedUser[]> => {
   return response.data;
 };
 
-export const deleteUserForm = async (sid: number) => {
+export const deleteUserForm = async (sid: string) => {
   const response = await axiosInstance.delete(`/api/admin/form?sid=${sid}`);
   return response;
 };

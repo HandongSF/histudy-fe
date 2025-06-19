@@ -1,42 +1,28 @@
-import { Box, Typography } from "@mui/material";
-import { useMatch } from "react-router-dom";
+import { Github } from "lucide-react";
 
 export default function Footer() {
-  const mainMatch = useMatch("/");
   return (
-    <>
-      {mainMatch ? (
-        <Box></Box>
-      ) : (
-        <Box
-          sx={{
-            height: "100px",
-            px: "50px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "end" }}>
-            <img src="./img/logo_histudy.png" width={120} />
-            <Typography variant="caption" sx={{ mx: 5 }}>
-              <strong>ⓒ </strong> 2023 SWTeam5. All rights reserved.
-            </Typography>
-          </Box>
-          <Box>
+    <footer className="border-t">
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center gap-1">
+            © Handong Software Foundation
+          </div>
+
+          <div className="flex items-center gap-6">
+            <span>Developed by 한시온, 오인혁</span>
             <a
-              href="https://github.com/orgs/Hisstudy-team05/repositories"
+              href="https://github.com/HandongSF"
               target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
-              <img
-                src="/img/github.png"
-                style={{ borderRadius: "100%" }}
-                width={60}
-              />
+              <Github className="w-4 h-4" />
+              GitHub
             </a>
-          </Box>
-        </Box>
-      )}
-    </>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }

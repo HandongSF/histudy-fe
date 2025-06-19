@@ -1,60 +1,92 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import Enroll from "../pages/Enroll/Enroll";
-import Group from "../pages/Group/Group";
-import Main from "../pages/Main/Main";
-import CreateGroup from "../pages/Manager/CreateGroup";
-import ManageClass from "../pages/Manager/ManageClass";
-import ManageGroup from "../pages/Manager/ManageGroup";
-import ManageReport from "../pages/Manager/ManageReport";
-import ManageStudent from "../pages/Manager/ManageStudent";
-import ReportDetail from "../pages/Manager/ReportDetail";
-import Snackbars from "../pages/Manager/Snackbars";
-import StudyGroup from "../pages/Manager/StudyGroup";
-import Post from "../pages/Post/Post";
-import Profile from "../pages/Profile/Profile";
-import Rank from "../pages/Rank/Rank";
-import Report from "../pages/Report/Report";
-import { isDelete, isLoadingState } from "../store/atom";
-import Footer from "./Footer";
-import Header from "./Header";
-import LoadingLottie from "./LoadingLottie";
-import MainTest from "./Main/MainTest";
+import { createBrowserRouter } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 
-export default function ARouter() {
-  const isLoading = useRecoilValue(isLoadingState);
-  const [open, setOpen] = useRecoilState(isDelete);
-  return (
-    <>
-      <BrowserRouter sx={{ position: "relative" }}>
-        <Header />
+import { paths } from "@/const/paths";
+import NotFoundPage from "@/pages/404";
+import CreateGroupPage from "@/pages/Admin/CreateGroup/Page";
+import ManageClassPage from "@/pages/Admin/ManageClass/Page";
+import MatchedGroupListPage from "@/pages/Admin/ManageGroup/Page";
+import ManageStudentPage from "@/pages/Admin/ManageStudent/Page";
+import ManageStudyPage from "@/pages/Admin/ManageStudy/Page";
+import ReportListAdminPage from "@/pages/Admin/ReportList/Page";
+import HomePage from "@/pages/Home/Page";
+import StudyGroupInfoPage from "@/pages/MyStudyGroup/Page";
+import OverviewApplicationPage from "@/pages/OverviewApplication/Page";
+import ProfilePage from "@/pages/Profile/Page";
+import RankPage from "@/pages/Rank/Page";
+import ReportAddPage from "@/pages/ReportAdd/Page";
+import ReportDetailPage from "@/pages/ReportDetail/Page";
+import ReportEditPage from "@/pages/ReportEdit/Page";
+import ReportListUserPage from "@/pages/ReportList/Page";
+import StudyApplicationPage from "@/pages/StudyApplication/Page";
+import RootLayout from "./RootLayout";
 
-        {isLoading && <LoadingLottie />}
-        <Snackbars open={open} setOpen={setOpen} />
-        <Routes>
-          <Route path="/" element={<Main />}></Route>
-          <Route path="/post" element={<Post />}></Route>
-          <Route path="/rank" element={<Rank />}></Route>
-          <Route path="/enroll" element={<Enroll />}></Route>
-          <Route path="/group" element={<Group />}></Route>
-          <Route path="/report" element={<Report />}></Route>
-          <Route path="/report/:id" element={<ReportDetail />}></Route>
-          <Route path="/report/modify/:id" element={<Post />}></Route>
-          <Route path="/add" element={<Post />}></Route>
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    children: [
+      { path: paths.root, element: <HomePage /> },
+      { path: paths.ranks.root, element: <RankPage /> },
+      {
+        path: paths.reports.root,
+        element: <PrivateRoute component={<ReportListUserPage />} />,
+      },
+      {
+        path: paths.reports.add,
+        element: <PrivateRoute component={<ReportAddPage />} />,
+      },
+      {
+        path: paths.reports.oneReport(":id"),
+        element: <PrivateRoute component={<ReportDetailPage />} />,
+      },
+      {
+        path: paths.reports.edit(":id"),
+        element: <PrivateRoute component={<ReportEditPage />} />,
+      },
+      {
+        path: paths.application.root,
+        element: <PrivateRoute component={<OverviewApplicationPage />} />,
+      },
+      {
+        path: paths.application.add,
+        element: <PrivateRoute component={<StudyApplicationPage />} />,
+      },
+      {
+        path: paths.myGroup.root,
+        element: <PrivateRoute component={<StudyGroupInfoPage />} />,
+      },
+      {
+        path: paths.profile.root,
+        element: <PrivateRoute component={<ProfilePage />} />,
+      },
+      {
+        path: paths.admin.manageClass,
+        element: <PrivateRoute component={<ManageClassPage />} />,
+      },
+      {
+        path: paths.admin.manageGroup,
+        element: <PrivateRoute component={<MatchedGroupListPage />} />,
+      },
+      {
+        path: paths.admin.manageStudy,
+        element: <PrivateRoute component={<ManageStudyPage />} />,
+      },
+      {
+        path: paths.admin.createGroup,
+        element: <PrivateRoute component={<CreateGroupPage />} />,
+      },
+      {
+        path: paths.admin.manageStudent,
+        element: <PrivateRoute component={<ManageStudentPage />} />,
+      },
+      {
+        path: paths.admin.manageReport,
+        element: <PrivateRoute component={<ReportListAdminPage />} />,
+      },
 
-          <Route path="/manageClass" element={<ManageClass />}></Route>
-          <Route path="/manageGroup" element={<ManageGroup />}></Route>
-          <Route path="/studyGroup" element={<StudyGroup />}></Route>
-          <Route path="/createGroup" element={<CreateGroup />}></Route>
-          <Route path="/manageStudent" element={<ManageStudent />}></Route>
-          <Route path="/manageReport" element={<ManageReport />}></Route>
-
-          <Route path="/reportDetail" element={<ReportDetail />}></Route>
-          <Route path="/test" element={<MainTest />}></Route>
-          <Route path="/profile" element={<Profile />}></Route>
-        </Routes>
-        <Footer />
-      </BrowserRouter>
-    </>
-  );
-}
+      // Else
+      { path: paths.notFound, element: <NotFoundPage /> },
+    ],
+  },
+]);
