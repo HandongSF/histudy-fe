@@ -1,22 +1,18 @@
-"use client";
-
-import * as React from "react";
+import { deleteUserForm, readApplicants, teamMatch } from "@/apis/manager";
+import Loading from "@/components/Loading";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { XIcon } from "lucide-react";
 import { useQuery } from "react-query";
-import { deleteUserForm, readApplicants, teamMatch } from "@/apis/manager";
-import Loading from "@/components/Loading";
 import { toast } from "sonner";
-import { paths } from "@/const/paths";
 
 const cleanCourseName = (name: string) => name.replace(/\n/g, " ");
 const cleanProfName = (prof: string) => prof.replace(/\n/g, "").trim();

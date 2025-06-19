@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { paths } from "@/const/paths";
-import animationData from "@/noData.json";
-import Lottie from "lottie-react";
+
 import { AlertTriangle, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -9,8 +8,6 @@ export default function NotFoundPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 text-slate-800 flex flex-col items-center justify-center p-6 text-center">
       <div className="relative mb-8">
-        <Lottie animationData={animationData} style={{ width: "250px" }} />
-
         <div className="absolute top-1/4 left-1/4 w-3 h-5 bg-sky-400 rounded-full opacity-80 animate-sweat-drop-1"></div>
         <div className="absolute top-1/3 right-1/4 w-2.5 h-4 bg-sky-400 rounded-full opacity-70 animate-sweat-drop-2 animation-delay-300"></div>
       </div>
@@ -77,9 +74,7 @@ export default function NotFoundPage() {
         <AlertTriangle className="w-10 h-10 sm:w-12 sm:h-12" />
         404
       </h1>
-      <p className="text-xl sm:text-2xl font-semibold text-slate-700 mb-3">
-        앗! 우주 미아가 되었어요!
-      </p>
+
       <p className="text-slate-600 mb-8 max-w-md">
         요청하신 페이지를 찾을 수 없습니다.
         <br />
