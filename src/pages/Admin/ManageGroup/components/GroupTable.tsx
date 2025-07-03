@@ -1,5 +1,5 @@
 import { editUser, EditUserRequest } from "@/apis/manager";
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { Input } from "@/components/ui/input";
 import { SimpleCourse } from "@/interface/course";
 import { Group } from "@/interface/group";
@@ -102,7 +102,7 @@ export default function GroupTable({
       <div className="bg-white dark:bg-slate-800 border rounded-lg  h-[500px] overflow-y-auto">
         {loading ? (
           <div className="flex justify-center items-center h-full">
-            <Loading />
+            <SpinnerLoading />
           </div>
         ) : (
           <table className=" w-full min-w-[1000px] text-sm text-left text-slate-500 dark:text-slate-400">

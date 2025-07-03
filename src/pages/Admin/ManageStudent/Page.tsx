@@ -14,7 +14,7 @@ import { PencilIcon, SaveIcon, XIcon, SearchIcon } from "lucide-react";
 import { editUser, readAllStudyApplyUsers } from "@/apis/manager";
 import { useQuery } from "react-query";
 import { StudyApplyUser } from "@/interface/user";
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { toast } from "sonner";
 
 // Helper function to clean course names
@@ -142,7 +142,7 @@ export default function ManageStudentPage() {
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[500px] h-full w-full">
-            <Loading />
+            <SpinnerLoading />
           </div>
         ) : (
           <Table>

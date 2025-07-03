@@ -1,5 +1,5 @@
 import { readGroupReport } from "@/apis/manager";
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { NoData } from "@/components/NoData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";

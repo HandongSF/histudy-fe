@@ -1,5 +1,5 @@
 import { searchCourses } from "@/apis/course";
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { Input } from "@/components/ui/input";
 import {
   Table,

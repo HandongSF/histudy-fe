@@ -1,4 +1,4 @@
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -33,7 +33,7 @@ export default function GroupReportListUserView({
       <CardContent className="p-0">
         {!reports ? (
           <div className="flex justify-center items-center h-[500px]">
-            <Loading />
+            <SpinnerLoading />
           </div>
         ) : (
           <div className="overflow-auto">

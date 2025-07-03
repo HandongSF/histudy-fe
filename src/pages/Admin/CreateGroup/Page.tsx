@@ -1,5 +1,5 @@
 import { deleteUserForm, readApplicants, teamMatch } from "@/apis/manager";
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -71,7 +71,7 @@ export default function CreateGroupPage() {
       </div>
       {isLoading ? (
         <div className="flex min-h-[500px] justify-center items-center">
-          <Loading />
+          <SpinnerLoading />
         </div>
       ) : (
         <div className="rounded-lg border bg-card text-card-foreground shadow-sm">

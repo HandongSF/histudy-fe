@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { SearchIcon, DownloadIcon, EyeIcon } from "lucide-react";
 import { readAllGroups } from "@/apis/manager";
 import { useQuery } from "react-query";
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { Link } from "react-router-dom";
 import { paths } from "@/const/paths";
 
@@ -93,7 +93,7 @@ export default function ManageStudyPage() {
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
         {isLoading ? (
           <div className="flex min-h-[500px] justify-center items-center">
-            <Loading />
+            <SpinnerLoading />
           </div>
         ) : (
           <Table>
