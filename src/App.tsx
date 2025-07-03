@@ -22,6 +22,7 @@ function App() {
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+
         <Toaster />
       </QueryClientProvider>
     </GoogleOAuthProvider>

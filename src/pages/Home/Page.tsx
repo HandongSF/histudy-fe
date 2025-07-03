@@ -8,6 +8,16 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import StatsDashboard from "./components/StatsDashBoard";
 
+const BuggyComponent = () => {
+  const [crash, setCrash] = useState(false);
+
+  if (crash) {
+    throw new Error("💥 일부러 발생시킨 에러입니다!");
+  }
+
+  return <button onClick={() => setCrash(true)}>클릭 시 에러 발생</button>;
+};
+
 export default function HomePage() {
   const { data } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
     cacheTime: 10 * 60 * 1000,
@@ -19,6 +29,7 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-muted/40">
       <div className="min-h-screen ">
         <div className="container mx-auto py-8 px-4 flex flex-col gap-8">
+          <BuggyComponent />
           <div className="container mx-auto">
             <img
               src="/img/banner2.png"
