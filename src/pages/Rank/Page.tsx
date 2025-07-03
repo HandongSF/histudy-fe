@@ -1,32 +1,36 @@
 import { getAllTeamsForRank } from "@/apis/rank";
+import { NoData } from "@/components/NoData";
 import TeamInfoModal from "@/components/TeamInfoModal";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { WaveLoading } from "@/components/WaveLoading";
 import { Team } from "@/interface/teams";
 import GroupGridView from "@/pages/Rank/components/GroupGridView";
 import { GroupListView } from "@/pages/Rank/components/GroupListView";
 import { LayoutGrid, List } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 
 export default function RankPage() {
   const [view, setView] = useState("list");
 
-  const { data } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
+  const { data, isLoading } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
     cacheTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
   const [modalInfo, setModalInfo] = useState<Team | null>(null);
+
+  const teams = useMemo(() => {
+    if (!data) return [];
+    return data.teams;
+  }, [data]);
+
+  if (isLoading) {
+    return <WaveLoading />;
+  }
+
   return (
     <>
-      {/* <Modal
-        open={!!modalInfo}
-        onClose={() => setModalInfo(null)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box component="img" src={modalInfo} sx={style} />
-      </Modal> */}
       <TeamInfoModal
         selectedTeam={modalInfo}
         closeModal={() => setModalInfo(null)}
@@ -44,7 +48,7 @@ export default function RankPage() {
 
           <div className="flex justify-between items-center mb-6">
             <div className="text-sm text-muted-foreground">
-              총 {data?.teams.length}개 그룹
+              총 {teams.length}개 그룹
             </div>
             <Tabs
               defaultValue={view}
@@ -63,13 +67,23 @@ export default function RankPage() {
             </Tabs>
           </div>
 
-          {view === "grid" ? (
-            <GroupGridView
-              studyGroups={data?.teams || []}
-              setModalInfo={setModalInfo}
+          {/* 랭킹 순위 테이블 */}
+          {teams.length === 0 ? (
+            <NoData
+              title="데이터가 없습니다"
+              description="아직 표시할 데이터가 없습니다."
             />
           ) : (
-            <GroupListView studyGroups={data?.teams || []} />
+            <>
+              {view === "grid" ? (
+                <GroupGridView
+                  studyGroups={teams}
+                  setModalInfo={setModalInfo}
+                />
+              ) : (
+                <GroupListView studyGroups={teams} />
+              )}
+            </>
           )}
         </div>
       </div>

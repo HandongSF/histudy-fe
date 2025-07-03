@@ -20,11 +20,13 @@ import ReportEditPage from "@/pages/ReportEdit/Page";
 import ReportListUserPage from "@/pages/ReportList/Page";
 import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import RootLayout from "./RootLayout";
+import { ErrorElement } from "./ErrorElement";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorElement />,
     children: [
       { path: paths.root, element: <HomePage /> },
       { path: paths.ranks.root, element: <RankPage /> },

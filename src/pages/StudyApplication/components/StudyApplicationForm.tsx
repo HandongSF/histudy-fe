@@ -5,15 +5,15 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 
-import { getMyGroup, studyEnroll } from "@/apis/study";
+import { studyEnroll, StudyEnrollResponse } from "@/apis/study";
+import { paths } from "@/const/paths";
 import { Course } from "@/interface/course";
 import { SimpleUser } from "@/interface/user";
-import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { StepAddCourses } from "./StepAddCourses";
 import { StepAddFriends } from "./StepAddFriend";
 import { StepReviewSubmit } from "./StepReviewSubmit";
-import { paths } from "@/const/paths";
-import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 
 export interface ApplicationData {
   friends: SimpleUser[];
@@ -25,10 +25,12 @@ const TOTAL_STEPS = 3;
 
 interface StudyApplicationFormProps {
   currentSemesterInfo: string;
+  myStudyApplication?: StudyEnrollResponse;
 }
 
 export function StudyApplicationForm({
   currentSemesterInfo,
+  myStudyApplication,
 }: StudyApplicationFormProps) {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -37,11 +39,6 @@ export function StudyApplicationForm({
     courses: [],
     semesterInfo: currentSemesterInfo,
   });
-
-  const { data: myStudyApplication } = useQuery(
-    "getMyStudyApplication",
-    getMyGroup
-  );
 
   useEffect(() => {
     if (
@@ -56,10 +53,6 @@ export function StudyApplicationForm({
       });
     }
   }, [myStudyApplication, currentSemesterInfo]);
-
-  if (!myStudyApplication) {
-    return <div>로딩중...</div>;
-  }
 
   const handleClickNextStep = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -89,20 +82,26 @@ export function StudyApplicationForm({
     setApplicationData((prev) => ({ ...prev, courses }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      await studyEnroll({
-        courseIds: applicationData.courses.map((course) => course.id),
-        friendIds: applicationData.friends.map((friend) => friend.id),
-      });
+  const { mutate: studyEnrollMutation, isLoading } = useMutation(studyEnroll, {
+    onSuccess: () => {
       toast.success(
         `${applicationData.semesterInfo} 스터디 신청이 성공적으로 제출되었습니다.`
       );
+
       navigate(paths.application.root);
-    } catch (error) {
-      console.error("스터디 신청 실패:", error);
+    },
+    onError: (error) => {
+      console.log(error);
       toast.error("스터디 신청에 실패했습니다. 다시 시도해주세요.");
-    }
+    },
+  });
+
+  //TODO: 테스트 필요
+  const handleSubmit = () => {
+    studyEnrollMutation({
+      courseIds: applicationData.courses.map((course) => course.id),
+      friendIds: applicationData.friends.map((friend) => friend.id),
+    });
   };
 
   const progressValue = (currentStep / TOTAL_STEPS) * 100;
@@ -141,7 +140,9 @@ export function StudyApplicationForm({
         {currentStep < TOTAL_STEPS ? (
           <Button onClick={handleClickNextStep}>다음</Button>
         ) : (
-          <Button onClick={handleSubmit}>제출</Button>
+          <Button onClick={handleSubmit} disabled={isLoading}>
+            제출
+          </Button>
         )}
       </CardFooter>
     </Card>

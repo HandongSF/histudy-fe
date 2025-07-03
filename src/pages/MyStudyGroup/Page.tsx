@@ -1,4 +1,5 @@
 import { getMyTeamUsers } from "@/apis/users";
+import { NoData } from "@/components/NoData";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -9,11 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { WaveLoading } from "@/components/WaveLoading";
 import { GroupIcon } from "lucide-react";
 import { useQuery } from "react-query";
 
 export default function MyStudyGroupPage() {
-  const { data: studyGroupInfo } = useQuery(
+  const { data: studyGroupInfo, isLoading } = useQuery(
     ["studyGroupInfo"],
     getMyTeamUsers,
     {
@@ -22,8 +24,21 @@ export default function MyStudyGroupPage() {
     }
   );
 
-  //TODO: 로딩 처리 필요
-  if (!studyGroupInfo) return <div></div>;
+  if (isLoading) {
+    return <WaveLoading />;
+  }
+
+  if (!studyGroupInfo) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <NoData
+          title="스터디 그룹 정보를 찾을 수 없습니다."
+          description="스터디 그룹 정보를 찾을 수 없습니다. 다시 시도해주세요."
+          height={300}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="container min-h-screen mx-auto py-8 px-4 max-w-3xl">

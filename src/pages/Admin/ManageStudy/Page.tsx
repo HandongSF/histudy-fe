@@ -14,12 +14,12 @@ import { Badge } from "@/components/ui/badge";
 import { SearchIcon, DownloadIcon, EyeIcon } from "lucide-react";
 import { readAllGroups } from "@/apis/manager";
 import { useQuery } from "react-query";
-import Loading from "@/components/Loading";
+import SpinnerLoading from "@/components/SpinnerLoading";
 import { Link } from "react-router-dom";
 import { paths } from "@/const/paths";
 
 export default function ManageStudyPage() {
-  const { data: activities } = useQuery(["courses"], readAllGroups, {
+  const { data: activities, isLoading } = useQuery(["courses"], readAllGroups, {
     cacheTime: 5 * 60 * 1000,
   });
 
@@ -30,16 +30,19 @@ export default function ManageStudyPage() {
     // 여기에 보고서 열람 페이지로 이동하거나 모달을 띄우는 로직을 구현합니다.
   };
 
-  const filteredActivities = activities?.filter((activity) => {
-    const searchTermLower = searchTerm.toLowerCase();
-    const groupMatch = activity.group.toString().includes(searchTermLower);
-    const memberMatch = activity.members.some(
-      (member) =>
-        member.name.toLowerCase().includes(searchTermLower) ||
-        member.sid.toLowerCase().includes(searchTermLower)
-    );
-    return groupMatch || memberMatch;
-  });
+  const filteredActivities = React.useMemo(() => {
+    if (!activities) return [];
+    return activities.filter((activity) => {
+      const searchTermLower = searchTerm.toLowerCase();
+      const groupMatch = activity.group.toString().includes(searchTermLower);
+      const memberMatch = activity.members.some(
+        (member) =>
+          member.name.toLowerCase().includes(searchTermLower) ||
+          member.sid.toLowerCase().includes(searchTermLower)
+      );
+      return groupMatch || memberMatch;
+    });
+  }, [activities, searchTerm]);
 
   const handleExcelDownload = () => {
     if (activities) {
@@ -88,9 +91,9 @@ export default function ManageStudyPage() {
       </div>
 
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-        {!filteredActivities ? (
+        {isLoading ? (
           <div className="flex min-h-[500px] justify-center items-center">
-            <Loading />
+            <SpinnerLoading />
           </div>
         ) : (
           <Table>

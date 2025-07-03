@@ -11,21 +11,35 @@ import {
 import { Book, Users } from "lucide-react";
 import { useQuery } from "react-query";
 
-import { Link } from "react-router-dom";
-import { paths } from "@/const/paths";
 import { Button } from "@/components/ui/button";
+import { WaveLoading } from "@/components/WaveLoading";
+import { paths } from "@/const/paths";
+import { useAuth } from "@/hooks/auth";
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
 export default function OverviewApplicationPage() {
-  const { data } = useQuery(["checkMyApplication"], getMyGroup, {
+  const { data, isLoading } = useQuery(["checkMyApplication"], getMyGroup, {
     cacheTime: 1 * 30 * 1000,
     refetchOnWindowFocus: false,
   });
 
-  if (!data) {
-    return <div>...loading</div>;
+  if (isLoading) {
+    return <WaveLoading />;
   }
 
+  const myApplication = useMemo(() => {
+    if (!data)
+      return {
+        friends: [],
+        courses: [],
+        semesterInfo: "",
+      };
+    return data;
+  }, [data]);
+
   const hasNoApplications =
-    data.courses.length === 0 && data.friends.length === 0;
+    myApplication.courses.length === 0 && myApplication.friends.length === 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
       <div className="container mx-auto py-8 px-4">
@@ -56,7 +70,7 @@ export default function OverviewApplicationPage() {
                 <Users className="h-5 w-5 text-primary" />
                 함께하고 싶은 친구
                 <span className="text-sm font-normal text-muted-foreground">
-                  ({data.friends.length}/3)
+                  ({myApplication.friends.length}/3)
                 </span>
               </CardTitle>
             </CardHeader>
@@ -69,14 +83,14 @@ export default function OverviewApplicationPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.friends.map((friend, index) => (
+                  {myApplication.friends.map((friend, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-mono">{friend.sid}</TableCell>
                       <TableCell>{friend.name}</TableCell>
                     </TableRow>
                   ))}
                   {/* 빈 행 추가 (최대 3명까지) */}
-                  {Array.from({ length: 3 - data.friends.length }).map(
+                  {Array.from({ length: 3 - myApplication.friends.length }).map(
                     (_, index) => (
                       <TableRow
                         key={`empty-friend-${index}`}
@@ -103,7 +117,7 @@ export default function OverviewApplicationPage() {
                 <Book className="h-5 w-5 text-primary" />
                 강의
                 <span className="text-sm font-normal text-muted-foreground">
-                  ({data.courses.length}/3)
+                  ({myApplication.courses.length}/3)
                 </span>
               </CardTitle>
             </CardHeader>
@@ -118,7 +132,7 @@ export default function OverviewApplicationPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.courses.map((course, index) => (
+                  {myApplication.courses.map((course, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-mono">{index + 1}</TableCell>
                       <TableCell className="font-mono">{course.code}</TableCell>
@@ -127,7 +141,7 @@ export default function OverviewApplicationPage() {
                     </TableRow>
                   ))}
                   {/* 빈 행 추가 (최대 3개까지) */}
-                  {Array.from({ length: 3 - data.courses.length }).map(
+                  {Array.from({ length: 3 - myApplication.courses.length }).map(
                     (_, index) => (
                       <TableRow
                         key={`empty-course-${index}`}

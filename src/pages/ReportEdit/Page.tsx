@@ -24,7 +24,7 @@ import * as z from "zod";
 import { teamCourses } from "@/apis/course";
 import { readReportDetail } from "@/apis/manager";
 import { ImageUploadApi as ImageUploadToServer } from "@/apis/rank";
-import { postReport } from "@/apis/report";
+import { modifyReport, postReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
 import Heic2Jpg from "@/utils/Image/Heic2Jpg";
 import compressedFile from "@/utils/Image/compressFile";
@@ -45,6 +45,8 @@ import { useQueries, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { addImagePrefix } from "@/utils/Image/imagePrefix";
+import { WaveLoading } from "@/components/WaveLoading";
+import { NoData } from "@/components/NoData";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -69,7 +71,7 @@ type ReportFormState = z.infer<typeof reportFormSchema>;
 export default function ReportEditPage() {
   const navigate = useNavigate();
   const { id } = useParams() as { id: string };
-  const { data: report } = useQuery({
+  const { data: report, isLoading } = useQuery({
     queryKey: ["report", id],
     queryFn: () => readReportDetail(+id),
   });
@@ -105,11 +107,7 @@ export default function ReportEditPage() {
 
   form.watch(["previewImages", "blobImages"]);
 
-  console.log(form);
-
   const onValid = async (formData: ReportFormState) => {
-    console.log(formData);
-
     for (let i = 0; i < formData.blobImages.length; ++i) {
       const imageForm = new FormData();
       imageForm.append("image", formData.blobImages[i]);
@@ -131,14 +129,16 @@ export default function ReportEditPage() {
       images: form.getValues("images"),
       courses: formData.courses,
     } as NewReport;
-    //  modifyReport(state.id, newReport) :
-    postReport(newReport);
+    modifyReport(+id, newReport);
 
     toast.success("보고서 제출이 완료되었습니다.");
     navigate(paths.reports.root);
   };
 
-  const [{ data: coursesRes }, { data: participants }] = useQueries([
+  const [
+    { data: coursesRes, isLoading: coursesLoading },
+    { data: participants, isLoading: participantsLoading },
+  ] = useQueries([
     {
       queryKey: ["teamCourses"],
       queryFn: teamCourses,
@@ -151,7 +151,6 @@ export default function ReportEditPage() {
     },
   ]);
 
-  console.log(form.getValues());
   const inputRef = useRef<HTMLInputElement>(null);
   const onUploadImageButtonClick = useCallback(() => {
     if (!inputRef.current) {
@@ -195,6 +194,22 @@ export default function ReportEditPage() {
       blobToFile(lowCapacityFile, "test.jpg"),
     ]);
   };
+
+  if (isLoading || coursesLoading || participantsLoading) {
+    return <WaveLoading />;
+  }
+
+  if (!report) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <NoData
+          title="보고서를 찾을 수 없습니다."
+          description="보고서를 찾을 수 없습니다. 다시 시도해주세요."
+          height={300}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-3xl">
@@ -506,7 +521,7 @@ export default function ReportEditPage() {
             >
               취소
             </Button>
-            <Button type="submit" onClick={() => console.log(form.getValues())}>
+            <Button type="submit" disabled={form.formState.isSubmitting}>
               제출
             </Button>
           </div>
