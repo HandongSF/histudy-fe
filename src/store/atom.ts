@@ -61,7 +61,7 @@ export type Role = "MEMBER" | "USER" | "ADMIN" | "NONUSER";
 
 export const roleState = atom<Role>({
   key: "role",
-  default: "ADMIN",
+  default: "NONUSER",
 });
 
 export const isShowFullImageState = atom<boolean>({

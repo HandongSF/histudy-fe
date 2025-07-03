@@ -15,6 +15,7 @@ export default function HomePage() {
     refetchOnWindowFocus: false,
   });
   const [modalInfo, setModalInfo] = useState<Team | null>(null);
+
   const teams = useMemo(() => {
     if (!data) return [];
     return data.teams;
