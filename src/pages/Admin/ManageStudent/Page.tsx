@@ -22,13 +22,13 @@ const cleanCourseName = (name: string) => name.replace(/\n/g, " ");
 const cleanProfName = (prof: string) => prof.replace(/\n/g, "").trim();
 
 export default function ManageStudentPage() {
-  const { data: applicants, refetch } = useQuery(
-    ["allStudyApplyUsers"],
-    readAllStudyApplyUsers,
-    {
-      cacheTime: 5 * 60 * 1000,
-    }
-  );
+  const {
+    data: applicants,
+    refetch,
+    isLoading,
+  } = useQuery(["allStudyApplyUsers"], readAllStudyApplyUsers, {
+    cacheTime: 5 * 60 * 1000,
+  });
 
   const [editingId, setEditingId] = React.useState<number | null>(null);
   const [formData, setFormData] = React.useState<Partial<StudyApplyUser>>({});
@@ -86,14 +86,17 @@ export default function ManageStudentPage() {
     }
   };
 
-  const filteredApplicants = applicants?.filter(
-    (applicant) =>
-      applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (applicant.group !== null &&
-        applicant.group.toString().includes(searchTerm.toLowerCase())) ||
-      applicant.sid.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      applicant.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredApplicants = React.useMemo(() => {
+    if (!applicants) return [];
+    return applicants.filter(
+      (applicant) =>
+        applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (applicant.group !== null &&
+          applicant.group.toString().includes(searchTerm.toLowerCase())) ||
+        applicant.sid.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        applicant.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [applicants, searchTerm]);
 
   const handleExcelDownload = () => {
     if (applicants) {
@@ -137,7 +140,7 @@ export default function ManageStudentPage() {
       </div>
 
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-        {!filteredApplicants ? (
+        {isLoading ? (
           <div className="flex justify-center items-center min-h-[500px] h-full w-full">
             <Loading />
           </div>

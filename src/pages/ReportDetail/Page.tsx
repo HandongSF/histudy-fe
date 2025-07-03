@@ -24,6 +24,8 @@ import { useQuery } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { toast } from "sonner";
+import { WaveLoading } from "@/components/WaveLoading";
+import { NoData } from "@/components/NoData";
 
 export default function ReportDetailPage() {
   const navigate = useNavigate();
@@ -45,7 +47,7 @@ export default function ReportDetailPage() {
   // 관리자는 접근 가능.
   // 회원은 자기 페이지만 접근 가능.
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { data: report } = useQuery(
+  const { data: report, isLoading } = useQuery(
     ["report", id],
     () => {
       if (isAdmin) {
@@ -86,6 +88,21 @@ export default function ReportDetailPage() {
     return `${hours}시간 ${mins}분`;
   };
 
+  if (isLoading) {
+    return <WaveLoading />;
+  }
+
+  if (!report) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <NoData
+          title="보고서를 찾을 수 없습니다."
+          description="보고서를 찾을 수 없습니다. 다시 시도해주세요."
+          height={300}
+        />
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto py-6 px-4 max-w-4xl">
       {/* 헤더 */}

@@ -46,7 +46,6 @@ import { paths } from "@/const/paths";
 import { toast } from "sonner";
 import { addImagePrefix } from "@/utils/Image/imagePrefix";
 
-// Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
   content: z.string().min(1, "보고서 내용을 입력해주세요."),
@@ -84,8 +83,6 @@ export default function ReportAddPage() {
   });
 
   form.watch(["previewImages", "blobImages"]);
-
-  console.log(form);
 
   const onValid = async (formData: ReportFormState) => {
     console.log(formData);
@@ -487,7 +484,7 @@ export default function ReportAddPage() {
             >
               취소
             </Button>
-            <Button type="submit" onClick={() => console.log(form.getValues())}>
+            <Button type="submit" disabled={form.formState.isSubmitting}>
               제출
             </Button>
           </div>

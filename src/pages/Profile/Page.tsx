@@ -1,4 +1,5 @@
 import { getProfile } from "@/apis/users";
+import { NoData } from "@/components/NoData";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
@@ -7,8 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { WaveLoading } from "@/components/WaveLoading";
 import { roleState } from "@/store/atom";
 import { BadgeIcon as IdCard, Mail, User } from "lucide-react";
+import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 
@@ -20,12 +23,26 @@ const roleMap = {
 };
 
 export default function ProfilePage() {
-  const { data } = useQuery(["profile"], getProfile, {
+  const { data, isLoading } = useQuery(["profile"], getProfile, {
     cacheTime: 24 * 60 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
   const role = useRecoilValue(roleState);
+
+  const userInfo = useMemo(() => {
+    if (!data)
+      return {
+        name: "NONUSER",
+        sid: "********",
+        email: "********",
+      };
+    return data;
+  }, [data]);
+
+  if (isLoading) {
+    return <WaveLoading />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
@@ -41,14 +58,14 @@ export default function ProfilePage() {
               <Avatar className="h-20 w-20 border-2 border-primary/10">
                 <AvatarImage
                   src={"/img/default-profile.png"}
-                  alt={data?.name}
+                  alt={userInfo.name}
                 />
                 <AvatarFallback className="text-2xl bg-primary/10">
-                  {data?.name.charAt(0)}
+                  {userInfo.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle className="text-2xl">{data?.name}</CardTitle>
+                <CardTitle className="text-2xl">{userInfo.name}</CardTitle>
                 <CardDescription>{roleMap[role]}</CardDescription>
               </div>
             </div>
@@ -62,7 +79,7 @@ export default function ProfilePage() {
                   <div className="text-sm font-medium text-muted-foreground">
                     이름
                   </div>
-                  <div className="font-medium">{data?.name}</div>
+                  <div className="font-medium">{userInfo.name}</div>
                 </div>
               </div>
 
@@ -72,7 +89,7 @@ export default function ProfilePage() {
                   <div className="text-sm font-medium text-muted-foreground">
                     학번
                   </div>
-                  <div className="font-medium">{data?.sid}</div>
+                  <div className="font-medium">{userInfo.sid}</div>
                 </div>
               </div>
 
@@ -82,7 +99,7 @@ export default function ProfilePage() {
                   <div className="text-sm font-medium text-muted-foreground">
                     이메일
                   </div>
-                  <div className="font-medium">{data?.email}</div>
+                  <div className="font-medium">{userInfo.email}</div>
                 </div>
               </div>
             </div>

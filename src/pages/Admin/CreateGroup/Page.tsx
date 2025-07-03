@@ -11,14 +11,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { XIcon } from "lucide-react";
-import { useQuery } from "react-query";
+import { useMemo } from "react";
+import { useQuery, useMutation } from "react-query";
 import { toast } from "sonner";
 
 const cleanCourseName = (name: string) => name.replace(/\n/g, " ");
 const cleanProfName = (prof: string) => prof.replace(/\n/g, "").trim();
 
 export default function CreateGroupPage() {
-  const { data: applicants, refetch } = useQuery(
+  const { data, refetch, isLoading } = useQuery(
     ["readApplicants"],
     readApplicants,
     {
@@ -26,34 +27,49 @@ export default function CreateGroupPage() {
     }
   );
 
-  const handleMatchGroups = async () => {
-    if (!window.confirm("그룹 매칭을 진행하시겠습니까?")) return;
-    try {
-      await teamMatch();
-      refetch();
-      toast.success("매칭 완료!");
-    } catch (error) {
-      toast.error("매칭 실패");
-    }
-  };
-
-  const handleDeleteApplicant = async (sid: string) => {
-    try {
-      await deleteUserForm(sid);
+  const { mutate: deleteUserFormMutation } = useMutation(deleteUserForm, {
+    onSuccess: () => {
       refetch();
       toast.success("삭제 완료!");
-    } catch (error) {
+    },
+    onError: () => {
       toast.error("삭제 실패");
-    }
+    },
+  });
+
+  const handleDeleteApplicant = (sid: string) => {
+    deleteUserFormMutation(sid);
   };
+
+  const { mutate: teamMatchMutation, isLoading: isTeamMatchLoading } =
+    useMutation(teamMatch, {
+      onSuccess: () => {
+        refetch();
+        toast.success("매칭 완료!");
+      },
+      onError: () => {
+        toast.error("매칭 실패");
+      },
+    });
+
+  const handleMatchGroups = () => {
+    teamMatchMutation();
+  };
+
+  const applicants = useMemo(() => {
+    if (!data) return [];
+    return data;
+  }, [data]);
 
   return (
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">신청자 리스트</h1>
-        <Button onClick={handleMatchGroups}>그룹 매칭하기</Button>
+        <Button onClick={handleMatchGroups} disabled={isTeamMatchLoading}>
+          {isTeamMatchLoading ? "매칭 중..." : "그룹 매칭하기"}
+        </Button>
       </div>
-      {!applicants ? (
+      {isLoading ? (
         <div className="flex min-h-[500px] justify-center items-center">
           <Loading />
         </div>

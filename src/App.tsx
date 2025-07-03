@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  useRoleInit();
+  // useRoleInit();
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
