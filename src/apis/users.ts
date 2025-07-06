@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AuthResponse } from "src/interface/token";
 import { TeamMember, User } from "src/interface/user";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 
 type SignUpRequest = Pick<User, "email" | "name" | "sid"> & {
   sub: string;

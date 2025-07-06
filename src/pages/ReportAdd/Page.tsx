@@ -26,8 +26,8 @@ import { teamCourses } from "@/apis/course";
 import { ImageUploadApi as ImageUploadToServer } from "@/apis/rank";
 import { postReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
-import Heic2Jpg from "@/utils/Image/Heic2Jpg";
-import compressedFile from "@/utils/Image/compressFile";
+import Heic2Jpg from "@/utils/Heic2Jpg";
+import compressedImageFile from "@/utils/compressImageFile";
 import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
 import {
   Form,
@@ -44,7 +44,7 @@ import { useQueries } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/const/paths";
 import { toast } from "sonner";
-import { addImagePrefix } from "@/utils/Image/imagePrefix";
+import { addImagePrefix } from "@/utils/imagePrefix";
 
 const reportFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -155,7 +155,7 @@ export default function ReportAddPage() {
 
     const convertedFile = await Heic2Jpg(file[0]);
 
-    const lowCapacityFile = await compressedFile(convertedFile as File);
+    const lowCapacityFile = await compressedImageFile(convertedFile as File);
 
     const reader = new FileReader();
     reader.onloadend = () => {

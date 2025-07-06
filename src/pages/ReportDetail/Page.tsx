@@ -1,7 +1,7 @@
 import { readReportDetail } from "@/apis/manager";
 import { deleteReport } from "@/apis/report";
 
-import { addImagePrefix } from "@/utils/Image/imagePrefix";
+import { addImagePrefix } from "@/utils/imagePrefix";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

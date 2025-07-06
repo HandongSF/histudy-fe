@@ -1,6 +1,6 @@
 import { Course } from "src/interface/course";
 import { SimpleUser } from "src/interface/user";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 
 interface StudyEnrollRequest {
   courseIds: number[];

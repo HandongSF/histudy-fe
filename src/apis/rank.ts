@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 import { Teams } from "../interface/teams";
 
 export const getAllTeamsForRank = async (): Promise<Teams> => {
