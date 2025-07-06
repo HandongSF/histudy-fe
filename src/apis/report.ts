@@ -1,5 +1,5 @@
 import { NewReport, Reports } from "src/interface/report";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 
 export const postReport = async (data: NewReport) => {
   const response = await axiosInstance.post(`/api/team/reports`, data);

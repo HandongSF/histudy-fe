@@ -1,5 +1,5 @@
 import { Group } from "src/interface/group";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 import { SimpleUser, StudyApplyUser, UnAssignedUser } from "src/interface/user";
 import { Report, SimpleReport } from "src/interface/report";
 

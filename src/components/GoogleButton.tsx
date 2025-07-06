@@ -6,13 +6,9 @@ import jwtDecode, { JwtPayload } from "jwt-decode";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useAuth } from "src/hooks/auth";
 import { userLogin } from "../apis/users";
-import {
-  isRegisterModalState,
-  Role,
-  roleState,
-  userLoginInfo,
-} from "../store/atom";
+import { isRegisterModalState, roleState, userLoginInfo } from "../store/atom";
 import { toast } from "sonner";
+import { Role } from "@/interface/role";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;

@@ -1,5 +1,5 @@
 import { Courses } from "src/interface/course";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 
 export const importCourses = async (formData: FormData) => {
   const response = await axiosInstance.post("/api/courses", formData, {

@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, FileText, Trophy, Users } from "lucide-react";
 import { Team } from "@/interface/teams";
-import { addImagePrefix } from "@/utils/Image/imagePrefix";
+import { addImagePrefix } from "@/utils/imagePrefix";
 
 interface GroupGridViewProps {
   studyGroups: Team[];

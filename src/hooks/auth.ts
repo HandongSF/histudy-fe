@@ -1,7 +1,8 @@
 import { paths } from "@/const/paths";
+import { Role } from "@/interface/role";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { isLoginState, Role, roleState } from "src/store/atom";
+import { isLoginState, roleState } from "src/store/atom";
 
 export function useAuth() {
   const setIsLogin = useSetRecoilState(isLoginState);

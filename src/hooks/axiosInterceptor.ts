@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 
 import { useAuth } from "./auth";
-import axiosInstance, { requestHandler } from "src/apis/axiosInstance";
+import axiosInstance, { requestHandler } from "@/utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { AxiosError, AxiosResponse } from "axios";
 
