@@ -1,6 +1,7 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import { JwtHIStudyPayload } from "@/components/GoogleButton";
+import { Role } from "@/interface/role";
 
 const { persistAtom } = recoilPersist({
   key: "localStorage", //원하는 key 값 입력
@@ -22,8 +23,6 @@ export const userLoginInfo = atom<JwtHIStudyPayload | null>({
   key: "userLoginInfo",
   default: null,
 });
-
-export type Role = "MEMBER" | "USER" | "ADMIN" | "NONUSER";
 
 export const roleState = atom<Role>({
   key: "role",
