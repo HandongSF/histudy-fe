@@ -9,6 +9,7 @@ import { useQuery } from "react-query";
 import StatsDashboard from "./components/StatsDashBoard";
 import { WaveLoading } from "@/components/WaveLoading";
 import { NoData } from "@/components/NoData";
+import SignUpDialog from "@/components/SignUpDialog";
 export default function HomePage() {
   const { data, isLoading } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
     cacheTime: 10 * 60 * 1000,
@@ -76,6 +77,7 @@ export default function HomePage() {
           </section>
         </div>
       </div>
+      <SignUpDialog />
     </div>
   );
 }
