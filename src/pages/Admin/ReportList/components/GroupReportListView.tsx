@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { paths } from "@/const/paths";
 import { Report } from "@/interface/report";
+import { getFormattedLocaleString } from "@/utils/DateFormat";
 import { ChevronRight, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -107,7 +108,7 @@ export default function GroupReportListUserView({
                       </div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
-                      {report.regDate}
+                      {getFormattedLocaleString(report.regDate)}
                     </TableCell>
                     <TableCell>
                       <ChevronRight className="h-4 w-4 text-muted-foreground" />

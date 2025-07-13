@@ -38,7 +38,7 @@ export function StepAddCourses({
 }: StepAddCoursesProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 250);
 
   const { data: searchResults } = useQuery(
     ["searchCourse", debouncedSearchTerm],
@@ -48,7 +48,6 @@ export function StepAddCourses({
   const handleAddCourse = (course: Course) => {
     if (selectedCourses.length < MAX_COURSES) {
       onUpdateCourses([...selectedCourses, course]);
-      setSearchTerm("");
     } else {
       toast.error(`최대 ${MAX_COURSES}개의 수업만 추가할 수 있습니다.`);
     }
@@ -80,7 +79,6 @@ export function StepAddCourses({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
-          disabled={selectedCourses.length >= MAX_COURSES}
         />
       </div>
 

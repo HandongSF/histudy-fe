@@ -1,5 +1,3 @@
-"use client";
-
 interface WaveLoadingProps {
   width?: number | string;
   height?: number | string;

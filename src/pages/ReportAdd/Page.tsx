@@ -26,9 +26,6 @@ import { teamCourses } from "@/apis/course";
 import { ImageUploadApi as ImageUploadToServer } from "@/apis/rank";
 import { postReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
-import Heic2Jpg from "@/utils/Heic2Jpg";
-import compressedImageFile from "@/utils/compressImageFile";
-import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
 import {
   Form,
   FormControl,
@@ -37,14 +34,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { paths } from "@/const/paths";
 import { NewReport } from "@/interface/report";
+import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
+import Heic2Jpg from "@/utils/Heic2Jpg";
+import compressedImageFile from "@/utils/compressImageFile";
+import { addImagePrefix } from "@/utils/imagePrefix";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useRef } from "react";
-import { useQueries } from "react-query";
+import { useQueries, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { paths } from "@/const/paths";
 import { toast } from "sonner";
-import { addImagePrefix } from "@/utils/imagePrefix";
 
 const reportFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -67,6 +67,7 @@ type ReportFormState = z.infer<typeof reportFormSchema>;
 
 export default function ReportAddPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const form = useForm<ReportFormState>({
     resolver: zodResolver(reportFormSchema),
@@ -109,7 +110,8 @@ export default function ReportAddPage() {
       courses: formData.courses,
     } as NewReport;
     //  modifyReport(state.id, newReport) :
-    postReport(newReport);
+    await postReport(newReport);
+    queryClient.invalidateQueries({ queryKey: ["reports"] });
 
     toast.success("보고서 제출이 완료되었습니다.");
     navigate(paths.reports.root);

@@ -3,17 +3,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, BookOpenText, Clock, FileText } from "lucide-react";
 
 const overallData = {
-  members: 12345,
-  studies: 678,
-  hours: 98765,
-  reports: 1234,
+  members: 715,
+  studies: 132,
+  hours: 10151,
+  reports: 1261,
 };
 
 const semesterData = {
   members: 123,
-  studies: 67,
-  hours: 987,
-  reports: 123,
+  studies: 34,
+  hours: 3387,
+  reports: 304,
 };
 
 interface StatCardProps {

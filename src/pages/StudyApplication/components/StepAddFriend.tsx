@@ -30,7 +30,7 @@ export function StepAddFriends({
 }: StepAddFriendsProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 250);
 
   const { data: searchResults } = useQuery(
     ["searchUser", debouncedSearchTerm],
@@ -74,7 +74,6 @@ export function StepAddFriends({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
-          disabled={selectedFriends.length >= MAX_FRIENDS}
         />
       </div>
 

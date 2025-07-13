@@ -1,5 +1,4 @@
 import { getMyTeamReport } from "@/apis/report";
-import SpinnerLoading from "@/components/SpinnerLoading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { WaveLoading } from "@/components/WaveLoading";
 import { paths } from "@/const/paths";
 import { Report } from "@/interface/report";
+import { getFormattedLocaleString } from "@/utils/DateFormat";
 import { ChevronRight, Clock, PlusCircle, Users } from "lucide-react";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
@@ -133,7 +133,7 @@ export default function ReportListUserPage() {
                         </div>
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
-                        {report.regDate}
+                        {getFormattedLocaleString(report.regDate)}
                       </TableCell>
                       <TableCell>
                         <ChevronRight className="h-4 w-4 text-muted-foreground" />
