@@ -21,6 +21,7 @@ import ReportListUserPage from "@/pages/ReportList/Page";
 import StudyApplicationPage from "@/pages/StudyApplication/Page";
 import RootLayout from "./RootLayout";
 import { ErrorElement } from "./ErrorElement";
+import HistateTest from "./histate-test";
 
 export const router = createBrowserRouter([
   {
@@ -86,6 +87,16 @@ export const router = createBrowserRouter([
         path: paths.admin.manageReport,
         element: <PrivateRoute component={<ReportListAdminPage />} />,
       },
+
+      // 테스트를 위한 공간
+      ...(process.env.NODE_ENV === "development"
+        ? [
+            {
+              path: paths.test.state,
+              element: <HistateTest />,
+            },
+          ]
+        : []),
 
       // Else
       { path: paths.notFound, element: <NotFoundPage /> },

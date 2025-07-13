@@ -6,6 +6,7 @@ const ROOTS = {
   ranks: "/ranks",
   profile: "/profile",
   myGroup: "/my-group",
+  test: "test",
   else: "*",
 };
 
@@ -37,6 +38,9 @@ export const paths = {
   },
   myGroup: {
     root: `${ROOTS.myGroup}`,
+  },
+  test: {
+    state: `${ROOTS.test}/state`
   },
   notFound: `${ROOTS.else}`,
 };
