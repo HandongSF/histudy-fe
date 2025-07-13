@@ -140,7 +140,6 @@ const navGroupsData: NavGroup[] = [
 function RoleSwitcher() {
   const [role, setRole] = useHIState(roleState);
 
-  console.log(role);
   return (
     <div className="p-3 group-data-[collapsible=icon]:p-2">
       <Select

@@ -86,8 +86,6 @@ export default function ReportAddPage() {
   form.watch(["previewImages", "blobImages"]);
 
   const onValid = async (formData: ReportFormState) => {
-    console.log(formData);
-
     for (let i = 0; i < formData.blobImages.length; ++i) {
       const imageForm = new FormData();
       imageForm.append("image", formData.blobImages[i]);

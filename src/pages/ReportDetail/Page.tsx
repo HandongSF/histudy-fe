@@ -250,10 +250,6 @@ export default function ReportDetailPage() {
                     src={addImagePrefix(image.url)}
                     alt={`인증 사진 ${image.id}`}
                     className="w-full h-full object-cover rounded-md border hover:shadow-md transition-shadow cursor-pointer"
-                    onClick={() => {
-                      // 이미지 확대 보기 모달 열기
-                      console.log(`Open image modal for image ${image.id}`);
-                    }}
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-md" />
                 </div>

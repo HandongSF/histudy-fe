@@ -17,14 +17,11 @@ export class HIStateManager<T> implements StateManager<T> {
   }
 
   setState = (param: SetStateParam<T>) => {
-    console.log("setState", param);
     if (param instanceof Function) {
       const newState = param(this.state);
       this.state = newState;
     } else {
       this.state = param;
-
-      console.log("this.state", this.state);
     }
     this.emitChange();
   };

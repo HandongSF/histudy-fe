@@ -58,7 +58,6 @@ export default function SignUpDialog() {
       };
 
       const res = await userSignup(newUser);
-      console.log("res", res);
       login(res.tokens.accessToken, res.tokens.refreshToken, res.role);
       setIsDialogOpen(false);
       setUserLoginInfo(null);
