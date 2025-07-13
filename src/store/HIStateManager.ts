@@ -1,36 +1,35 @@
-export interface State<T> {
-  value: T;
-}
 type StateListener = () => void;
 type SetStateParam<T> = T | ((prev: T) => T);
 
 export interface StateManager<T> {
   setState: (newValue: SetStateParam<T>) => void;
-  getState: () => State<T>;
+  getState: () => T;
   subscribe: (listener: StateListener) => VoidFunction;
   emitChange: VoidFunction;
 }
 
 export class HIStateManager<T> implements StateManager<T> {
-  private state: State<T>;
+  private state: T;
   private listeners: StateListener[] = [];
 
-  constructor(initialState: State<T>) {
+  constructor(initialState: T) {
     this.state = initialState;
   }
 
   setState = (param: SetStateParam<T>) => {
+    console.log("setState", param);
     if (param instanceof Function) {
-      const newState = { value: param(this.state.value) };
+      const newState = param(this.state);
       this.state = newState;
     } else {
-      this.state = { value: param };
+      this.state = param;
+
+      console.log("this.state", this.state);
     }
     this.emitChange();
   };
 
   getState = () => {
-    console.log(this.state);
     return this.state;
   };
 

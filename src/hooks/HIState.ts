@@ -1,4 +1,4 @@
-import { HIStateManager, State } from "@/store/HIStateManager";
+import { HIStateManager } from "@/store/HIStateManager";
 import { useSyncExternalStore } from "react";
 
 interface Atom<T> {
@@ -15,23 +15,25 @@ type SetterOrUpdater<T> = (valOrUpdater: ((currVal: T) => T) | T) => void;
 
 const globalStateMap = new Map<string, GlobalStateMapValue<any>>();
 
-export function useHIState<T>(atom: Atom<T>): [State<T>, SetterOrUpdater<T>] {
+export function useHIState<T>(atom: Atom<T>): [T, SetterOrUpdater<T>] {
   const store = globalStateMap.get(atom.key)!.stateManager;
 
-  const value = useSyncExternalStore(
-    (l) => store.subscribe(l),
-    () => store.getState()
-  );
+  const value = useSyncExternalStore(store.subscribe, store.getState);
 
   return [value, store.setState];
 }
 
-export function useHIStateValue<T>(atom: Atom<T>): State<T> {
-  return useHIState(atom)[0];
+export function useHIStateValue<T>(atom: Atom<T>): T {
+  const store = globalStateMap.get(atom.key)!.stateManager;
+
+  const value = useSyncExternalStore(store.subscribe, store.getState);
+
+  return value;
 }
 
 export function useSetHiState<T>(atom: Atom<T>): SetterOrUpdater<T> {
-  return useHIState(atom)[1];
+  const globalStateMapValue = globalStateMap.get(atom.key)!;
+  return globalStateMapValue.stateManager.setState;
 }
 
 export function createHISAtom<T>(atom: Atom<T>): Atom<T> {
@@ -40,7 +42,7 @@ export function createHISAtom<T>(atom: Atom<T>): Atom<T> {
     return globalStateMap.get(atom.key)!.atom;
   }
 
-  const stateManager = new HIStateManager<T>({ value: atom.default });
+  const stateManager = new HIStateManager<T>(atom.default);
 
   globalStateMap.set(atom.key, {
     atom,
