@@ -1,27 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute";
 
 import { paths } from "@/const/paths";
-import NotFoundPage from "@/pages/404";
-import CreateGroupPage from "@/pages/Admin/CreateGroup/Page";
-import ManageClassPage from "@/pages/Admin/ManageClass/Page";
-import MatchedGroupListPage from "@/pages/Admin/ManageGroup/Page";
-import ManageStudentPage from "@/pages/Admin/ManageStudent/Page";
-import ManageStudyPage from "@/pages/Admin/ManageStudy/Page";
-import ReportListAdminPage from "@/pages/Admin/ReportList/Page";
-import HomePage from "@/pages/Home/Page";
-import StudyGroupInfoPage from "@/pages/MyStudyGroup/Page";
-import OverviewApplicationPage from "@/pages/OverviewApplication/Page";
-import ProfilePage from "@/pages/Profile/Page";
-import RankPage from "@/pages/Rank/Page";
-import ReportAddPage from "@/pages/ReportAdd/Page";
-import ReportDetailPage from "@/pages/ReportDetail/Page";
-import ReportEditPage from "@/pages/ReportEdit/Page";
-import ReportListUserPage from "@/pages/ReportList/Page";
-import StudyApplicationPage from "@/pages/StudyApplication/Page";
-import RootLayout from "./RootLayout";
 import { ErrorElement } from "./ErrorElement";
-import HistateTest from "./histate-test";
+import RootLayout from "./RootLayout";
 
 export const router = createBrowserRouter([
   {
@@ -29,63 +10,101 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorElement />,
     children: [
-      { path: paths.root, element: <HomePage /> },
-      { path: paths.ranks.root, element: <RankPage /> },
+      {
+        path: paths.root,
+        lazy: async () => ({
+          Component: (await import("@/pages/Home/Page")).default,
+        }),
+      },
+      {
+        path: paths.ranks.root,
+        lazy: async () => ({
+          Component: (await import("@/pages/Rank/Page")).default,
+        }),
+      },
       {
         path: paths.reports.root,
-        element: <PrivateRoute component={<ReportListUserPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/ReportList/Page")).default,
+        }),
       },
       {
         path: paths.reports.add,
-        element: <PrivateRoute component={<ReportAddPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/ReportAdd/Page")).default,
+        }),
       },
       {
         path: paths.reports.oneReport(":id"),
-        element: <PrivateRoute component={<ReportDetailPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/ReportDetail/Page")).default,
+        }),
       },
       {
         path: paths.reports.edit(":id"),
-        element: <PrivateRoute component={<ReportEditPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/ReportEdit/Page")).default,
+        }),
       },
       {
         path: paths.application.root,
-        element: <PrivateRoute component={<OverviewApplicationPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/OverviewApplication/Page")).default,
+        }),
       },
       {
         path: paths.application.add,
-        element: <PrivateRoute component={<StudyApplicationPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/StudyApplication/Page")).default,
+        }),
       },
       {
         path: paths.myGroup.root,
-        element: <PrivateRoute component={<StudyGroupInfoPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/MyStudyGroup/Page")).default,
+        }),
       },
       {
         path: paths.profile.root,
-        element: <PrivateRoute component={<ProfilePage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/Profile/Page")).default,
+        }),
       },
       {
         path: paths.admin.manageClass,
-        element: <PrivateRoute component={<ManageClassPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/Admin/ManageClass/Page")).default,
+        }),
       },
       {
         path: paths.admin.manageGroup,
-        element: <PrivateRoute component={<MatchedGroupListPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/Admin/ManageGroup/Page")).default,
+        }),
       },
       {
         path: paths.admin.manageStudy,
-        element: <PrivateRoute component={<ManageStudyPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/Admin/ManageStudy/Page")).default,
+        }),
       },
       {
         path: paths.admin.createGroup,
-        element: <PrivateRoute component={<CreateGroupPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/Admin/CreateGroup/Page")).default,
+        }),
       },
       {
         path: paths.admin.manageStudent,
-        element: <PrivateRoute component={<ManageStudentPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/Admin/ManageStudent/Page")).default,
+        }),
       },
       {
         path: paths.admin.manageReport,
-        element: <PrivateRoute component={<ReportListAdminPage />} />,
+        lazy: async () => ({
+          Component: (await import("@/pages/Admin/ReportList/Page")).default,
+        }),
       },
 
       // 테스트를 위한 공간
@@ -93,13 +112,20 @@ export const router = createBrowserRouter([
         ? [
             {
               path: paths.test.state,
-              element: <HistateTest />,
+              lazy: async () => ({
+                Component: (await import("./histate-test")).default,
+              }),
             },
           ]
         : []),
 
       // Else
-      { path: paths.notFound, element: <NotFoundPage /> },
+      {
+        path: paths.notFound,
+        lazy: async () => ({
+          Component: (await import("@/pages/404")).default,
+        }),
+      },
     ],
   },
 ]);
