@@ -17,17 +17,6 @@ export interface JwtHIStudyPayload extends JwtPayload {
   name: string;
   email: string;
 }
-// TODO: 테스트 후 적용
-const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
-  if (
-    decodedToken.hd !== "handong.edu" &&
-    decodedToken.hd !== "handong.ac.kr"
-  ) {
-    toast.error("한동대학교 이메일로 로그인해주세요.");
-    window.location.href = paths.root;
-    return;
-  }
-};
 
 export default function GoogleButton() {
   // const role = useHIStateValue(roleState);
@@ -45,7 +34,14 @@ export default function GoogleButton() {
     const decodedToken = jwtDecode(
       credentialResponse.credential
     ) as JwtHIStudyPayload;
-    handongEmailValidate(decodedToken);
+
+    if (
+      decodedToken.hd !== "handong.edu" &&
+      decodedToken.hd !== "handong.ac.kr"
+    ) {
+      toast.error("한동대학교 이메일로 로그인해주세요.");
+      return;
+    }
 
     if (!decodedToken.sub) {
       toast.error("로그인에 실패하였습니다.");

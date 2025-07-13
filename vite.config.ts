@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsDir: env.VITE_PUBLIC_URL
         ? `${env.VITE_PUBLIC_URL.slice(1)}/assets`
-        : "/assets",
+        : "assets",
     },
     resolve: {
       alias: {
