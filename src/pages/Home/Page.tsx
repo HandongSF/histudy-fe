@@ -30,14 +30,21 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-muted/40">
       <div className="min-h-screen ">
         <div className="container mx-auto py-8 px-4 flex flex-col gap-8">
-          <div className="container mx-auto">
-            <img
-              src="/img/banner2.png"
-              alt="플랫폼 배너"
-              width={1200}
-              height={300}
-              className="w-full h-auto max-h-64 md:max-h-96 object-cover rounded-lg"
-            />
+          <div className="w-full rounded-lg h-[350px] bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-blue-50/30"></div>
+            <div className="absolute top-10 left-10 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
+            <div className="absolute bottom-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+
+            <div className="relative z-10 text-center text-slate-700 px-4">
+              <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+                배너를 통해 여러분의
+                <br />
+                <span className="text-blue-600">동아리를 홍보해주세요</span>
+              </h1>
+              <p className="text-base md:text-lg opacity-80 max-w-2xl mx-auto">
+                우리 동아리의 특별한 활동과 가치를 더 많은 사람들에게 알려보세요
+              </p>
+            </div>
           </div>
 
           <section className="container mx-auto flex flex-col gap-8">

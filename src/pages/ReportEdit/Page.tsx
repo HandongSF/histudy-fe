@@ -41,7 +41,7 @@ import { paths } from "@/const/paths";
 import { NewReport } from "@/interface/report";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useRef } from "react";
-import { useQueries, useQuery } from "react-query";
+import { useQueries, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { addImagePrefix } from "@/utils/imagePrefix";
@@ -70,6 +70,8 @@ type ReportFormState = z.infer<typeof reportFormSchema>;
 
 export default function ReportEditPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const { id } = useParams() as { id: string };
   const { data: report, isLoading } = useQuery({
     queryKey: ["report", id],
@@ -129,7 +131,8 @@ export default function ReportEditPage() {
       images: form.getValues("images"),
       courses: formData.courses,
     } as NewReport;
-    modifyReport(+id, newReport);
+    await modifyReport(+id, newReport);
+    queryClient.invalidateQueries({ queryKey: ["reports"] });
 
     toast.success("보고서 제출이 완료되었습니다.");
     navigate(paths.reports.root);

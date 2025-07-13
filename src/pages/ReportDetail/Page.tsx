@@ -11,6 +11,7 @@ import { useHIStateValue } from "@/hooks/HIState";
 import { Report } from "@/interface/report";
 import { SimpleUser } from "@/interface/user";
 import { roleState } from "@/store/HISAtom";
+import { getFormattedLocaleString } from "@/utils/DateFormat";
 import { addImagePrefix } from "@/utils/imagePrefix";
 import {
   ArrowLeft,
@@ -119,26 +120,28 @@ export default function ReportDetailPage() {
           </Button>
           <h1 className="text-xl font-bold">{report?.title}</h1>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleEdit}
-            className="flex items-center gap-1.5 px-2.5"
-          >
-            <Edit className="h-3.5 w-3.5" />
-            <span className="text-xs">수정</span>
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleDelete}
-            className="flex items-center gap-1.5 px-2.5"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            <span className="text-xs">삭제</span>
-          </Button>
-        </div>
+        {role === "MEMBER" && (
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleEdit}
+              className="flex items-center gap-1.5 px-2.5"
+            >
+              <Edit className="h-3.5 w-3.5" />
+              <span className="text-xs">수정</span>
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDelete}
+              className="flex items-center gap-1.5 px-2.5"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              <span className="text-xs">삭제</span>
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -162,7 +165,9 @@ export default function ReportDetailPage() {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">작성일</span>
-                <span className="font-medium">{report?.regDate}</span>
+                <span className="font-medium">
+                  {getFormattedLocaleString(report?.regDate)}
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -203,7 +208,9 @@ export default function ReportDetailPage() {
                   className="text-xs flex items-center justify-between"
                 >
                   <span className="font-medium">{course.name}</span>
-                  <span className="text-muted-foreground">{course.prof}</span>
+                  <span className="text-muted-foreground whitespace-nowrap">
+                    {course.prof}
+                  </span>
                 </div>
               ))}
             </CardContent>

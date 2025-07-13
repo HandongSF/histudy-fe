@@ -25,16 +25,11 @@ export default function ManageStudyPage() {
 
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const handleViewReport = (groupId: number) => {
-    console.log(`그룹 ${groupId} 보고서 열람`);
-    // 여기에 보고서 열람 페이지로 이동하거나 모달을 띄우는 로직을 구현합니다.
-  };
-
   const filteredActivities = React.useMemo(() => {
     if (!activities) return [];
     return activities.filter((activity) => {
       const searchTermLower = searchTerm.toLowerCase();
-      const groupMatch = activity.group.toString().includes(searchTermLower);
+      const groupMatch = activity.tag.toString().includes(searchTermLower);
       const memberMatch = activity.members.some(
         (member) =>
           member.name.toLowerCase().includes(searchTermLower) ||

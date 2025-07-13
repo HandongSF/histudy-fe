@@ -1,11 +1,10 @@
 import { readGroupReport } from "@/apis/manager";
-import SpinnerLoading from "@/components/SpinnerLoading";
-import { NoData } from "@/components/NoData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { WaveLoading } from "@/components/WaveLoading";
 import { paths } from "@/const/paths";
 import { SimpleReport } from "@/interface/report";
+import { getFormattedLocaleString } from "@/utils/DateFormat";
 import { ChevronRight, Clock } from "lucide-react";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
@@ -107,7 +106,9 @@ export default function ReportListAdminPage() {
                         </div>
                       </TableCell>
 
-                      <TableCell>{report.regDate}</TableCell>
+                      <TableCell>
+                        {getFormattedLocaleString(report.regDate)}
+                      </TableCell>
                       <TableCell>
                         <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </TableCell>

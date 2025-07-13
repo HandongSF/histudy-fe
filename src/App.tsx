@@ -23,7 +23,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
 
-        <Toaster />
+        <Toaster position="top-center" richColors />
       </QueryClientProvider>
     </GoogleOAuthProvider>
   );

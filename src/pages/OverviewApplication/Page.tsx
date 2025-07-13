@@ -23,10 +23,6 @@ export default function OverviewApplicationPage() {
     refetchOnWindowFocus: false,
   });
 
-  if (isLoading) {
-    return <WaveLoading />;
-  }
-
   const myApplication = useMemo(() => {
     if (!data)
       return {
@@ -39,6 +35,10 @@ export default function OverviewApplicationPage() {
 
   const hasNoApplications =
     myApplication.courses.length === 0 && myApplication.friends.length === 0;
+
+  if (isLoading) {
+    return <WaveLoading />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
