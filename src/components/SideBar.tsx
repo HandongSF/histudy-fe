@@ -211,10 +211,7 @@ export function CommonSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="flex-1 p-3 space-y-1">
-        {" "}
-        {/* 그룹 간 간격 미세 조정 */}
-        {/* 데모용 역할 변경 UI */}
-        <RoleSwitcher />
+        {/* <RoleSwitcher /> */}
         {filteredNavGroups.map((group) => (
           <SidebarGroup key={group.title}>
             <SidebarGroupLabel

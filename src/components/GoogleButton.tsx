@@ -30,7 +30,7 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
 };
 
 export default function GoogleButton() {
-  const role = useHIStateValue(roleState);
+  // const role = useHIStateValue(roleState);
 
   const setIsRegisterModalState = useSetHiState(isRegisterModalState);
   const setUserLoginInfo = useSetHiState(userLoginInfoState);
@@ -45,13 +45,13 @@ export default function GoogleButton() {
     const decodedToken = jwtDecode(
       credentialResponse.credential
     ) as JwtHIStudyPayload;
-    // handongEmailValidate(decodedToken);
+    handongEmailValidate(decodedToken);
 
     if (!decodedToken.sub) {
       toast.error("로그인에 실패하였습니다.");
       return;
     }
-    // TODO: 테스트 후 삭제
+
     // const testSub = {
     //   ADMIN: "test3",
     //   MEMBER: "test2",
