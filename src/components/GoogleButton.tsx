@@ -3,12 +3,14 @@
 import { paths } from "@/const/paths";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import jwtDecode, { JwtPayload } from "jwt-decode";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { useAuth } from "src/hooks/auth";
 import { userLogin } from "../apis/users";
-import { isRegisterModalState, roleState, userLoginInfo } from "../store/atom";
+import { isRegisterModalState, userLoginInfo } from "../store/atom";
 import { toast } from "sonner";
 import { Role } from "@/interface/role";
+import { roleState } from "@/store/HISAtom";
+import { useHIStateValue } from "@/hooks/HIState";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
@@ -27,7 +29,7 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
 };
 
 export default function GoogleButton() {
-  const role = useRecoilValue(roleState);
+  const role = useHIStateValue(roleState);
   const setRegisterModalState = useSetRecoilState(isRegisterModalState);
   const setUserLoginInfo = useSetRecoilState(userLoginInfo);
   const { login } = useAuth();

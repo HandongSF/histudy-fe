@@ -23,7 +23,8 @@ import {
 import { paths } from "@/const/paths";
 import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
-import { Role, roleState } from "@/store/atom";
+import { Role } from "@/interface/role";
+import { roleState } from "@/store/HISAtom";
 import {
   BookOpen,
   FileText,
@@ -39,7 +40,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useHIState, useHIStateValue } from "@/hooks/HIState";
 
 interface NavItem {
   name: string;
@@ -137,7 +138,9 @@ const navGroupsData: NavGroup[] = [
 
 // 데모용 역할 변경 컴포넌트
 function RoleSwitcher() {
-  const [role, setRole] = useRecoilState(roleState);
+  const [role, setRole] = useHIState(roleState);
+
+  console.log(role);
   return (
     <div className="p-3 group-data-[collapsible=icon]:p-2">
       <Select
@@ -163,7 +166,7 @@ function RoleSwitcher() {
 
 export function CommonSidebar() {
   const pathname = useLocation().pathname;
-  const role = useRecoilValue(roleState);
+  const role = useHIStateValue(roleState);
 
   const isLogin = role !== "NONUSER";
   const isActive = (href: string) => {

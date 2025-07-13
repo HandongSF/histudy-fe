@@ -1,14 +1,17 @@
 import { readReportDetail } from "@/apis/manager";
 import { deleteReport } from "@/apis/report";
 
-import { addImagePrefix } from "@/utils/imagePrefix";
+import { NoData } from "@/components/NoData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { WaveLoading } from "@/components/WaveLoading";
 import { paths } from "@/const/paths";
+import { useHIStateValue } from "@/hooks/HIState";
 import { Report } from "@/interface/report";
 import { SimpleUser } from "@/interface/user";
-import { roleState } from "@/store/atom";
+import { roleState } from "@/store/HISAtom";
+import { addImagePrefix } from "@/utils/imagePrefix";
 import {
   ArrowLeft,
   BookOpen,
@@ -22,10 +25,7 @@ import {
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 import { toast } from "sonner";
-import { WaveLoading } from "@/components/WaveLoading";
-import { NoData } from "@/components/NoData";
 
 export default function ReportDetailPage() {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export default function ReportDetailPage() {
 
   const { id = null } = useParams();
 
-  const role = useRecoilValue(roleState);
+  const role = useHIStateValue(roleState);
 
   const isAdmin = useMemo(() => role === "ADMIN", [role]);
 

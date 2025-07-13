@@ -159,12 +159,8 @@ function HIStateMultiCounter({ id }: { id: number }) {
       >
         -
       </Button>
-      <span className="w-8 text-center font-mono">{count.value}</span>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => setCounter(count.value + 1)}
-      >
+      <span className="w-8 text-center font-mono">{count}</span>
+      <Button size="sm" variant="outline" onClick={() => setCounter(count + 1)}>
         +
       </Button>
       <span className="text-xs text-blue-600">HIState #{id}</span>
@@ -192,20 +188,20 @@ function HIStateStateUsingComponent({ id }: { id: number }) {
       <div className="flex items-center justify-between">
         <div>
           <span className="text-sm text-blue-600">HIState-Using #{id}</span>
-          <p className="text-xs text-blue-500">값: {count.value}</p>
+          <p className="text-xs text-blue-500">값: {count}</p>
         </div>
         <div className="flex gap-1">
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setCounter(count.value + 1)}
+            onClick={() => setCounter(count + 1)}
           >
             +
           </Button>
           <Button
             size="sm"
             variant="outline"
-            onClick={() => setCounter(count.value - 1)}
+            onClick={() => setCounter(count - 1)}
           >
             -
           </Button>
@@ -223,10 +219,10 @@ function HIStateParentWithStateContent() {
     <>
       <div className="p-3 bg-blue-50 rounded border-l-4 border-blue-400">
         <p className="text-sm">
-          HIState: {count.value} | Local: {localCount}
+          HIState: {count} | Local: {localCount}
         </p>
         <div className="flex gap-2 mt-2">
-          <Button size="sm" onClick={() => setCounter(count.value + 1)}>
+          <Button size="sm" onClick={() => setCounter(count + 1)}>
             HIState +
           </Button>
           <Button
@@ -268,7 +264,7 @@ function HIStateChildWithState() {
   return (
     <div className="p-2 bg-blue-50 rounded border-l-2 border-blue-300">
       <p className="text-sm text-blue-700">자식 (HIState 사용)</p>
-      <p className="text-xs text-blue-600">값: {count.value}</p>
+      <p className="text-xs text-blue-600">값: {count}</p>
     </div>
   );
 }

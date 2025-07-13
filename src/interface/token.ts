@@ -1,4 +1,4 @@
-import { Role } from "src/store/atom";
+import { Role } from "@/interface/role";
 
 export interface AuthResponse {
   isRegistered: boolean;

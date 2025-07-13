@@ -1,11 +1,11 @@
 import { paths } from "@/const/paths";
 import { Role } from "@/interface/role";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { roleState } from "src/store/atom";
+import { roleState } from "src/store/HISAtom";
+import { useSetHiState } from "./HIState";
 
 export function useAuth() {
-  const setRole = useSetRecoilState(roleState);
+  const setRole = useSetHiState(roleState);
   const navigate = useNavigate();
 
   return {

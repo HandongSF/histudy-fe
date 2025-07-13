@@ -1,10 +1,10 @@
-import jwtDecode from "jwt-decode";
-import { useSetRecoilState } from "recoil";
 import { JwtHIStudyPayload } from "@/components/GoogleButton";
-import { roleState } from "src/store/atom";
+import jwtDecode from "jwt-decode";
+import { roleState } from "src/store/HISAtom";
+import { useSetHiState } from "./HIState";
 
 export function useRoleInit() {
-  const setRole = useSetRecoilState(roleState);
+  const setRole = useSetHiState(roleState);
 
   const token = localStorage.getItem("accessToken");
   if (!token) {

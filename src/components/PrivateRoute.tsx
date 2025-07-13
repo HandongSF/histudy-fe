@@ -1,8 +1,9 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 
-import { Role, roleState } from "../store/atom";
+import { Role } from "@/interface/role";
+import { roleState } from "@/store/HISAtom";
 import { paths } from "@/const/paths";
+import { useHIStateValue } from "@/hooks/HIState";
 
 interface PrivateRouteProps {
   component: React.ReactNode;
@@ -24,7 +25,7 @@ const validateByAuth = (access: Role, pathname: string) => {
 };
 
 function PrivateRoute({ component }: PrivateRouteProps) {
-  const role = useRecoilValue(roleState);
+  const role = useHIStateValue(roleState);
   const location = useLocation();
 
   const isValid = validateByAuth(role, location.pathname);
