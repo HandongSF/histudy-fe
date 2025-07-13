@@ -1,5 +1,4 @@
 import { getProfile } from "@/apis/users";
-import { NoData } from "@/components/NoData";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
@@ -9,11 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { WaveLoading } from "@/components/WaveLoading";
-import { roleState } from "@/store/atom";
+import { useHIStateValue } from "@/hooks/HIState";
+import { roleState } from "@/store/HISAtom";
+
 import { BadgeIcon as IdCard, Mail, User } from "lucide-react";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
-import { useRecoilValue } from "recoil";
 
 const roleMap = {
   USER: "학생",
@@ -28,7 +28,7 @@ export default function ProfilePage() {
     refetchOnWindowFocus: false,
   });
 
-  const role = useRecoilValue(roleState);
+  const role = useHIStateValue(roleState);
 
   const userInfo = useMemo(() => {
     if (!data)

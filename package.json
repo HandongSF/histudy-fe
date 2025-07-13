@@ -38,8 +38,6 @@
     "react-hook-form": "^7.50.1",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.11.1",
-    "recoil": "^0.7.7",
-    "recoil-persist": "^4.2.0",
     "sonner": "^2.0.5",
     "styled-components": "^5.3.11",
     "tailwind-merge": "^3.3.1",

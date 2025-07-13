@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WaveLoading } from "@/components/WaveLoading";
 import { paths } from "@/const/paths";
+import { useHIStateValue } from "@/hooks/HIState";
 import { Report } from "@/interface/report";
 import { SimpleUser } from "@/interface/user";
-import { roleState } from "@/store/atom";
+import { roleState } from "@/store/HISAtom";
 import { getFormattedLocaleString } from "@/utils/DateFormat";
 import { addImagePrefix } from "@/utils/imagePrefix";
 import {
@@ -25,7 +26,6 @@ import {
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 import { toast } from "sonner";
 
 export default function ReportDetailPage() {
@@ -34,7 +34,7 @@ export default function ReportDetailPage() {
 
   const { id = null } = useParams();
 
-  const role = useRecoilValue(roleState);
+  const role = useHIStateValue(roleState);
 
   const isAdmin = useMemo(() => role === "ADMIN", [role]);
 
@@ -250,10 +250,6 @@ export default function ReportDetailPage() {
                     src={addImagePrefix(image.url)}
                     alt={`인증 사진 ${image.id}`}
                     className="w-full h-full object-cover rounded-md border hover:shadow-md transition-shadow cursor-pointer"
-                    onClick={() => {
-                      // 이미지 확대 보기 모달 열기
-                      console.log(`Open image modal for image ${image.id}`);
-                    }}
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-md" />
                 </div>

@@ -1,18 +1,21 @@
 // GoogleButton.js
 
 import { paths } from "@/const/paths";
+import { useHIStateValue, useSetHiState } from "@/hooks/HIState";
+import { Role } from "@/interface/role";
+import { roleState } from "@/store/HISAtom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import jwtDecode, { JwtPayload } from "jwt-decode";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { toast } from "sonner";
 import { useAuth } from "src/hooks/auth";
 import { userLogin } from "../apis/users";
-import { isRegisterModalState, roleState, userLoginInfo } from "../store/atom";
-import { toast } from "sonner";
-import { Role } from "@/interface/role";
+import { isRegisterModalState, userLoginInfoState } from "../store/HISAtom";
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
   rol: Role;
+  name: string;
+  email: string;
 }
 // TODO: 테스트 후 적용
 const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
@@ -27,9 +30,10 @@ const handongEmailValidate = (decodedToken: JwtHIStudyPayload) => {
 };
 
 export default function GoogleButton() {
-  const role = useRecoilValue(roleState);
-  const setRegisterModalState = useSetRecoilState(isRegisterModalState);
-  const setUserLoginInfo = useSetRecoilState(userLoginInfo);
+  const role = useHIStateValue(roleState);
+
+  const setIsRegisterModalState = useSetHiState(isRegisterModalState);
+  const setUserLoginInfo = useSetHiState(userLoginInfoState);
   const { login } = useAuth();
 
   // const { loginWithCredential } = useAuthContext();
@@ -48,13 +52,16 @@ export default function GoogleButton() {
       return;
     }
     // TODO: 테스트 후 삭제
-    const testSub = {
-      ADMIN: "test3",
-      MEMBER: "test2",
-      USER: "test1",
-    } as Record<Role, string>;
+    // const testSub = {
+    //   ADMIN: "test3",
+    //   MEMBER: "test2",
+    //   USER: "test1",
+    // } as Record<Role, string>;
 
-    userLogin(testSub[role] || decodedToken.sub)
+    userLogin(
+      // testSub[role] ||
+      decodedToken.sub
+    )
       .then((response) => {
         if (response.isRegistered === true) {
           login(
@@ -67,8 +74,7 @@ export default function GoogleButton() {
       // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생
       .catch((error) => {
         if (error.response && error.response.data.isRegistered === false) {
-          // navigate("/");
-          setRegisterModalState(true);
+          setIsRegisterModalState(true);
           setUserLoginInfo(decodedToken);
         }
       });

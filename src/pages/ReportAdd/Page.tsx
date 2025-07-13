@@ -26,6 +26,9 @@ import { teamCourses } from "@/apis/course";
 import { ImageUploadApi as ImageUploadToServer } from "@/apis/rank";
 import { postReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
+import Heic2Jpg from "@/utils/Heic2Jpg";
+import compressedImageFile from "@/utils/compressImageFile";
+import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
 import {
   Form,
   FormControl,
@@ -36,15 +39,12 @@ import {
 } from "@/components/ui/form";
 import { paths } from "@/const/paths";
 import { NewReport } from "@/interface/report";
-import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
-import Heic2Jpg from "@/utils/Heic2Jpg";
-import compressedImageFile from "@/utils/compressImageFile";
-import { addImagePrefix } from "@/utils/imagePrefix";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useRef } from "react";
 import { useQueries, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { addImagePrefix } from "@/utils/imagePrefix";
 
 const reportFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -86,8 +86,6 @@ export default function ReportAddPage() {
   form.watch(["previewImages", "blobImages"]);
 
   const onValid = async (formData: ReportFormState) => {
-    console.log(formData);
-
     for (let i = 0; i < formData.blobImages.length; ++i) {
       const imageForm = new FormData();
       imageForm.append("image", formData.blobImages[i]);
