@@ -2,10 +2,9 @@ import { paths } from "@/const/paths";
 import { Role } from "@/interface/role";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { isLoginState, roleState } from "src/store/atom";
+import { roleState } from "src/store/atom";
 
 export function useAuth() {
-  const setIsLogin = useSetRecoilState(isLoginState);
   const setRole = useSetRecoilState(roleState);
   const navigate = useNavigate();
 
@@ -13,7 +12,6 @@ export function useAuth() {
     logout: () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      setIsLogin(false);
       setRole("NONUSER");
 
       navigate(paths.root);
@@ -21,7 +19,6 @@ export function useAuth() {
     login: (accessToken: string, refreshToken: string, role: Role) => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      setIsLogin(true);
       setRole(role);
     },
   };

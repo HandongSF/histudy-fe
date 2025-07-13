@@ -23,7 +23,7 @@ import {
 import { paths } from "@/const/paths";
 import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
-import { isLoginState, Role, roleState } from "@/store/atom";
+import { Role, roleState } from "@/store/atom";
 import {
   BookOpen,
   FileText,
@@ -165,7 +165,7 @@ export function CommonSidebar() {
   const pathname = useLocation().pathname;
   const role = useRecoilValue(roleState);
 
-  const isLogin = useRecoilValue(isLoginState);
+  const isLogin = role !== "NONUSER";
   const isActive = (href: string) => {
     if (href === paths.root) {
       return pathname === href;
