@@ -24,11 +24,10 @@ import * as z from "zod";
 import { teamCourses } from "@/apis/course";
 import { readReportDetail } from "@/apis/manager";
 import { ImageUploadApi as ImageUploadToServer } from "@/apis/rank";
-import { modifyReport, postReport } from "@/apis/report";
+import { modifyReport } from "@/apis/report";
 import { getMyTeamUsers } from "@/apis/users";
-import Heic2Jpg from "@/utils/Heic2Jpg";
-import compressedImageFile from "@/utils/compressImageFile";
-import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
+import { NoData } from "@/components/NoData";
+import { WaveLoading } from "@/components/WaveLoading";
 import {
   Form,
   FormControl,
@@ -39,14 +38,14 @@ import {
 } from "@/components/ui/form";
 import { paths } from "@/const/paths";
 import { NewReport } from "@/interface/report";
+import { StudyCertificationDialog } from "@/pages/ReportAdd/components/StudyCertificationDialog";
+import Heic2Jpg from "@/utils/Heic2Jpg";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useRef } from "react";
 import { useQueries, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { addImagePrefix } from "@/utils/imagePrefix";
-import { WaveLoading } from "@/components/WaveLoading";
-import { NoData } from "@/components/NoData";
+import { convertBlobToWebp } from "@/utils/convertBlobToWebp";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -171,32 +170,41 @@ export default function ReportEditPage() {
   }
 
   const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (form.getValues("previewImages").length >= 3) {
-      toast.warning("최대 3개의 이미지만 업로드 가능합니다.");
-      return;
-    }
-    const file = e.target.files;
-    if (!file) return null;
-
-    const convertedFile = await Heic2Jpg(file[0]);
-
-    const lowCapacityFile = await compressedImageFile(convertedFile as File);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      form.setValue("previewImages", [
-        ...form.getValues("previewImages"),
-        reader.result as string,
+      e.preventDefault();
+      if (form.getValues("previewImages").length >= 3) {
+        toast.warning("최대 3개의 이미지만 업로드 가능합니다.");
+        return;
+      }
+      const file = e.target.files;
+      if (!file) return null;
+  
+      
+      const targetFile = file[0];
+      let targetBlob;
+      
+      if (targetFile.type === "image/heic" || targetFile.type === "image/heif") {
+          targetBlob = await Heic2Jpg(targetFile);
+          targetBlob = await convertBlobToWebp(targetBlob)
+      } else {
+        targetBlob =  await convertBlobToWebp(targetFile)
+      }
+  
+      const reader = new FileReader();
+  
+      reader.onloadend = () => {
+        form.setValue("previewImages", [
+          ...form.getValues("previewImages"),
+          reader.result as string,
+        ]);
+      };
+  
+      reader.readAsDataURL(targetBlob);
+  
+      form.setValue("blobImages", [
+        ...form.getValues("blobImages"),
+        blobToFile(targetBlob, `histudy_${new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15)}.webp`),
       ]);
     };
-    reader.readAsDataURL(file[0]);
-
-    form.setValue("blobImages", [
-      ...form.getValues("blobImages"),
-      blobToFile(lowCapacityFile, "test.jpg"),
-    ]);
-  };
 
   if (isLoading || coursesLoading || participantsLoading) {
     return <WaveLoading />;
@@ -252,7 +260,6 @@ export default function ReportEditPage() {
                         id="image-upload"
                         type="file"
                         ref={inputRef}
-                        multiple
                         accept="image/*"
                         className="hidden"
                         onChange={onImageChange}
@@ -266,7 +273,7 @@ export default function ReportEditPage() {
                           className="relative group aspect-square"
                         >
                           <img
-                            src={addImagePrefix(url)}
+                            src={url}
                             alt={`새 이미지 ${index + 1}`}
                             className="w-full h-full object-cover rounded-md border"
                           />

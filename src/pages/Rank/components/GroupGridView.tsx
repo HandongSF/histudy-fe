@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, FileText, Trophy, Users } from "lucide-react";
 import { Team } from "@/interface/teams";
-import { addImagePrefix } from "@/utils/imagePrefix";
+import { addImagePrefix, convert2CDNImageUrl } from "@/utils/imagePrefix";
 
 interface GroupGridViewProps {
   studyGroups: Team[];
@@ -31,7 +31,7 @@ export default function GroupGridView({
               <img
                 src={
                   group.thumbnail
-                    ? addImagePrefix(group.thumbnail)
+                    ? convert2CDNImageUrl(addImagePrefix(group.thumbnail))
                     : "/img/mainImg2.png"
                 }
                 alt={`${group.id} 팀 사진`}
