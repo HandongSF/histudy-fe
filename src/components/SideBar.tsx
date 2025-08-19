@@ -190,15 +190,24 @@ export function CommonSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r">
-      <SidebarHeader className="p-3 border-b">
-        <div className="flex justify-between items-center">
+      <SidebarHeader className={cn(
+        "p-3 border-b",
+        "group-data-[collapsible=icon]:px-2"
+      )}>
+        <div className={cn(
+          "flex justify-between items-center",
+          "group-data-[collapsible=icon]:justify-center"
+        )}>
           <Link
             to={paths.root}
-            className="flex items-center gap-3 p-2 rounded-lg transition-colors duration-200 hover:bg-sidebar-accent"
+            className={cn(
+              "flex items-center gap-3 p-2 rounded-lg transition-colors duration-200 hover:bg-sidebar-accent",
+              "group-data-[collapsible=icon]:hidden"
+            )}
           >
             <span
               className={cn(
-                "font-bold text-3xl group-data-[collapsible=icon]:hidden text-blue-400",
+                "font-bold text-3xl text-blue-400",
                 "transition-opacity duration-200 ease-in-out"
               )}
             >
@@ -206,11 +215,18 @@ export function CommonSidebar() {
             </span>
           </Link>
 
-          <SidebarTrigger className="mr-4" />
+          <SidebarTrigger 
+            className={cn(
+              "mr-4 group-data-[collapsible=icon]:mr-0"
+            )} 
+          />
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="flex-1 p-3 space-y-1">
+      <SidebarContent className={cn(
+        "flex-1 p-3 space-y-1",
+        "group-data-[collapsible=icon]:px-2"
+      )}>
         {/* <RoleSwitcher /> */}
         {filteredNavGroups.map((group) => (
           <SidebarGroup key={group.title}>
@@ -225,7 +241,13 @@ export function CommonSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => (
-                  <SidebarMenuItem key={item.name}>
+                  <SidebarMenuItem 
+                    key={item.name}
+                    className={cn(
+                      "group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center",
+                      "group-data-[collapsible=icon]:pl-[8px]"
+                    )}
+                  >
                     <SidebarMenuButton
                       asChild
                       isActive={isActive(item.href)}
@@ -237,6 +259,7 @@ export function CommonSidebar() {
                       }}
                       className={cn(
                         "h-10 justify-start gap-3 px-3",
+                        "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:min-w-10 group-data-[collapsible=icon]:ml-1",
                         "data-[active=true]:bg-primary data-[active=true]:text-primary-foreground data-[active=true]:hover:bg-primary/90",
                         "hover:bg-sidebar-accent"
                       )}
@@ -257,9 +280,12 @@ export function CommonSidebar() {
       </SidebarContent>
 
       {isLogin ? (
-        <SidebarFooter className="p-3 border-t space-y-2">
+        <SidebarFooter className={cn(
+          "p-3 border-t space-y-2",
+          "group-data-[collapsible=icon]:px-2"
+        )}>
           <SidebarMenu>
-            <SidebarMenuItem>
+            <SidebarMenuItem className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
               <Link to="https://forms.gle/aLLsFtDBcMHqX9eQA" target="_blank">
                 <SidebarMenuButton
                   tooltip={{
@@ -268,7 +294,10 @@ export function CommonSidebar() {
                     align: "center",
                     className: "bg-foreground text-background",
                   }}
-                  className="h-10 justify-start gap-3 px-3 hover:bg-sidebar-accent"
+                  className={cn(
+                    "h-10 justify-start gap-3 px-3 hover:bg-sidebar-accent",
+                    "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:min-w-10 group-data-[collapsible=icon]:ml-1"
+                  )}
                 >
                   <LifeBuoy className="size-5 shrink-0" />
 
@@ -277,7 +306,7 @@ export function CommonSidebar() {
               </Link>
             </SidebarMenuItem>
 
-            <SidebarMenuItem>
+            <SidebarMenuItem className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
               <SidebarMenuButton
                 onClick={logout}
                 tooltip={{
@@ -286,7 +315,10 @@ export function CommonSidebar() {
                   align: "center",
                   className: "bg-foreground text-background",
                 }}
-                className="h-10 justify-start gap-3 px-3 text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                className={cn(
+                  "h-10 justify-start gap-3 px-3 text-red-500 hover:bg-red-500/10 hover:text-red-600",
+                  "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:min-w-10 group-data-[collapsible=icon]:ml-1"
+                )}
               >
                 <LogOut className="size-5 shrink-0" />
                 <span className="truncate text-sm font-medium">로그아웃</span>
@@ -295,8 +327,38 @@ export function CommonSidebar() {
           </SidebarMenu>
         </SidebarFooter>
       ) : (
-        <div className="w-full flex justify-center items-center p-4">
-          <GoogleButton />
+        <div className={cn(
+          "w-full flex justify-center items-center p-4",
+          "group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-2"
+        )}>
+          <div className={cn(
+            "w-full max-w-full overflow-hidden",
+            // Collapse 상태에서 GoogleLogin 버튼 스타일링
+            "group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:mx-auto",
+            "group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center",
+            "group-data-[collapsible=icon]:relative group-data-[collapsible=icon]:overflow-hidden",
+            // GoogleLogin 버튼 내부 요소들 숨기기
+            "group-data-[collapsible=icon]:[&>div]:w-10 group-data-[collapsible=icon]:[&>div]:h-10",
+            "group-data-[collapsible=icon]:[&>div]:!min-width-0 group-data-[collapsible=icon]:[&>div]:overflow-hidden",
+            "group-data-[collapsible=icon]:[&>div>div]:w-10 group-data-[collapsible=icon]:[&>div>div]:h-10",
+            "group-data-[collapsible=icon]:[&>div>div]:!min-width-0 group-data-[collapsible=icon]:[&>div>div]:overflow-hidden",
+            "group-data-[collapsible=icon]:[&>div>div]:flex group-data-[collapsible=icon]:[&>div>div]:items-center group-data-[collapsible=icon]:[&>div>div]:justify-center",
+            // Border 제거
+            "group-data-[collapsible=icon]:[&>div]:border-0 group-data-[collapsible=icon]:[&>div]:!border-none",
+            "group-data-[collapsible=icon]:[&>div>div]:border-0 group-data-[collapsible=icon]:[&>div>div]:!border-none",
+            "group-data-[collapsible=icon]:[&_*]:border-0 group-data-[collapsible=icon]:[&_*]:!border-none",
+            // 배경색 통일
+            "group-data-[collapsible=icon]:[&>div]:bg-sidebar group-data-[collapsible=icon]:[&>div]:!bg-sidebar",
+            "group-data-[collapsible=icon]:[&>div>div]:bg-sidebar group-data-[collapsible=icon]:[&>div>div]:!bg-sidebar",
+            "group-data-[collapsible=icon]:[&_*]:bg-sidebar group-data-[collapsible=icon]:[&_*]:!bg-sidebar",
+            // 텍스트 숨기기
+            "group-data-[collapsible=icon]:[&_span]:hidden",
+            // 로고만 보이도록 조정
+            "group-data-[collapsible=icon]:[&_svg]:w-5 group-data-[collapsible=icon]:[&_svg]:h-5",
+            "group-data-[collapsible=icon]:[&_img]:w-5 group-data-[collapsible=icon]:[&_img]:h-5"
+          )}>
+            <GoogleButton />
+          </div>
         </div>
       )}
 
