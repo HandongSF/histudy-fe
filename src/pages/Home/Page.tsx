@@ -10,6 +10,7 @@ import StatsDashboard from "./components/StatsDashBoard";
 import { WaveLoading } from "@/components/WaveLoading";
 import { NoData } from "@/components/NoData";
 import SignUpDialog from "@/components/SignUpDialog";
+import { maskName } from "@/utils/masking";
 export default function HomePage() {
   const { data, isLoading } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
     cacheTime: 10 * 60 * 1000,
@@ -19,7 +20,10 @@ export default function HomePage() {
 
   const teams = useMemo(() => {
     if (!data) return [];
-    return data.teams;
+    return data.teams.map((team) => ({
+      ...team,
+      members: team.members.map((name) => maskName(name)),
+    }));
   }, [data]);
 
   if (isLoading) {

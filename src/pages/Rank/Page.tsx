@@ -6,6 +6,7 @@ import { WaveLoading } from "@/components/WaveLoading";
 import { Team } from "@/interface/teams";
 import GroupGridView from "@/pages/Rank/components/GroupGridView";
 import { GroupListView } from "@/pages/Rank/components/GroupListView";
+import { maskName } from "@/utils/masking";
 import { LayoutGrid, List } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -22,7 +23,11 @@ export default function RankPage() {
 
   const teams = useMemo(() => {
     if (!data) return [];
-    return data.teams;
+
+    return data.teams.map((team) => ({
+      ...team,
+      members: team.members.map((name) => maskName(name)),
+    }));
   }, [data]);
 
   if (isLoading) {
