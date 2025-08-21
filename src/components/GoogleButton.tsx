@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { useAuth } from "src/hooks/auth";
 import { userLogin } from "../apis/users";
 import { isRegisterModalState, userLoginInfoState } from "../store/HISAtom";
+import { useSidebar } from "@/components/ui/sidebar";
+
 
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
@@ -76,8 +78,11 @@ export default function GoogleButton() {
       });
   };
 
+  const { state } = useSidebar();
+
   return (
     <GoogleLogin
+      type={state === "collapsed" ? "icon" : "standard"}
       onSuccess={(credentialResponse) => onSuccess(credentialResponse)}
       onError={() => {
         console.log("Login Failed");
