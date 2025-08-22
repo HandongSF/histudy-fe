@@ -194,7 +194,11 @@ export function CommonSidebar() {
         <div className="flex justify-between items-center">
           <Link
             to={paths.root}
-            className="flex items-center gap-3 p-2 rounded-lg transition-colors duration-200 hover:bg-sidebar-accent"
+            className={cn(
+              "flex items-center gap-3 p-2 rounded-lg transition-colors duration-200 hover:bg-sidebar-accent",
+              // collapse 시 왼쪽 마진 17px 감소시켜서 아이콘 위치 조정
+              "group-data-[collapsible=icon]:ml-[-17px]"
+            )}
           >
             <span
               className={cn(
@@ -238,7 +242,9 @@ export function CommonSidebar() {
                       className={cn(
                         "h-10 justify-start gap-3 px-3",
                         "data-[active=true]:bg-primary data-[active=true]:text-primary-foreground data-[active=true]:hover:bg-primary/90",
-                        "hover:bg-sidebar-accent"
+                        "hover:bg-sidebar-accent",
+                        // collapse 시 왼쪽 마진 12px 감소시켜서 아이콘 위치 조정
+                        "group-data-[collapsible=icon]:ml-[-12px]"
                       )}
                     >
                       <Link to={item.href}>
@@ -268,8 +274,12 @@ export function CommonSidebar() {
                     align: "center",
                     className: "bg-foreground text-background",
                   }}
-                  className="h-10 justify-start gap-3 px-3 hover:bg-sidebar-accent"
-                >
+                  className={cn(
+                    "h-10 justify-start gap-3 px-3 hover:bg-sidebar-accent",
+                    // collapse 시 왼쪽 마진 12px 감소시켜서 아이콘 위치 조정
+                    "group-data-[collapsible=icon]:ml-[-12px]"
+                  )}
+                  >
                   <LifeBuoy className="size-5 shrink-0" />
 
                   <span className="truncate text-sm font-medium">피드백</span>
@@ -286,8 +296,12 @@ export function CommonSidebar() {
                   align: "center",
                   className: "bg-foreground text-background",
                 }}
-                className="h-10 justify-start gap-3 px-3 text-red-500 hover:bg-red-500/10 hover:text-red-600"
-              >
+                className={cn(
+                  "h-10 justify-start gap-3 px-3 text-red-500 hover:bg-red-500/10 hover:text-red-600",
+                  // collapse 시 왼쪽 마진 12px 감소시켜서 아이콘 위치 조정
+                  "group-data-[collapsible=icon]:ml-[-12px]"
+                )}
+                >
                 <LogOut className="size-5 shrink-0" />
                 <span className="truncate text-sm font-medium">로그아웃</span>
               </SidebarMenuButton>
