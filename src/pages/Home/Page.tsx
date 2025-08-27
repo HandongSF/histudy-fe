@@ -6,7 +6,7 @@ import GroupGridView from "@/pages/Rank/components/GroupGridView";
 import { Trophy } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import StatsDashboard from "./components/StatsDashBoard";
+import StatsDashboard from "./components/activity-dashboard";
 import { WaveLoading } from "@/components/WaveLoading";
 import { NoData } from "@/components/NoData";
 import SignUpDialog from "@/components/SignUpDialog";
