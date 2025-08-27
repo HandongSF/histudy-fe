@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; // Select 추가
+} from "@/components/ui/select";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +27,7 @@ import { Role } from "@/interface/role";
 import { roleState } from "@/store/HISAtom";
 import {
   BookOpen,
+  Calendar,
   FileText,
   LifeBuoy,
   ListCheck,
@@ -130,6 +131,12 @@ const navGroupsData: NavGroup[] = [
         name: "스터디 신청자 정보 조회",
         icon: ListCheck,
         href: paths.admin.manageStudent,
+        allowedRoles: ["ADMIN"],
+      },
+      {
+        name: "학기 관리",
+        icon: Calendar,
+        href: paths.admin.manageSemester,
         allowedRoles: ["ADMIN"],
       },
     ],
@@ -279,7 +286,7 @@ export function CommonSidebar() {
                     // collapse 시 왼쪽 마진 12px 감소시켜서 아이콘 위치 조정
                     "group-data-[collapsible=icon]:ml-[-12px]"
                   )}
-                  >
+                >
                   <LifeBuoy className="size-5 shrink-0" />
 
                   <span className="truncate text-sm font-medium">피드백</span>
@@ -301,7 +308,7 @@ export function CommonSidebar() {
                   // collapse 시 왼쪽 마진 12px 감소시켜서 아이콘 위치 조정
                   "group-data-[collapsible=icon]:ml-[-12px]"
                 )}
-                >
+              >
                 <LogOut className="size-5 shrink-0" />
                 <span className="truncate text-sm font-medium">로그아웃</span>
               </SidebarMenuButton>

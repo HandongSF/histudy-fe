@@ -29,6 +29,7 @@ export const paths = {
     manageStudy: `${ROOTS.admin}/manage-study`,
     manageReport: `${ROOTS.admin}/manage-report`,
     manageStudent: `${ROOTS.admin}/manage-student`,
+    manageSemester: `${ROOTS.admin}/manage-semester`,
   },
   ranks: {
     root: `${ROOTS.ranks}`,
@@ -40,7 +41,7 @@ export const paths = {
     root: `${ROOTS.myGroup}`,
   },
   test: {
-    state: `${ROOTS.test}/state`
+    state: `${ROOTS.test}/state`,
   },
   notFound: `${ROOTS.else}`,
 };
