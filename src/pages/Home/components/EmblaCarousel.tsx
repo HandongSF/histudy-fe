@@ -24,7 +24,7 @@ export const CAROUSEL_SLIDES = [
 
 const CAROUSEL_OPTIONS: EmblaOptionsType = { loop: true };
 
-const EmblaCarousel: React.FC<PropType> = (props) => {
+export default function EmblaCarousel(props: PropType) {
   const { children, className } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(CAROUSEL_OPTIONS, [
     Autoplay({ stopOnInteraction: false }),
@@ -43,6 +43,4 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       </div>
     </section>
   );
-};
-
-export default EmblaCarousel;
+}
