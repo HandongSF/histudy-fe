@@ -11,11 +11,9 @@ import { WaveLoading } from "@/components/WaveLoading";
 import { NoData } from "@/components/NoData";
 import SignUpDialog from "@/components/SignUpDialog";
 import { maskName } from "@/utils/masking";
-// 캐러셀 컴포넌트
 import EmblaCarousel from "./components/EmblaCarousel";
 import { EmblaOptionsType } from "embla-carousel";
 
-// 캐러셀 이미지 및 링크 정리
 const CAROUSEL_SLIDES = [
   {
     imageUrl: "/img/SLE_DESKTOP.png",
@@ -59,15 +57,14 @@ export default function HomePage() {
             <div className="absolute top-10 left-10 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
             <div className="absolute bottom-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
 
-            {/* 기존의 정적 이미지 div를 EmblaCarousel 컴포넌트로 대체 */}
             <EmblaCarousel options={CAROUSEL_OPTIONS} className="h-full w-full">
               {CAROUSEL_SLIDES.map((slide, index) => (
                 <a
                   key={index}
                   href={slide.linkUrl}
-                  target="_blank" // 새 탭에서 열기
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="block h-full w-full" // 링크 영역을 슬라이드 전체로 확장
+                  className="block h-full w-full"
                 >
                   <div
                     className="relative z-10 h-full w-full"
