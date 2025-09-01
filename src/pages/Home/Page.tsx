@@ -11,23 +11,7 @@ import { WaveLoading } from "@/components/WaveLoading";
 import { NoData } from "@/components/NoData";
 import SignUpDialog from "@/components/SignUpDialog";
 import { maskName } from "@/utils/masking";
-import EmblaCarousel from "./components/EmblaCarousel";
-import { EmblaOptionsType } from "embla-carousel";
-
-const CAROUSEL_SLIDES = [
-  {
-    imageUrl: "/img/SLE_DESKTOP.png",
-    linkUrl: "https://sle-recruitng.vercel.app/",
-    alt: "슬기짜기",
-  },
-  {
-    imageUrl: "/img/TEST_DESKTOP.png",
-    linkUrl: "https://hisnet.handong.edu/",
-    alt: "데모이미지",
-  },
-];
-// 캐러셀 옵션
-const CAROUSEL_OPTIONS: EmblaOptionsType = { loop: true };
+import EmblaCarousel, { CAROUSEL_SLIDES } from "./components/EmblaCarousel";
 
 export default function HomePage() {
   const { data, isLoading } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
@@ -57,7 +41,7 @@ export default function HomePage() {
             <div className="absolute top-10 left-10 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
             <div className="absolute bottom-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
 
-            <EmblaCarousel options={CAROUSEL_OPTIONS} className="h-full w-full">
+            <EmblaCarousel className="h-full w-full">
               {CAROUSEL_SLIDES.map((slide, index) => (
                 <a
                   key={index}

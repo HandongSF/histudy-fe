@@ -10,9 +10,24 @@ type PropType = {
   className?: string;
 };
 
+export const CAROUSEL_SLIDES = [
+  {
+    imageUrl: "/img/SLE_DESKTOP.png",
+    linkUrl: "https://sle-recruitng.vercel.app/",
+    alt: "슬기짜기",
+  },
+  {
+    imageUrl: "/img/TEST_DESKTOP.png",
+    linkUrl: "https://hisnet.handong.edu/",
+    alt: "데모이미지",
+  },
+];
+
+const CAROUSEL_OPTIONS: EmblaOptionsType = { loop: true };
+
 const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { children, options, className } = props;
-  const [emblaRef, emblaApi] = useEmblaCarousel(options, [
+  const { children, className } = props;
+  const [emblaRef, emblaApi] = useEmblaCarousel(CAROUSEL_OPTIONS, [
     Autoplay({ stopOnInteraction: false }),
   ]);
 
