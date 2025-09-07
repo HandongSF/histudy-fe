@@ -12,7 +12,6 @@ import { userLogin } from "../apis/users";
 import { isRegisterModalState, userLoginInfoState } from "../store/HISAtom";
 import { useSidebar } from "@/components/ui/sidebar";
 
-
 export interface JwtHIStudyPayload extends JwtPayload {
   hd: string;
   rol: Role;

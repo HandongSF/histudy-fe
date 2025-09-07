@@ -1,3 +1,5 @@
+@import "@mantine/core/styles.css";
+@import "@mantine/tiptap/styles.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -117,4 +119,22 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+  touch-action: pan-y;
+  margin-left: calc(var(--slide-spacing, 0) * -1);
+}
+.embla__slide {
+  flex: 0 0 var(--slide-size, 100%);
+  min-width: 0;
+  padding-left: var(--slide-spacing, 0);
+  height: 350px;
+}
+.embla__slide_image_container {
+  height: 350px;
 }

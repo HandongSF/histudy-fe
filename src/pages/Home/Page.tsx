@@ -11,6 +11,8 @@ import { WaveLoading } from "@/components/WaveLoading";
 import { NoData } from "@/components/NoData";
 import SignUpDialog from "@/components/SignUpDialog";
 import { maskName } from "@/utils/masking";
+import EmblaCarousel, { CAROUSEL_SLIDES } from "./components/EmblaCarousel";
+
 export default function HomePage() {
   const { data, isLoading } = useQuery(["AllTeamRanks"], getAllTeamsForRank, {
     cacheTime: 10 * 60 * 1000,
@@ -39,16 +41,27 @@ export default function HomePage() {
             <div className="absolute top-10 left-10 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
             <div className="absolute bottom-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
 
-            <div className="relative z-10 text-center text-slate-700 px-4">
-              <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
-                배너를 통해 여러분의
-                <br />
-                <span className="text-blue-600">동아리를 홍보해주세요</span>
-              </h1>
-              <p className="text-base md:text-lg opacity-80 max-w-2xl mx-auto">
-                우리 동아리의 특별한 활동과 가치를 더 많은 사람들에게 알려보세요
-              </p>
-            </div>
+            <EmblaCarousel className="h-full w-full">
+              {CAROUSEL_SLIDES.map((slide, index) => (
+                <a
+                  key={index}
+                  href={slide.linkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block h-full w-full"
+                >
+                  <div
+                    className="relative z-10 h-full w-full"
+                    style={{
+                      backgroundImage: `url("${slide.imageUrl}")`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                    aria-label={slide.alt}
+                  ></div>
+                </a>
+              ))}
+            </EmblaCarousel>
           </div>
 
           <section className="container mx-auto flex flex-col gap-8">
