@@ -1,4 +1,4 @@
-import { readAllGroups, readUngroup } from "@/apis/manager";
+import { readAllGroups, readApplicants } from "@/apis/manager";
 import { useMemo } from "react";
 import { useQueries } from "react-query";
 import GroupTable from "./components/GroupTable";
@@ -15,7 +15,7 @@ export default function MatchedGroupListPage() {
     },
     {
       queryKey: ["ungroups"],
-      queryFn: readUngroup,
+      queryFn: readApplicants,
       cacheTime: 5 * 60 * 1000,
     },
   ]);
