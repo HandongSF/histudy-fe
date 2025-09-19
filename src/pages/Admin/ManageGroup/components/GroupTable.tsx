@@ -27,6 +27,15 @@ interface GroupTableProps {
   refetch: () => void;
   loading: boolean;
 }
+
+const GROUP_OPTIONS = [
+  { value: null, label: "미배정" },
+  ...Array.from({ length: 50 }, (_, i) => ({
+    value: i + 1,
+    label: `Group ${i + 1}`,
+  })),
+];
+
 export default function GroupTable({
   members,
   groups,
@@ -49,17 +58,6 @@ export default function GroupTable({
       member.sid.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const groupOptions = useMemo(() => {
-    if (!groups) return [];
-    return [
-      { value: null, label: "미배정" },
-      ...groups.map((g) => ({
-        value: g.tag,
-        label: `Group ${g.tag}`,
-      })),
-    ];
-  }, [groups]);
 
   const handleEditToggle = (
     member: GroupMemberWithStudyInfo | UnAssignedUser
@@ -154,7 +152,7 @@ export default function GroupTable({
                         className="px-2 py-1.5 border rounded w-full text-sm bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500"
                         autoFocus
                       >
-                        {groupOptions.map((option) => (
+                        {GROUP_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value!}>
                             {option.label}
                           </option>
