@@ -56,10 +56,6 @@ export function StudyApplicationForm({
 
   const handleClickNextStep = () => {
     if (currentStep < TOTAL_STEPS) {
-      if (currentStep === 1 && applicationData.friends.length === 0) {
-        toast("최소 한 명의 친구를 추가해주세요.");
-        return;
-      }
       if (currentStep === 2 && applicationData.courses.length === 0) {
         toast("최소 하나의 수업을 추가해주세요.");
         return;
