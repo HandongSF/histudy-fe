@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea"; // Textarea는 더 이상 사용하지 않지만, 기존 import를 그대로 두었습니다.
 import { BookOpen, Clock, FileText, ImageIcon, Users, XCircle } from "lucide-react";
 import * as z from "zod";
 
@@ -27,8 +27,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { convertBlobToWebp } from "@/utils/convertBlobToWebp";
 
-// Mantine Tiptap Editor 관련 import 추가
-import { RichTextEditor, Link } from "@mantine/tiptap";
+// Tiptap 에디터 관련 import
 import { useEditor } from "@tiptap/react";
 import Highlight from "@tiptap/extension-highlight";
 import StarterKit from "@tiptap/starter-kit";
@@ -36,6 +35,9 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
+
+// 새로 만든 텍스트에디터 import
+import { TiptapEditor } from "@/components/tiptap-editor";
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -77,29 +79,22 @@ export default function ReportEditPage() {
 
     // Tiptap 에디터 인스턴스 생성
     const editor = useEditor({
-        extensions: [StarterKit, Underline, Link, Superscript, SubScript, Highlight, TextAlign.configure({ types: ["heading", "paragraph"] })],
+        extensions: [StarterKit, Underline, Superscript, SubScript, Highlight, TextAlign.configure({ types: ["heading", "paragraph"] })],
         // react-hook-form의 'content' 필드와 동기화
         content: form.getValues("content"),
         onUpdate: ({ editor }) => {
             // 에디터 내용이 변경될 때마다 form의 content 필드 업데이트
             form.setValue("content", editor.getHTML());
         },
+        // 에디터 포커스 테두리 제거를 위한 스타일 추가
+        editorProps: {
+            attributes: {
+                class: "prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0",
+            },
+        },
     });
 
-    // useEffect(() => {
-    //     if (report) {
-    //         form.reset({
-    //             title: report.title,
-    //             content: report.content,
-    //             participants: report.participants.map((participant) => participant.id),
-    //             totalMinutes: String(report.totalMinutes),
-    //             images: [],
-    //             courses: report.courses.map((course) => course.id),
-    //             previewImages: report.images.map((image) => image.url),
-    //             blobImages: report.images.map((image) => new File([], image.url)),
-    //         });
-    //     }
-    // }, [report, form]);
+    // 기존 보고서 데이터를 불러와 폼과 에디터에 적용
     useEffect(() => {
         if (report && editor) {
             form.reset({
@@ -113,33 +108,41 @@ export default function ReportEditPage() {
                 blobImages: report.images.map((image) => new File([], image.url)),
             });
 
+            // useEditor의 content 옵션이 초기 렌더링 시에만 적용되므로,
+            // useEffect를 통해 에디터의 콘텐츠를 직접 설정해야 합니다.
             editor.commands.setContent(report.content);
         }
-    }, [report, form, editor]); // 의존성 배열에 editor를 추가해야 합니다.
+    }, [report, form, editor]); // 의존성 배열에 report, form, editor를 추가해야 합니다.
 
     form.watch(["previewImages", "blobImages"]);
 
     const onValid = async (formData: ReportFormState) => {
-        for (let i = 0; i < formData.blobImages.length; ++i) {
-            const imageForm = new FormData();
-            imageForm.append("image", formData.blobImages[i]);
+        // 기존 이미지 URL과 새로 업로드된 이미지 URL을 합칩니다.
+        const existingImages = report?.images.map((image) => image.url) || [];
+        const newBlobImages = formData.blobImages.filter((blob) => blob.size > 0); // 기존 이미지는 size가 0이므로 필터링
 
-            await ImageUploadToServer(null, imageForm).then((res) => {
-                form.setValue("images", [...form.getValues("images"), res.data.imagePath]);
-            });
+        const uploadedImagePaths: string[] = [];
+        for (const blob of newBlobImages) {
+            const imageForm = new FormData();
+            imageForm.append("image", blob);
+            const res = await ImageUploadToServer(null, imageForm);
+            uploadedImagePaths.push(res.data.imagePath);
         }
 
-        // 보고서 생성 api 연결
-        const newReport = {
+        const finalImages = [...existingImages, ...uploadedImagePaths];
+
+        const updatedReport = {
             title: formData.title,
             content: formData.content,
             totalMinutes: Number(formData.totalMinutes),
             participants: formData.participants,
-            images: form.getValues("images"),
+            images: finalImages,
             courses: formData.courses,
         } as NewReport;
-        await modifyReport(+id, newReport);
+
+        await modifyReport(+id, updatedReport);
         queryClient.invalidateQueries({ queryKey: ["reports"] });
+        queryClient.invalidateQueries({ queryKey: ["report", id] }); // 수정된 보고서 상세 정보 쿼리 무효화
 
         toast.success("보고서 제출이 완료되었습니다.");
         navigate(paths.reports.root);
@@ -163,7 +166,6 @@ export default function ReportEditPage() {
         if (!inputRef.current) {
             return;
         }
-
         inputRef.current.click();
     }, []);
 
@@ -429,33 +431,11 @@ export default function ReportEditPage() {
                                             <FormControl>
                                                 <Input placeholder="제목 작성" {...field} />
                                             </FormControl>
-
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                             </div>
-                            {/* <div className="space-y-2">
-                                <FormField
-                                    control={form.control}
-                                    name="content"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>내용</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    rows={10}
-                                                    placeholder="보고서 내용 작성"
-                                                    className="resize-none min-h-[200px] max-h-[400px]"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div> */}
                             <div className="space-y-2">
                                 <FormField
                                     control={form.control}
@@ -464,58 +444,8 @@ export default function ReportEditPage() {
                                         <FormItem>
                                             <FormLabel>내용</FormLabel>
                                             <FormControl>
-                                                {/* <RichTextEditor editor={editor}> */}
-
-                                                <RichTextEditor
-                                                    editor={editor}
-                                                    classNames={{
-                                                        root: "border bg-background rounded-md text-sm ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-                                                        content: "px-3 py-2 min-h-[200px] max-h-[400px] prose dark:prose-invert prose-p:my-0",
-                                                    }}
-                                                >
-                                                    <RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Bold />
-                                                            <RichTextEditor.Italic />
-                                                            <RichTextEditor.Underline />
-                                                            <RichTextEditor.Strikethrough />
-                                                            <RichTextEditor.ClearFormatting />
-                                                            <RichTextEditor.Highlight />
-                                                            <RichTextEditor.Code />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.H1 />
-                                                            <RichTextEditor.H2 />
-                                                            <RichTextEditor.H3 />
-                                                            <RichTextEditor.H4 />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Blockquote />
-                                                            <RichTextEditor.Hr />
-                                                            <RichTextEditor.BulletList />
-                                                            <RichTextEditor.OrderedList />
-                                                            <RichTextEditor.Subscript />
-                                                            <RichTextEditor.Superscript />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        {/* 
-                                                                                    URL 링크 기능은 잠시 보류
-                                                                                    <RichTextEditor.ControlsGroup>
-                                                                                        <RichTextEditor.Link />
-                                                                                        <RichTextEditor.Unlink />
-                                                                                    </RichTextEditor.ControlsGroup> */}
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.AlignLeft />
-                                                            <RichTextEditor.AlignCenter />
-                                                            <RichTextEditor.AlignJustify />
-                                                            <RichTextEditor.AlignRight />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Undo />
-                                                            <RichTextEditor.Redo />
-                                                        </RichTextEditor.ControlsGroup>
-                                                    </RichTextEditor.Toolbar>
-                                                    <RichTextEditor.Content />
-                                                </RichTextEditor>
+                                                {/* <Textarea placeholder="내용 작성" {...field} rows={10} /> */}
+                                                <TiptapEditor content={field.value} onUpdate={(html) => field.onChange(html)} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

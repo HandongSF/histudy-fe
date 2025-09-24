@@ -26,7 +26,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 // Mantine Tiptap Editor 관련 import 추가
-import { RichTextEditor, Link } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import Highlight from "@tiptap/extension-highlight";
 import StarterKit from "@tiptap/starter-kit";
@@ -34,6 +33,9 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
+
+// 새로 만든 텍스트에디터 import
+import { TiptapEditor } from "@/components/tiptap-editor";
 
 const reportFormSchema = z.object({
     title: z.string().min(1, "제목을 입력해주세요."),
@@ -159,12 +161,18 @@ export default function ReportAddPage() {
 
     // Tiptap 에디터 인스턴스 생성
     const editor = useEditor({
-        extensions: [StarterKit, Underline, Link, Superscript, SubScript, Highlight, TextAlign.configure({ types: ["heading", "paragraph"] })],
+        extensions: [StarterKit, Underline, Superscript, SubScript, Highlight, TextAlign.configure({ types: ["heading", "paragraph"] })],
         // react-hook-form의 'content' 필드와 동기화
         content: form.getValues("content"),
         onUpdate: ({ editor }) => {
             // 에디터 내용이 변경될 때마다 form의 content 필드 업데이트
             form.setValue("content", editor.getHTML());
+        },
+        // 테두리 제거 설정 추가
+        editorProps: {
+            attributes: {
+                class: "prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0",
+            },
         },
     });
 
@@ -378,7 +386,6 @@ export default function ReportAddPage() {
                                             <FormControl>
                                                 <Input placeholder="제목 작성" {...field} />
                                             </FormControl>
-
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -392,56 +399,7 @@ export default function ReportAddPage() {
                                         <FormItem>
                                             <FormLabel>내용</FormLabel>
                                             <FormControl>
-                                                <RichTextEditor
-                                                    editor={editor}
-                                                    classNames={{
-                                                        root: "border bg-background rounded-md text-sm ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-                                                        content: "px-3 py-2 min-h-[200px] max-h-[400px] prose dark:prose-invert prose-p:my-0",
-                                                    }}
-                                                >
-                                                    <RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Bold />
-                                                            <RichTextEditor.Italic />
-                                                            <RichTextEditor.Underline />
-                                                            <RichTextEditor.Strikethrough />
-                                                            <RichTextEditor.ClearFormatting />
-                                                            <RichTextEditor.Highlight />
-                                                            <RichTextEditor.Code />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.H1 />
-                                                            <RichTextEditor.H2 />
-                                                            <RichTextEditor.H3 />
-                                                            <RichTextEditor.H4 />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Blockquote />
-                                                            <RichTextEditor.Hr />
-                                                            <RichTextEditor.BulletList />
-                                                            <RichTextEditor.OrderedList />
-                                                            <RichTextEditor.Subscript />
-                                                            <RichTextEditor.Superscript />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        {/* 
-                                                        URL 링크 기능은 잠시 보류
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Link />
-                                                            <RichTextEditor.Unlink />
-                                                        </RichTextEditor.ControlsGroup> */}
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.AlignLeft />
-                                                            <RichTextEditor.AlignCenter />
-                                                            <RichTextEditor.AlignJustify />
-                                                            <RichTextEditor.AlignRight />
-                                                        </RichTextEditor.ControlsGroup>
-                                                        <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Undo />
-                                                            <RichTextEditor.Redo />
-                                                        </RichTextEditor.ControlsGroup>
-                                                    </RichTextEditor.Toolbar>
-                                                    <RichTextEditor.Content />
-                                                </RichTextEditor>
+                                                <TiptapEditor content={field.value} onUpdate={(html) => field.onChange(html)} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

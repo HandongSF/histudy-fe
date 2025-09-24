@@ -7,8 +7,6 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import { router } from "./components/ARouter";
 import "./globals.css";
-import "@mantine/core/styles.css";
-import "@mantine/tiptap/styles.css";
 
 const queryClient = new QueryClient({
     defaultOptions: {
