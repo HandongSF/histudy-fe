@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { BookOpen, Clock, FileText, ImageIcon, Users, XCircle } from "lucide-react";
 import * as z from "zod";
 
@@ -24,15 +23,6 @@ import { useCallback, useRef } from "react";
 import { useQueries, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
-// Mantine Tiptap Editor 관련 import 추가
-import { useEditor } from "@tiptap/react";
-import Highlight from "@tiptap/extension-highlight";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import TextAlign from "@tiptap/extension-text-align";
-import Superscript from "@tiptap/extension-superscript";
-import SubScript from "@tiptap/extension-subscript";
 
 // 새로 만든 텍스트에디터 import
 import { TiptapEditor } from "@/components/tiptap-editor";
@@ -158,23 +148,6 @@ export default function ReportAddPage() {
             blobToFile(targetBlob, `histudy_${new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15)}.webp`),
         ]);
     };
-
-    // Tiptap 에디터 인스턴스 생성
-    const editor = useEditor({
-        extensions: [StarterKit, Underline, Superscript, SubScript, Highlight, TextAlign.configure({ types: ["heading", "paragraph"] })],
-        // react-hook-form의 'content' 필드와 동기화
-        content: form.getValues("content"),
-        onUpdate: ({ editor }) => {
-            // 에디터 내용이 변경될 때마다 form의 content 필드 업데이트
-            form.setValue("content", editor.getHTML());
-        },
-        // 테두리 제거 설정 추가
-        editorProps: {
-            attributes: {
-                class: "prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0",
-            },
-        },
-    });
 
     return (
         <div className="container mx-auto py-8 px-4 max-w-3xl">

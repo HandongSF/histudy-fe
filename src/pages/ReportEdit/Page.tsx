@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Textarea는 더 이상 사용하지 않지만, 기존 import를 그대로 두었습니다.
+import { Textarea } from "@/components/ui/textarea"; // Textarea는 더 이상 필요 없지만, 다른 필드에 사용될 수 있으므로 유지
 import { BookOpen, Clock, FileText, ImageIcon, Users, XCircle } from "lucide-react";
 import * as z from "zod";
 
@@ -26,17 +26,8 @@ import { useQueries, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { convertBlobToWebp } from "@/utils/convertBlobToWebp";
+import { addImagePrefix } from "@/utils/imagePrefix";
 
-// Tiptap 에디터 관련 import
-import { useEditor } from "@tiptap/react";
-import Highlight from "@tiptap/extension-highlight";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import TextAlign from "@tiptap/extension-text-align";
-import Superscript from "@tiptap/extension-superscript";
-import SubScript from "@tiptap/extension-subscript";
-
-// 새로 만든 텍스트에디터 import
 import { TiptapEditor } from "@/components/tiptap-editor";
 
 // Zod 스키마 정의 (유효성 검사)
@@ -47,8 +38,8 @@ const reportFormSchema = z.object({
     totalMinutes: z.string().min(1, "스터디 시간을 입력해주세요."),
     courses: z.array(z.number()).min(1, "스터디 과목을 선택해주세요."),
     images: z.array(z.string()),
-    previewImages: z.array(z.string()).min(1, "최소 1개의 이미지를 업로드 해주세요.").max(3, "최대 3개의 이미지만 업로드 가능합니다."),
-    blobImages: z.array(z.instanceof(File)).min(1, "최소 1개의 이미지를 업로드 해주세요.").max(3, "최대 3개의 이미지만 업로드 가능합니다."),
+    previewImages: z.array(z.string()),
+    blobImages: z.array(z.instanceof(File)),
 });
 
 type ReportFormState = z.infer<typeof reportFormSchema>;
@@ -77,26 +68,9 @@ export default function ReportEditPage() {
         },
     });
 
-    // Tiptap 에디터 인스턴스 생성
-    const editor = useEditor({
-        extensions: [StarterKit, Underline, Superscript, SubScript, Highlight, TextAlign.configure({ types: ["heading", "paragraph"] })],
-        // react-hook-form의 'content' 필드와 동기화
-        content: form.getValues("content"),
-        onUpdate: ({ editor }) => {
-            // 에디터 내용이 변경될 때마다 form의 content 필드 업데이트
-            form.setValue("content", editor.getHTML());
-        },
-        // 에디터 포커스 테두리 제거를 위한 스타일 추가
-        editorProps: {
-            attributes: {
-                class: "prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0",
-            },
-        },
-    });
-
-    // 기존 보고서 데이터를 불러와 폼과 에디터에 적용
+    // 기존 데이터 로드 시 폼 초기화
     useEffect(() => {
-        if (report && editor) {
+        if (report) {
             form.reset({
                 title: report.title,
                 content: report.content,
@@ -104,47 +78,80 @@ export default function ReportEditPage() {
                 totalMinutes: String(report.totalMinutes),
                 images: [],
                 courses: report.courses.map((course) => course.id),
-                previewImages: report.images.map((image) => image.url),
-                blobImages: report.images.map((image) => new File([], image.url)),
+                // 이곳을 수정합니다.
+                previewImages: report.images.map((image) => addImagePrefix(image.url)),
+                blobImages: [],
             });
-
-            // useEditor의 content 옵션이 초기 렌더링 시에만 적용되므로,
-            // useEffect를 통해 에디터의 콘텐츠를 직접 설정해야 합니다.
-            editor.commands.setContent(report.content);
         }
-    }, [report, form, editor]); // 의존성 배열에 report, form, editor를 추가해야 합니다.
+    }, [report, form]);
 
     form.watch(["previewImages", "blobImages"]);
 
     const onValid = async (formData: ReportFormState) => {
-        // 기존 이미지 URL과 새로 업로드된 이미지 URL을 합칩니다.
-        const existingImages = report?.images.map((image) => image.url) || [];
-        const newBlobImages = formData.blobImages.filter((blob) => blob.size > 0); // 기존 이미지는 size가 0이므로 필터링
-
-        const uploadedImagePaths: string[] = [];
-        for (const blob of newBlobImages) {
+        // Blob 이미지 업로드
+        // const newImagePaths: string[] = [];
+        // for (const blobImage of formData.blobImages) {
+        //     const imageForm = new FormData();
+        //     imageForm.append("image", blobImage);
+        //     try {
+        //         const res = await ImageUploadToServer(null, imageForm);
+        //         newImagePaths.push(res.data.imagePath);
+        //     } catch (error) {
+        //         toast.error("이미지 업로드 중 오류가 발생했습니다.");
+        //         return;
+        //     }
+        // }
+        // // 기존 이미지 URL과 새로 업로드된 이미지 경로를 합침
+        // const existingImages = report?.images.map((image) => image.url) || [];
+        // const combinedImages = [...existingImages, ...newImagePaths];
+        // // 보고서 수정 API 호출
+        // const newReport = {
+        //     title: formData.title,
+        //     content: formData.content,
+        //     totalMinutes: Number(formData.totalMinutes),
+        //     participants: formData.participants,
+        //     images: combinedImages,
+        //     courses: formData.courses,
+        // } as NewReport;
+        // await modifyReport(+id, newReport);
+        // queryClient.invalidateQueries({ queryKey: ["reports"] });
+        // toast.success("보고서 수정이 완료되었습니다.");
+        // navigate(paths.reports.root);
+        // onValid 함수 내부 수정
+        const newImagePaths: string[] = [];
+        for (const blobImage of formData.blobImages) {
             const imageForm = new FormData();
-            imageForm.append("image", blob);
-            const res = await ImageUploadToServer(null, imageForm);
-            uploadedImagePaths.push(res.data.imagePath);
+            imageForm.append("image", blobImage);
+            try {
+                const res = await ImageUploadToServer(null, imageForm);
+                newImagePaths.push(res.data.imagePath);
+            } catch (error) {
+                toast.error("이미지 업로드 중 오류가 발생했습니다.");
+                return;
+            }
         }
 
-        const finalImages = [...existingImages, ...uploadedImagePaths];
+        // 폼의 최신 상태인 formData.previewImages에서 기존 이미지 URL만 필터링
+        // 'data:'로 시작하는 것은 새로 추가된 미리보기 이미지이므로 제외
+        const existingImagesFromForm = formData.previewImages.filter((url) => !url.startsWith("data:"));
 
-        const updatedReport = {
+        // 기존 이미지 URL과 새로 업로드된 이미지 경로를 합침
+        const combinedImages = [...existingImagesFromForm, ...newImagePaths];
+
+        // 보고서 수정 API 호출
+        const newReport = {
             title: formData.title,
             content: formData.content,
             totalMinutes: Number(formData.totalMinutes),
             participants: formData.participants,
-            images: finalImages,
+            images: combinedImages, // 수정된 images 배열 사용
             courses: formData.courses,
         } as NewReport;
 
-        await modifyReport(+id, updatedReport);
+        await modifyReport(+id, newReport);
         queryClient.invalidateQueries({ queryKey: ["reports"] });
-        queryClient.invalidateQueries({ queryKey: ["report", id] }); // 수정된 보고서 상세 정보 쿼리 무효화
 
-        toast.success("보고서 제출이 완료되었습니다.");
+        toast.success("보고서 수정이 완료되었습니다.");
         navigate(paths.reports.root);
     };
 
@@ -166,6 +173,7 @@ export default function ReportEditPage() {
         if (!inputRef.current) {
             return;
         }
+
         inputRef.current.click();
     }, []);
 
@@ -178,21 +186,20 @@ export default function ReportEditPage() {
 
     const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        if (form.getValues("previewImages").length >= 3) {
+        const currentImagesLength = form.getValues("previewImages").length;
+        if (currentImagesLength >= 3) {
             toast.warning("최대 3개의 이미지만 업로드 가능합니다.");
             return;
         }
-        const file = e.target.files;
-        if (!file) return null;
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-        const targetFile = file[0];
         let targetBlob;
-
-        if (targetFile.type === "image/heic" || targetFile.type === "image/heif") {
-            targetBlob = await Heic2Jpg(targetFile);
+        if (file.type === "image/heic" || file.type === "image/heif") {
+            targetBlob = await Heic2Jpg(file);
             targetBlob = await convertBlobToWebp(targetBlob);
         } else {
-            targetBlob = await convertBlobToWebp(targetFile);
+            targetBlob = await convertBlobToWebp(file);
         }
 
         const reader = new FileReader();
@@ -200,13 +207,30 @@ export default function ReportEditPage() {
         reader.onloadend = () => {
             form.setValue("previewImages", [...form.getValues("previewImages"), reader.result as string]);
         };
-
         reader.readAsDataURL(targetBlob);
 
         form.setValue("blobImages", [
             ...form.getValues("blobImages"),
             blobToFile(targetBlob, `histudy_${new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15)}.webp`),
         ]);
+    };
+
+    const onDeleteImage = (indexToDelete: number) => {
+        const currentPreviewImages = form.getValues("previewImages");
+        const currentBlobImages = form.getValues("blobImages");
+        const originalImageCount = report?.images.length ?? 0;
+
+        if (indexToDelete < originalImageCount) {
+            const updatedPreviewImages = currentPreviewImages.filter((_, i) => i !== indexToDelete);
+            form.setValue("previewImages", updatedPreviewImages);
+        } else {
+            const blobIndex = indexToDelete - originalImageCount;
+            const updatedBlobImages = currentBlobImages.filter((_, i) => i !== blobIndex);
+            form.setValue("blobImages", updatedBlobImages);
+
+            const updatedPreviewImages = currentPreviewImages.filter((_, i) => i !== indexToDelete);
+            form.setValue("previewImages", updatedPreviewImages);
+        }
     };
 
     if (isLoading || coursesLoading || participantsLoading) {
@@ -252,23 +276,14 @@ export default function ReportEditPage() {
 
                                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                                             {form.getValues("previewImages").map((url, index) => (
-                                                <div key={`new-${index}`} className="relative group aspect-square">
-                                                    <img src={url} alt={`새 이미지 ${index + 1}`} className="w-full h-full object-cover rounded-md border" />
+                                                <div key={`image-${index}`} className="relative group aspect-square">
+                                                    <img src={url} alt={`이미지 ${index + 1}`} className="w-full h-full object-cover rounded-md border" />
                                                     <Button
                                                         type="button"
                                                         variant="destructive"
                                                         size="icon"
                                                         className="absolute top-1 right-1 h-6 w-6 opacity-70 group-hover:opacity-100"
-                                                        onClick={() => {
-                                                            form.setValue(
-                                                                "blobImages",
-                                                                form.getValues("blobImages").filter((_, i) => i !== index)
-                                                            );
-                                                            form.setValue(
-                                                                "previewImages",
-                                                                form.getValues("previewImages").filter((_, i) => i !== index)
-                                                            );
-                                                        }}
+                                                        onClick={() => onDeleteImage(index)}
                                                     >
                                                         <XCircle className="h-4 w-4" />
                                                     </Button>
@@ -411,7 +426,7 @@ export default function ReportEditPage() {
                         </CardContent>
                     </Card>
 
-                    {/* 보고서 작성 섹션 */}
+                    {/* 보고서 작성 섹션 - TiptapEditor 컴포넌트 사용 */}
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -444,7 +459,6 @@ export default function ReportEditPage() {
                                         <FormItem>
                                             <FormLabel>내용</FormLabel>
                                             <FormControl>
-                                                {/* <Textarea placeholder="내용 작성" {...field} rows={10} /> */}
                                                 <TiptapEditor content={field.value} onUpdate={(html) => field.onChange(html)} />
                                             </FormControl>
                                             <FormMessage />

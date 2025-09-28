@@ -1,14 +1,27 @@
 import { EditorContent, useEditor, Editor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+import History from "@tiptap/extension-history";
+import HardBreak from "@tiptap/extension-hard-break";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import ListItem from "@tiptap/extension-list-item";
+import Blockquote from "@tiptap/extension-blockquote";
+import Bold from "@tiptap/extension-bold";
+import Italic from "@tiptap/extension-italic";
+import Strike from "@tiptap/extension-strike";
+import CodeBlock from "@tiptap/extension-code-block";
+import Heading from "@tiptap/extension-heading";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import Highlight from "@tiptap/extension-highlight";
-import Link from "@tiptap/extension-link";
+
 import {
-    Bold,
-    Italic,
+    Bold as BoldIcon,
+    Italic as ItalicIcon,
     Underline as UnderlineIcon,
     Strikethrough,
     Highlighter,
@@ -26,8 +39,6 @@ import {
     AlignCenter,
     AlignJustify,
     AlignRight,
-    Link as LinkIcon,
-    Unlink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -36,7 +47,6 @@ interface TiptapEditorProps {
     onUpdate: (html: string) => void;
 }
 
-// 에디터 툴바 컴포넌트
 const MenuBar = ({ editor }: { editor: Editor }) => {
     if (!editor) {
         return null;
@@ -44,7 +54,6 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
 
     return (
         <div className="flex flex-wrap items-center gap-1 border-b p-2">
-            {/* 텍스트 서식 버튼 그룹 */}
             <div className="flex items-center gap-1">
                 <Button
                     type="button"
@@ -54,7 +63,7 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
                     disabled={!editor.can().chain().focus().toggleBold().run()}
                     className={editor.isActive("bold") ? "bg-accent" : ""}
                 >
-                    <Bold className="h-4 w-4" />
+                    <BoldIcon className="h-4 w-4" />
                 </Button>
                 <Button
                     type="button"
@@ -64,7 +73,7 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
                     disabled={!editor.can().chain().focus().toggleItalic().run()}
                     className={editor.isActive("italic") ? "bg-accent" : ""}
                 >
-                    <Italic className="h-4 w-4" />
+                    <ItalicIcon className="h-4 w-4" />
                 </Button>
                 <Button
                     type="button"
@@ -108,7 +117,6 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
                 </Button>
             </div>
 
-            {/* 제목 및 목록 버튼 그룹 */}
             <div className="flex items-center gap-1">
                 <Button
                     type="button"
@@ -175,7 +183,6 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
                 </Button>
             </div>
 
-            {/* 첨자 및 링크 버튼 그룹 */}
             <div className="flex items-center gap-1">
                 <Button
                     type="button"
@@ -195,35 +202,8 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
                 >
                     <span className="text-xs">sub</span>
                 </Button>
-                <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => {
-                        const previousUrl = editor.getAttributes("link").href;
-                        const url = window.prompt("URL", previousUrl);
-
-                        if (url === null) {
-                            return;
-                        }
-
-                        if (url === "") {
-                            editor.chain().focus().extendMarkRange("link").unsetLink().run();
-                            return;
-                        }
-
-                        editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-                    }}
-                    className={editor.isActive("link") ? "bg-accent" : ""}
-                >
-                    <LinkIcon className="h-4 w-4" />
-                </Button>
-                <Button type="button" size="icon" variant="ghost" onClick={() => editor.chain().focus().unsetLink().run()} disabled={!editor.isActive("link")}>
-                    <Unlink className="h-4 w-4" />
-                </Button>
             </div>
 
-            {/* 정렬 및 실행 취소/다시 실행 버튼 그룹 */}
             <div className="flex items-center gap-1">
                 <Button
                     type="button"
@@ -284,19 +264,28 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
     );
 };
 
-// 메인 에디터 컴포넌트
 export function TiptapEditor({ content, onUpdate }: TiptapEditorProps) {
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            Document,
+            Paragraph,
+            Text,
+            History,
+            HardBreak,
+            Heading.configure({ levels: [1, 2, 3, 4] }),
+            Blockquote,
+            Bold,
+            Italic,
+            Strike,
+            CodeBlock,
             Underline,
             Superscript,
             SubScript,
             Highlight,
             TextAlign.configure({ types: ["heading", "paragraph"] }),
-            Link.configure({
-                openOnClick: false,
-            }),
+            BulletList,
+            OrderedList,
+            ListItem,
         ],
         content,
         onUpdate: ({ editor }) => {
@@ -305,7 +294,7 @@ export function TiptapEditor({ content, onUpdate }: TiptapEditorProps) {
         editorProps: {
             attributes: {
                 class: "prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0",
-                style: "--ring: transparent; --border: transparent;", // 여기서 CSS 변수를 직접 설정합니다.
+                style: "--ring: transparent; --border: transparent;",
             },
         },
     });
@@ -315,8 +304,8 @@ export function TiptapEditor({ content, onUpdate }: TiptapEditorProps) {
             <MenuBar editor={editor} />
             <EditorContent
                 editor={editor}
-                className="prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px]"
-                style={{ outline: "none", boxShadow: "none", border: "none" }} // 인라인 스타일로 직접 적용
+                className="max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px]"
+                style={{ outline: "none", boxShadow: "none", border: "none" }}
             />
         </div>
     );

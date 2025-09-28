@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -135,9 +136,4 @@
 }
 .embla__slide_image_container {
     height: 350px;
-}
-
-.tiptap-editor p {
-    outline: none !important;
-    border: none !important;
 }
