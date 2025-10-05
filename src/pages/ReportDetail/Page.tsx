@@ -218,7 +218,7 @@ export default function ReportDetailPage() {
         </div>
 
         {/* 보고서 내용 */}
-        <Card className="py-0">
+        {/* <Card className="py-0">
           <CardHeader className="pt-4 ">
             <CardTitle className="text-base">보고서 내용</CardTitle>
           </CardHeader>
@@ -227,6 +227,19 @@ export default function ReportDetailPage() {
               <pre className="whitespace-pre-wrap font-sans text-xs leading-relaxed text-white">
                 {report?.content}
               </pre>
+            </div>
+          </CardContent>
+        </Card> */}
+        <Card className="py-0">
+          <CardHeader className="pt-4 ">
+            <CardTitle className="text-base">보고서 내용</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0 ">
+            <div className="prose prose-sm max-w-none rounded-md min-h-[200px] border px-4 py-3">
+              <div
+                dangerouslySetInnerHTML={{ __html: report?.content || "" }}
+                className="prose dark:prose-invert"
+              />
             </div>
           </CardContent>
         </Card>
