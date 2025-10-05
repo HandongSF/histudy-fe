@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Run a one-line script
         run: |
-          nohup bash -c "/home/histudy/deploy.sh"
+          /home/histudy/deploy.runner.sh
