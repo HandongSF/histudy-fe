@@ -11,7 +11,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   BookOpen,
   Clock,
@@ -44,6 +43,10 @@ import { useCallback, useRef } from "react";
 import { useQueries, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
+// 새로 만든 텍스트에디터 import
+import { TiptapEditor } from "@/components/tiptap-editor";
+import { WaveLoading } from "@/components/WaveLoading";
 
 const reportFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -82,20 +85,30 @@ export default function ReportAddPage() {
     },
   });
 
-  form.watch(["previewImages", "blobImages"]);
+  form.watch(["previewImages", "blobImages", "images", "content"]);
 
   const onValid = async (formData: ReportFormState) => {
-    for (let i = 0; i < formData.blobImages.length; ++i) {
-      const imageForm = new FormData();
-      imageForm.append("image", formData.blobImages[i]);
+    const imageServerUploadPromises = formData.blobImages.map((file, i) => {
+      return new Promise((resolve) => {
+        setTimeout(async () => {
+          const fd = new FormData();
+          fd.append("image", file);
 
-      await ImageUploadToServer(null, imageForm).then((res) => {
-        form.setValue("images", [
-          ...form.getValues("images"),
-          res.data.imagePath,
-        ]);
+          try {
+            const res = await ImageUploadToServer(null, fd);
+            resolve(res.data.imagePath);
+          } catch (error) {
+            resolve(null);
+          }
+        }, 1000 * i);
       });
-    }
+    });
+
+    const results = await Promise.all(imageServerUploadPromises);
+    form.setValue(
+      "images",
+      results.filter((path) => path !== null) as string[]
+    );
 
     // 보고서 생성 api 연결
     const newReport = {
@@ -106,7 +119,7 @@ export default function ReportAddPage() {
       images: form.getValues("images"),
       courses: formData.courses,
     } as NewReport;
-    //  modifyReport(state.id, newReport) :
+
     await postReport(newReport);
     queryClient.invalidateQueries({ queryKey: ["reports"] });
 
@@ -114,7 +127,10 @@ export default function ReportAddPage() {
     navigate(paths.reports.root);
   };
 
-  const [{ data: coursesRes }, { data: participants }] = useQueries([
+  const [
+    { data: coursesRes, isLoading: coursesLoading },
+    { data: participants, isLoading: participantsLoading },
+  ] = useQueries([
     {
       queryKey: ["teamCourses"],
       queryFn: teamCourses,
@@ -152,15 +168,14 @@ export default function ReportAddPage() {
     const file = e.target.files;
     if (!file) return null;
 
-    
     const targetFile = file[0];
     let targetBlob;
-    
+
     if (targetFile.type === "image/heic" || targetFile.type === "image/heif") {
-        targetBlob = await Heic2Jpg(targetFile);
-        targetBlob = await convertBlobToWebp(targetBlob)
+      targetBlob = await Heic2Jpg(targetFile);
+      targetBlob = await convertBlobToWebp(targetBlob);
     } else {
-      targetBlob =  await convertBlobToWebp(targetFile)
+      targetBlob = await convertBlobToWebp(targetFile);
     }
 
     const reader = new FileReader();
@@ -176,9 +191,19 @@ export default function ReportAddPage() {
 
     form.setValue("blobImages", [
       ...form.getValues("blobImages"),
-      blobToFile(targetBlob, `histudy_${new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15)}.webp`),
+      blobToFile(
+        targetBlob,
+        `histudy_${new Date()
+          .toISOString()
+          .replace(/[-:.]/g, "")
+          .slice(0, 15)}.webp`
+      ),
     ]);
   };
+
+  if (coursesLoading || participantsLoading) {
+    return <WaveLoading />;
+  }
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-3xl">
@@ -432,7 +457,7 @@ export default function ReportAddPage() {
             </CardContent>
           </Card>
 
-          {/* 보고서 작성 섹션 */}
+          {/* 보고서 작성 섹션 - RichTextEditor로 변경 */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -452,7 +477,6 @@ export default function ReportAddPage() {
                       <FormControl>
                         <Input placeholder="제목 작성" {...field} />
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}
@@ -466,14 +490,11 @@ export default function ReportAddPage() {
                     <FormItem>
                       <FormLabel>내용</FormLabel>
                       <FormControl>
-                        <Textarea
-                          rows={10}
-                          placeholder="보고서 내용 작성"
-                          className="resize-none min-h-[200px] max-h-[400px]"
-                          {...field}
+                        <TiptapEditor
+                          content={field.value}
+                          onUpdate={(html) => field.onChange(html)}
                         />
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}

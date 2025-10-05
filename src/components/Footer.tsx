@@ -10,7 +10,7 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-6">
-            <span>Developed by 한시온, 오인혁</span>
+            <span>Developed by 한시온, 오인혁, 김용현</span>
             <a
               href="https://github.com/HandongSF"
               target="_blank"
