@@ -1,12 +1,12 @@
-import {heicTo} from "heic-to";
+import { heicTo } from 'heic-to';
 
 export const Heic2Jpg = async (blob: Blob) => {
-    const convertedFile = await heicTo({
+   const convertedFile = (await heicTo({
       blob,
-      type: "image/jpeg",
+      type: 'image/jpeg',
       quality: 0.5,
-    }) as Blob;
+   })) as Blob;
 
-    return convertedFile;
+   return convertedFile;
 };
 export default Heic2Jpg;

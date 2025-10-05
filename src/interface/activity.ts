@@ -1,1 +1,1 @@
-export type ActivityType = "all" | "current";
+export type ActivityType = 'all' | 'current';
