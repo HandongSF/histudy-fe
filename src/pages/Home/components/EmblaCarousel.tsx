@@ -16,6 +16,12 @@ export const CAROUSEL_SLIDES = [
     alt: "슬기짜기",
   },
   {
+    imageUrl: "/img/CRA_Banner.png",
+    linkUrl:
+      "https://cra206.org/",
+    alt: "CRA",
+  },
+  {
     imageUrl: "/img/HISTUDY_Banner.png",
     linkUrl:
       "https://docs.google.com/forms/d/1xnEGzFTi1AZ9xMefcUGlxSxvECbePaPAGjFn0QQSqag",
