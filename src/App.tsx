@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import { router } from "./components/ARouter";
 import "./globals.css";
+import { DevRoleSwitcher } from "./components/DevRoleSwitcher";
 
 const queryClient = new QueryClient({
   defaultOptions: {
