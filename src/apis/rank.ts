@@ -1,6 +1,7 @@
 import axios from "axios";
 import axiosInstance from "../utils/axiosInstance";
 import { Teams } from "../interface/teams";
+import { BACKEND_BASE_URL } from "@/const/endpoints";
 
 export const getAllTeamsForRank = async (): Promise<Teams> => {
   const response = await axiosInstance.get(`/api/public/teams`);
@@ -12,7 +13,7 @@ export const ImageUploadApi = async (
   formData: FormData
 ) => {
   const response = await axios.post(
-    `${import.meta.env.VITE_BACK_BASE_URL}/api/team/reports${
+    `${BACKEND_BASE_URL}/api/team/reports${
       reportIdOr === null ? "" : `/${reportIdOr}`
     }/image`,
     formData,

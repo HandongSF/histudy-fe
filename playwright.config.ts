@@ -9,8 +9,6 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.test" });
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -29,7 +27,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: "http://localhost:3000", // Vite 기본 포트
+    baseURL: "http://localhost:3000",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
