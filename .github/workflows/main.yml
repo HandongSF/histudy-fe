@@ -10,12 +10,5 @@ jobs:
     name: Deploy
     runs-on: self-hosted
     steps:
-      - name: Execute remote SSH commands using password
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          password: ${{ secrets.PASSWORD }}
-          script: |
-            echo "SSH OK"
-            whoami
+      - name: Run a one-line script
+        run: echo Hello, world!
