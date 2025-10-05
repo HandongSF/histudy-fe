@@ -46,6 +46,7 @@ import { toast } from "sonner";
 
 // 새로 만든 텍스트에디터 import
 import { TiptapEditor } from "@/components/tiptap-editor";
+import { WaveLoading } from "@/components/WaveLoading";
 
 const reportFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -84,20 +85,30 @@ export default function ReportAddPage() {
     },
   });
 
-  form.watch(["previewImages", "blobImages"]);
+  form.watch(["previewImages", "blobImages", "images", "content"]);
 
   const onValid = async (formData: ReportFormState) => {
-    for (let i = 0; i < formData.blobImages.length; ++i) {
-      const imageForm = new FormData();
-      imageForm.append("image", formData.blobImages[i]);
+    const imageServerUploadPromises = formData.blobImages.map((file, i) => {
+      return new Promise((resolve) => {
+        setTimeout(async () => {
+          const fd = new FormData();
+          fd.append("image", file);
 
-      await ImageUploadToServer(null, imageForm).then((res) => {
-        form.setValue("images", [
-          ...form.getValues("images"),
-          res.data.imagePath,
-        ]);
+          try {
+            const res = await ImageUploadToServer(null, fd);
+            resolve(res.data.imagePath);
+          } catch (error) {
+            resolve(null);
+          }
+        }, 1000 * i);
       });
-    }
+    });
+
+    const results = await Promise.all(imageServerUploadPromises);
+    form.setValue(
+      "images",
+      results.filter((path) => path !== null) as string[]
+    );
 
     // 보고서 생성 api 연결
     const newReport = {
@@ -108,7 +119,7 @@ export default function ReportAddPage() {
       images: form.getValues("images"),
       courses: formData.courses,
     } as NewReport;
-    //  modifyReport(state.id, newReport) :
+
     await postReport(newReport);
     queryClient.invalidateQueries({ queryKey: ["reports"] });
 
@@ -116,7 +127,10 @@ export default function ReportAddPage() {
     navigate(paths.reports.root);
   };
 
-  const [{ data: coursesRes }, { data: participants }] = useQueries([
+  const [
+    { data: coursesRes, isLoading: coursesLoading },
+    { data: participants, isLoading: participantsLoading },
+  ] = useQueries([
     {
       queryKey: ["teamCourses"],
       queryFn: teamCourses,
@@ -186,6 +200,10 @@ export default function ReportAddPage() {
       ),
     ]);
   };
+
+  if (coursesLoading || participantsLoading) {
+    return <WaveLoading />;
+  }
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-3xl">
