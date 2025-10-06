@@ -1,9 +1,9 @@
 ---
 name: 버그 이슈
 about: 발견한 버그를 적어주세요.
-title: ""
-labels: "bug"
-assignees: ""
+title: ''
+labels: 'bug'
+assignees: ''
 ---
 
 ## 설명

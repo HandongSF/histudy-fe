@@ -1,1 +1,1 @@
-export type Role = "MEMBER" | "USER" | "ADMIN" | "NONUSER";
+export type Role = 'MEMBER' | 'USER' | 'ADMIN' | 'NONUSER';
