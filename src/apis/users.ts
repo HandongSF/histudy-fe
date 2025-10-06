@@ -2,6 +2,7 @@ import axios from 'axios';
 import { AuthResponse } from 'src/interface/token';
 import { TeamMember, User } from 'src/interface/user';
 import axiosInstance from '../utils/axiosInstance';
+import { BACKEND_BASE_URL } from '@/const/endpoints';
 
 type SignUpRequest = Pick<User, 'email' | 'name' | 'sid'> & {
    sub: string;
@@ -12,12 +13,12 @@ interface SearchFriendResponse {
 }
 
 export const userLogin = async (sub: string): Promise<AuthResponse> => {
-   const response = await axios.get(`${import.meta.env.VITE_BACK_BASE_URL}/api/auth/login?sub=${sub}`);
+   const response = await axios.get(`${BACKEND_BASE_URL}/api/auth/login?sub=${sub}`);
    return response.data;
 };
 
 export const userSignup = async (data: SignUpRequest): Promise<AuthResponse> => {
-   const response = await axios.post(`${import.meta.env.VITE_BACK_BASE_URL}/api/users`, data);
+   const response = await axios.post(`${BACKEND_BASE_URL}/api/users`, data);
    return response.data;
 };
 

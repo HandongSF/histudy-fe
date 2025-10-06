@@ -4,6 +4,7 @@ import { CommonSidebar } from './SideBar';
 import { Outlet } from 'react-router-dom';
 import { useAxiosInterceptor } from '@/hooks/axiosInterceptor';
 import Footer from './Footer';
+import { DevRoleSwitcher } from './DevRoleSwitcher';
 
 export default function RootLayout() {
    useAxiosInterceptor();
@@ -18,6 +19,8 @@ export default function RootLayout() {
                <Outlet />
                <div className="h-[100px]" />
             </main>
+
+            {process.env.NODE_ENV === 'development' && <DevRoleSwitcher />}
 
             <Footer />
          </SidebarInset>

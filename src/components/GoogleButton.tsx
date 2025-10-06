@@ -1,16 +1,14 @@
 // GoogleButton.js
 
-import { paths } from '@/const/paths';
-import { useHIStateValue, useSetHiState } from '@/hooks/HIState';
+import { useSidebar } from '@/components/ui/sidebar';
+import { useSetHiState } from '@/hooks/HIState';
 import { Role } from '@/interface/role';
-import { roleState } from '@/store/HISAtom';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { toast } from 'sonner';
 import { useAuth } from 'src/hooks/auth';
 import { userLogin } from '../apis/users';
 import { isRegisterModalState, userLoginInfoState } from '../store/HISAtom';
-import { useSidebar } from '@/components/ui/sidebar';
 
 export interface JwtHIStudyPayload extends JwtPayload {
    hd: string;
@@ -20,13 +18,10 @@ export interface JwtHIStudyPayload extends JwtPayload {
 }
 
 export default function GoogleButton() {
-   // const role = useHIStateValue(roleState);
-
    const setIsRegisterModalState = useSetHiState(isRegisterModalState);
    const setUserLoginInfo = useSetHiState(userLoginInfoState);
    const { login } = useAuth();
 
-   // const { loginWithCredential } = useAuthContext();
    const onSuccess = async (credentialResponse: CredentialResponse) => {
       if (!credentialResponse.credential) {
          toast.error('로그인에 실패하였습니다.');
@@ -44,16 +39,7 @@ export default function GoogleButton() {
          return;
       }
 
-      // const testSub = {
-      //   ADMIN: "test3",
-      //   MEMBER: "test2",
-      //   USER: "test1",
-      // } as Record<Role, string>;
-
-      userLogin(
-         // testSub[role] ||
-         decodedToken.sub,
-      )
+      userLogin(decodedToken.sub)
          .then((response) => {
             if (response.isRegistered === true) {
                login(response.tokens.accessToken, response.tokens.refreshToken, response.role);
