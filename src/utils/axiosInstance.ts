@@ -1,5 +1,6 @@
 // src/api/axiosInstance.ts
 
+import { BACKEND_BASE_URL } from "@/const/endpoints";
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 export const requestHandler = async (config: InternalAxiosRequestConfig) => {
@@ -13,7 +14,7 @@ export const requestHandler = async (config: InternalAxiosRequestConfig) => {
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BACK_BASE_URL, // 실제 API 주소로 교체
+  baseURL: BACKEND_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

@@ -1,3 +1,4 @@
+import { BACKEND_BASE_URL } from "@/const/endpoints";
 import axios from "axios";
 
 interface RefreshTokenRequest {
@@ -19,7 +20,7 @@ export const tokenRefresh = async (
     refreshToken,
   } as RefreshTokenRequest;
   const response = await axios.post(
-    `${import.meta.env.VITE_BACK_BASE_URL}/api/auth/token`,
+    `${BACKEND_BASE_URL}/api/auth/token`,
     tokenBody
   );
 
