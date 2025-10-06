@@ -1,5 +1,4 @@
 import { useRoleInit } from './hooks/role';
-
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RouterProvider } from 'react-router-dom';

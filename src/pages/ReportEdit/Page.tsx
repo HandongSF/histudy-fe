@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { BookOpen, Clock, FileText, ImageIcon, Users, XCircle } from 'lucide-react';
 import * as z from 'zod';
 
@@ -26,6 +25,7 @@ import { useQueries, useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { convertBlobToWebp } from '@/utils/convertBlobToWebp';
+import { TiptapEditor } from '@/components/tiptap-editor';
 
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
@@ -39,10 +39,7 @@ const reportFormSchema = z.object({
       .array(z.string())
       .min(1, '최소 1개의 이미지를 업로드 해주세요.')
       .max(3, '최대 3개의 이미지만 업로드 가능합니다.'),
-   blobImages: z
-      .array(z.instanceof(File))
-      .min(1, '최소 1개의 이미지를 업로드 해주세요.')
-      .max(3, '최대 3개의 이미지만 업로드 가능합니다.'),
+   blobImages: z.array(z.instanceof(File)),
 });
 
 type ReportFormState = z.infer<typeof reportFormSchema>;
@@ -61,7 +58,7 @@ export default function ReportEditPage() {
       resolver: zodResolver(reportFormSchema),
       defaultValues: {
          title: '',
-         content: '',
+         content: undefined,
          participants: [],
          totalMinutes: '',
          images: [],
@@ -78,10 +75,10 @@ export default function ReportEditPage() {
             content: report.content,
             participants: report.participants.map((participant) => participant.id),
             totalMinutes: String(report.totalMinutes),
-            images: [],
+            images: report.images.map((image) => image.url),
             courses: report.courses.map((course) => course.id),
             previewImages: report.images.map((image) => image.url),
-            blobImages: report.images.map((image) => new File([], image.url)),
+            blobImages: [],
          });
       }
    }, [report, form]);
@@ -89,24 +86,38 @@ export default function ReportEditPage() {
    form.watch(['previewImages', 'blobImages']);
 
    const onValid = async (formData: ReportFormState) => {
-      for (let i = 0; i < formData.blobImages.length; ++i) {
-         const imageForm = new FormData();
-         imageForm.append('image', formData.blobImages[i]);
+      const imageServerUploadPromises = formData.blobImages.map((file, i) => {
+         return new Promise((resolve) => {
+            setTimeout(async () => {
+               const fd = new FormData();
+               fd.append('image', file);
 
-         await ImageUploadToServer(null, imageForm).then((res) => {
-            form.setValue('images', [...form.getValues('images'), res.data.imagePath]);
+               try {
+                  const res = await ImageUploadToServer(+id, fd);
+                  resolve(res.data.imagePath);
+               } catch (error) {
+                  resolve(null);
+               }
+            }, 1000 * i);
          });
-      }
+      });
 
-      // 보고서 생성 api 연결
+      const results = await Promise.all(imageServerUploadPromises);
+      const newImagePaths = results.filter((path) => path !== null) as string[];
+
+      // 기존 이미지와 새 이미지 합치기
+      const existingImages = form.getValues('images');
+      const finalImages = [...existingImages, ...newImagePaths];
+
       const newReport = {
          title: formData.title,
          content: formData.content,
          totalMinutes: Number(formData.totalMinutes),
          participants: formData.participants,
-         images: form.getValues('images'),
+         images: finalImages,
          courses: formData.courses,
       } as NewReport;
+
       await modifyReport(+id, newReport);
       queryClient.invalidateQueries({ queryKey: ['reports'] });
 
@@ -195,7 +206,7 @@ export default function ReportEditPage() {
 
    return (
       <div className="container mx-auto py-8 px-4 max-w-3xl">
-         <h1 className="text-3xl font-bold tracking-tight mb-6 text-center">새 보고서 작성</h1>
+         <h1 className="text-3xl font-bold tracking-tight mb-6 text-center">보고서 수정</h1>
          <Form {...form}>
             <form onSubmit={form.handleSubmit(onValid)} className="space-y-6">
                <Card>
@@ -234,33 +245,59 @@ export default function ReportEditPage() {
                               </div>
 
                               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                 {form.getValues('previewImages').map((url, index) => (
-                                    <div key={`new-${index}`} className="relative group aspect-square">
-                                       <img
-                                          src={url}
-                                          alt={`새 이미지 ${index + 1}`}
-                                          className="w-full h-full object-cover rounded-md border"
-                                       />
-                                       <Button
-                                          type="button"
-                                          variant="destructive"
-                                          size="icon"
-                                          className="absolute top-1 right-1 h-6 w-6 opacity-70 group-hover:opacity-100"
-                                          onClick={() => {
-                                             form.setValue(
-                                                'blobImages',
-                                                form.getValues('blobImages').filter((_, i) => i !== index),
-                                             );
-                                             form.setValue(
-                                                'previewImages',
-                                                form.getValues('previewImages').filter((_, i) => i !== index),
-                                             );
-                                          }}
-                                       >
-                                          <XCircle className="h-4 w-4" />
-                                       </Button>
-                                    </div>
-                                 ))}
+                                 {form.getValues('previewImages').map((url, index) => {
+                                    const isExistingImage = report?.images.some((img) => img.url === url);
+
+                                    return (
+                                       <div key={`image-${index}`} className="relative group aspect-square">
+                                          <img
+                                             src={url}
+                                             alt={
+                                                isExistingImage ? `기존 이미지 ${index + 1}` : `새 이미지 ${index + 1}`
+                                             }
+                                             className="w-full h-full object-cover rounded-md border"
+                                          />
+                                          <Button
+                                             type="button"
+                                             variant="destructive"
+                                             size="icon"
+                                             className="absolute top-1 right-1 h-6 w-6 opacity-70 group-hover:opacity-100"
+                                             onClick={() => {
+                                                if (isExistingImage) {
+                                                   // 기존 이미지 삭제
+                                                   form.setValue(
+                                                      'images',
+                                                      form.getValues('images').filter((imgUrl) => imgUrl !== url),
+                                                   );
+                                                } else {
+                                                   // 새 이미지 삭제 - 간단한 방법
+                                                   const newImageIndex = form
+                                                      .getValues('previewImages')
+                                                      .slice(0, index)
+                                                      .filter(
+                                                         (imgUrl) => !report?.images.some((img) => img.url === imgUrl),
+                                                      ).length;
+
+                                                   form.setValue(
+                                                      'blobImages',
+                                                      form
+                                                         .getValues('blobImages')
+                                                         .filter((_, i) => i !== newImageIndex),
+                                                   );
+                                                }
+
+                                                // previewImages에서 제거
+                                                form.setValue(
+                                                   'previewImages',
+                                                   form.getValues('previewImages').filter((_, i) => i !== index),
+                                                );
+                                             }}
+                                          >
+                                             <XCircle className="h-4 w-4" />
+                                          </Button>
+                                       </div>
+                                    );
+                                 })}
                               </div>
                               <FormMessage />
                            </FormItem>
@@ -427,7 +464,6 @@ export default function ReportEditPage() {
                                  <FormControl>
                                     <Input placeholder="제목 작성" {...field} />
                                  </FormControl>
-
                                  <FormMessage />
                               </FormItem>
                            )}
@@ -441,14 +477,8 @@ export default function ReportEditPage() {
                               <FormItem>
                                  <FormLabel>내용</FormLabel>
                                  <FormControl>
-                                    <Textarea
-                                       rows={10}
-                                       placeholder="보고서 내용 작성"
-                                       className="resize-none min-h-[200px] max-h-[400px]"
-                                       {...field}
-                                    />
+                                    <TiptapEditor content={field.value} onUpdate={(html) => field.onChange(html)} />
                                  </FormControl>
-
                                  <FormMessage />
                               </FormItem>
                            )}
