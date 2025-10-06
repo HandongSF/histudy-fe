@@ -1,8 +1,8 @@
 export interface Semester {
-  academicTermId: number;
-  year: number;
-  semester: SemesterType;
-  isCurrent: boolean;
+   academicTermId: number;
+   year: number;
+   semester: SemesterType;
+   isCurrent: boolean;
 }
 
-export type SemesterType = "SPRING" | "SUMMER" | "FALL" | "WINTER";
+export type SemesterType = 'SPRING' | 'SUMMER' | 'FALL' | 'WINTER';

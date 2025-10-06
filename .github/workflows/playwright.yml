@@ -1,0 +1,32 @@
+name: Histudy CI/CD
+on:
+   push:
+      branches: main
+   pull_request:
+      branches: ['*']
+   workflow_dispatch:
+jobs:
+   e2e-test:
+      timeout-minutes: 300
+      runs-on: self-hosted
+      env:
+         NODE_ENV: ${{ secrets.NODE_ENV }}
+         VITE_BACK_BASE_URL: ${{ secrets.VITE_BACK_BASE_URL }}
+         VITE_PUBLIC_URL: ${{ secrets.VITE_PUBLIC_URL }}
+      steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-node@v4
+           with:
+              node-version: lts/*
+         - name: Install dependencies
+           run: npm install -g pnpm && pnpm install
+         - name: Install Playwright Browsers
+           run: pnpm exec playwright install --with-deps
+         - name: Run Playwright tests
+           run: pnpm exec playwright test
+         - uses: actions/upload-artifact@v4
+           if: ${{ !cancelled() }}
+           with:
+              name: playwright-report
+              path: playwright-report/
+              retention-days: 30

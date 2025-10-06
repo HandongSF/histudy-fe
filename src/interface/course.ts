@@ -1,14 +1,14 @@
 export interface Courses {
-  courses: Course[];
+   courses: Course[];
 }
 
 export interface Course {
-  id: number;
-  name: string;
-  prof: string;
-  code: string;
-  year: number;
-  semester: number;
+   id: number;
+   name: string;
+   prof: string;
+   code: string;
+   year: number;
+   semester: number;
 }
 
-export type SimpleCourse = Pick<Course, "id" | "name" | "prof">;
+export type SimpleCourse = Pick<Course, 'id' | 'name' | 'prof'>;
