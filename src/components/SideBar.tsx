@@ -1,12 +1,5 @@
 import GoogleButton from "@/components/GoogleButton";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -22,8 +15,9 @@ import {
 } from "@/components/ui/sidebar";
 import { paths } from "@/const/paths";
 import { useAuth } from "@/hooks/auth";
-import { cn } from "@/lib/utils";
+import { useHIStateValue } from "@/hooks/HIState";
 import { Role } from "@/interface/role";
+import { cn } from "@/lib/utils";
 import { roleState } from "@/store/HISAtom";
 import {
   BookOpen,
@@ -41,19 +35,18 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useHIState, useHIStateValue } from "@/hooks/HIState";
 
 interface NavItem {
   name: string;
   href: string;
   icon: LucideIcon;
-  allowedRoles?: Role[]; // 역할 기반 접근 제어
+  allowedRoles?: Role[];
 }
 
 interface NavGroup {
   title: string;
   items: NavItem[];
-  allowedRoles?: Role[]; // 그룹 전체에 대한 역할 설정도 가능
+  allowedRoles?: Role[];
 }
 
 const navGroupsData: NavGroup[] = [
@@ -143,33 +136,6 @@ const navGroupsData: NavGroup[] = [
   },
 ];
 
-// 데모용 역할 변경 컴포넌트
-function RoleSwitcher() {
-  const [role, setRole] = useHIState(roleState);
-
-  return (
-    <div className="p-3 group-data-[collapsible=icon]:p-2">
-      <Select
-        value={role}
-        onValueChange={(newRole) => setRole(newRole as Role)}
-      >
-        <SelectTrigger className="w-full group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:aspect-square group-data-[collapsible=icon]:p-2">
-          <UserCog className="size-5 shrink-0 group-data-[collapsible=icon]:m-0 group-data-[collapsible=expanded]:mr-2" />
-          <span className="group-data-[collapsible=icon]:hidden">
-            <SelectValue placeholder="Select role" />
-          </span>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="NONUSER">Non-User</SelectItem>
-          <SelectItem value="USER">User</SelectItem>
-          <SelectItem value="MEMBER">Member</SelectItem>
-          <SelectItem value="ADMIN">Admin</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  );
-}
-
 export function CommonSidebar() {
   const pathname = useLocation().pathname;
   const role = useHIStateValue(roleState);
@@ -222,7 +188,6 @@ export function CommonSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="flex-1 p-3 space-y-1">
-        {/* <RoleSwitcher /> */}
         {filteredNavGroups.map((group) => (
           <SidebarGroup key={group.title}>
             <SidebarGroupLabel
