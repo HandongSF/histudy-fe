@@ -1,4 +1,4 @@
-name: Histudy CI/CD
+name: Histudy E2E CI
 on:
    push:
       branches: main
@@ -8,7 +8,7 @@ on:
 jobs:
    e2e-test:
       timeout-minutes: 300
-      runs-on: self-hosted
+      runs-on: ubuntu-latest
       env:
          NODE_ENV: ${{ secrets.NODE_ENV }}
          VITE_BACK_BASE_URL: ${{ secrets.VITE_BACK_BASE_URL }}
