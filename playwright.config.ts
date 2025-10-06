@@ -87,8 +87,9 @@ export default defineConfig({
     command: "pnpm start",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
-    timeout: 30 * 1000,
+    timeout: 5 * 60 * 1000,
     stdout: "pipe",
     stderr: "pipe",
+    env: process.env as Record<string, string>,
   },
 });
