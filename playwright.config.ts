@@ -7,7 +7,11 @@ import dotenv from 'dotenv';
  * https://github.com/motdotla/dotenv
  */
 
-dotenv.config({ path: '.env.test' });
+const isCI = !!process.env.CI;
+
+if (!isCI) {
+   dotenv.config({ path: '.env.test' });
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.

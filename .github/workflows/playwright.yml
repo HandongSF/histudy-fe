@@ -10,6 +10,7 @@ jobs:
       timeout-minutes: 300
       runs-on: ubuntu-latest
       env:
+         CI: true
          NODE_ENV: ${{ secrets.NODE_ENV }}
          VITE_BACK_BASE_URL: ${{ secrets.VITE_BACK_BASE_URL }}
          VITE_PUBLIC_URL: ${{ secrets.VITE_PUBLIC_URL }}
