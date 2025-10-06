@@ -80,8 +80,10 @@ test.describe('스터디원 리포트 테스트', () => {
 
          await page.getByRole('textbox', { name: '제목' }).click();
          await page.getByRole('textbox', { name: '제목' }).fill(testTitle);
-         await page.getByRole('textbox', { name: '내용' }).click();
-         await page.getByRole('textbox', { name: '내용' }).fill(testContent);
+
+         await page.locator('.tiptap').click();
+         await page.locator('.tiptap').fill(testContent);
+
          await page.getByRole('button', { name: '제출' }).click();
 
          // 이미지 올라간 것 확인
@@ -167,8 +169,8 @@ test.describe('스터디원 리포트 테스트', () => {
 
          await page.getByRole('textbox', { name: '제목' }).click();
          await page.getByRole('textbox', { name: '제목' }).fill(testTitle);
-         await page.getByRole('textbox', { name: '내용' }).click();
-         await page.getByRole('textbox', { name: '내용' }).fill(testContent);
+         await page.locator('.tiptap').click();
+         await page.locator('.tiptap').fill(testContent);
          await page.getByRole('button', { name: '제출' }).click();
 
          // 이미지 올라간 것 확인
