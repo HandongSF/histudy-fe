@@ -1,6 +1,6 @@
 import { Clock, FileText, Square, Users, X } from 'lucide-react';
 import { Button } from './ui/button';
-import { Dialog, DialogContent } from './ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { Team } from '@/interface/teams';
 import { addImagePrefix } from '@/utils/imagePrefix';
 
@@ -23,6 +23,7 @@ export default function TeamInfoModal({ selectedTeam, closeModal }: TeamInfoModa
             showCloseButton={false}
             className="p-0 bg-white dark:bg-slate-800 shadow-xl rounded-lg max-w-2xl w-[90vw] sm:w-full overflow-hidden flex flex-col max-h-[90vh]"
          >
+            <DialogTitle className="hidden">Team Info</DialogTitle>
             {selectedTeam && (
                <>
                   <div className="relative w-full aspect-[16/9] sm:aspect-video">
