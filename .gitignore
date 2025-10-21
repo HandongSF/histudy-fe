@@ -34,4 +34,4 @@ node_modules/
 
 playwright/.auth
 
-tests/auth/
+e2e-tests/auth/
