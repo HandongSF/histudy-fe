@@ -9,6 +9,7 @@ import { useQuery } from 'react-query';
 import { StudyApplyUser } from '@/interface/user';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { toast } from 'sonner';
+import { buildWorkBook, downloadExcel } from '@/utils/excel';
 
 // Helper function to clean course names
 const cleanCourseName = (name: string) => name.replace(/\n/g, ' ');
@@ -86,8 +87,13 @@ export default function ManageStudentPage() {
    }, [applicants, searchTerm]);
 
    const handleExcelDownload = () => {
-      if (applicants) {
-         const sheetData = applicants.map((student) => ({
+      const sheetData = buildApplicantsSheetData();
+      downloadExcel(buildWorkBook(sheetData), '스터디신청자목록.xlsx');
+
+      function buildApplicantsSheetData() {
+         if (!applicants) return [];
+
+         return applicants.map((student) => ({
             ID: student.id,
             Name: student.name,
             StudentId: student.sid,
@@ -96,12 +102,6 @@ export default function ManageStudentPage() {
             Courses: student.courses.map((subject) => subject.name + `(${subject.prof})`).join(', '),
             Friends: student.friends.map((friend) => friend.name).join(', '),
          }));
-
-         const ws = xlsx.utils.json_to_sheet([...sheetData]);
-         const wb = xlsx.utils.book_new();
-         xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-         xlsx.writeFile(wb, '스터디신청자목록.xlsx');
       }
    };
 

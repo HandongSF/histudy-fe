@@ -1,4 +1,3 @@
-import * as xlsx from 'xlsx';
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,6 +5,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@
 import { Badge } from '@/components/ui/badge';
 import { SearchIcon, DownloadIcon, EyeIcon } from 'lucide-react';
 import { readAllGroups } from '@/apis/manager';
+import { buildWorkBook, downloadExcel } from '@/utils/excel';
 import { useQuery } from 'react-query';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { Link } from 'react-router-dom';
@@ -33,9 +33,14 @@ export default function ManageStudyPage() {
    }, [activities, searchTerm]);
 
    const handleExcelDownload = () => {
-      if (activities) {
-         const sheetData = activities.flatMap((group) =>
-            group.members.map((member) => ({
+      const sheetData = buildStudySheetData();
+      downloadExcel(buildWorkBook(sheetData), '스터디그룹활동.xlsx');
+
+      function buildStudySheetData() {
+         if (!activities) return [];
+
+         return activities.flatMap((group) => {
+            const sheetRow = group.members.map((member) => ({
                Group: group.group,
                MemberID: member.id,
                MemberName: member.name,
@@ -44,15 +49,10 @@ export default function ManageStudyPage() {
                Subjects: member.courses.map((subject) => subject.name).join(', '),
                Reports: group.reports,
                Times: group.times,
-            })),
-         );
-         const ws = xlsx.utils.json_to_sheet([...sheetData]);
-         const wb = xlsx.utils.book_new();
-         xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+            }));
 
-         xlsx.writeFile(wb, '스터디그룹활동.xlsx');
-      } else {
-         console.log('데이터가 비어있습니다.');
+            return sheetRow;
+         });
       }
    };
 
