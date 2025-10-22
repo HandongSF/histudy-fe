@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { paths } from '@/const/paths';
 import { Report } from '@/interface/report';
 import { getFormattedLocaleString } from '@/utils/DateFormat';
+import { formatTimeToHoursAndMinutes } from '@/utils/formatTimeToHoursAndMinutes';
 import { ChevronRight, Clock, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,13 +19,6 @@ export default function GroupReportListUserView({ reports }: GroupReportListView
       navigate(paths.reports.oneReport(report.id.toString()), {
          state: report,
       });
-   };
-
-   // 시간을 시간과 분으로 포맷팅하는 함수
-   const formatStudyTime = (minutes: number) => {
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      return `${hours}시간 ${mins}분`;
    };
 
    return (
@@ -73,7 +67,7 @@ export default function GroupReportListUserView({ reports }: GroupReportListView
                                     <div className="font-medium">{report.title}</div>
                                     <div className="md:hidden text-xs text-muted-foreground flex items-left mt-1">
                                        <Clock className="h-3 w-3 mr-1" />
-                                       {formatStudyTime(report.totalMinutes)}
+                                       {formatTimeToHoursAndMinutes(report.totalMinutes)}
                                     </div>
                                     <div className="sm:hidden text-xs text-muted-foreground flex items-center mt-1">
                                        <Users className="h-3 w-3 mr-1" />
@@ -84,7 +78,7 @@ export default function GroupReportListUserView({ reports }: GroupReportListView
                               <TableCell className="hidden md:table-cell">
                                  <div className="flex items-center">
                                     <Clock className="h-4 w-4 text-muted-foreground mr-2" />
-                                    {formatStudyTime(report.totalMinutes)}
+                                    {formatTimeToHoursAndMinutes(report.totalMinutes)}
                                  </div>
                               </TableCell>
                               <TableCell className="hidden sm:table-cell">
