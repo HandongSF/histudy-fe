@@ -87,12 +87,11 @@ export default function ManageStudentPage() {
    }, [applicants, searchTerm]);
 
    const handleExcelDownload = () => {
-      const sheetData = buildApplicantsSheetData();
-      downloadExcelFromSheetData(sheetData, '스터디신청자목록.xlsx');
+      if (!applicants) return;
 
-      function buildApplicantsSheetData() {
-         if (!applicants) return [];
+      downloadExcelFromSheetData(buildApplicantsSheetData(applicants), '스터디신청자목록.xlsx');
 
+      function buildApplicantsSheetData(applicants: StudyApplyUser[]) {
          return applicants.map((student) => ({
             ID: student.id,
             Name: student.name,

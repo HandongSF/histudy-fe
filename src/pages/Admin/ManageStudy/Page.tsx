@@ -10,6 +10,7 @@ import SpinnerLoading from '@/components/SpinnerLoading';
 import { Link } from 'react-router-dom';
 import { paths } from '@/const/paths';
 import { downloadExcelFromSheetData } from '@/utils/excel';
+import { Group } from '@/interface/group';
 
 export default function ManageStudyPage() {
    const { data: activities, isLoading } = useQuery(['courses'], readAllGroups, {
@@ -33,12 +34,11 @@ export default function ManageStudyPage() {
    }, [activities, searchTerm]);
 
    const handleExcelDownload = () => {
-      const sheetData = buildStudySheetData();
-      downloadExcelFromSheetData(sheetData, '스터디그룹활동.xlsx');
+      if (!activities) return;
 
-      function buildStudySheetData() {
-         if (!activities) return [];
+      downloadExcelFromSheetData(buildStudySheetData(activities), '스터디그룹활동.xlsx');
 
+      function buildStudySheetData(activities: Group[]) {
          return activities.flatMap((group) => {
             const sheetRow = group.members.map((member) => ({
                Group: group.group,
@@ -71,7 +71,7 @@ export default function ManageStudyPage() {
                      onChange={(e) => setSearchTerm(e.target.value)}
                   />
                </div>
-               <Button onClick={handleExcelDownload}>
+               <Button onClick={activities && handleExcelDownload}>
                   <DownloadIcon className="mr-2 h-4 w-4" />
                   그룹 활동 목록 엑셀 다운
                </Button>
