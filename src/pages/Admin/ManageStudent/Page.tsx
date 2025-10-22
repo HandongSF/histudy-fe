@@ -9,7 +9,7 @@ import { useQuery } from 'react-query';
 import { StudyApplyUser } from '@/interface/user';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { toast } from 'sonner';
-import { buildWorkBook, downloadExcel } from '@/utils/excel';
+import { downloadExcelFromSheetData } from '@/utils/excel';
 
 // Helper function to clean course names
 const cleanCourseName = (name: string) => name.replace(/\n/g, ' ');
@@ -88,7 +88,7 @@ export default function ManageStudentPage() {
 
    const handleExcelDownload = () => {
       const sheetData = buildApplicantsSheetData();
-      downloadExcel(buildWorkBook(sheetData), '스터디신청자목록.xlsx');
+      downloadExcelFromSheetData(sheetData, '스터디신청자목록.xlsx');
 
       function buildApplicantsSheetData() {
          if (!applicants) return [];

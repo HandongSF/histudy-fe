@@ -5,11 +5,11 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@
 import { Badge } from '@/components/ui/badge';
 import { SearchIcon, DownloadIcon, EyeIcon } from 'lucide-react';
 import { readAllGroups } from '@/apis/manager';
-import { buildWorkBook, downloadExcel } from '@/utils/excel';
 import { useQuery } from 'react-query';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { Link } from 'react-router-dom';
 import { paths } from '@/const/paths';
+import { downloadExcelFromSheetData } from '@/utils/excel';
 
 export default function ManageStudyPage() {
    const { data: activities, isLoading } = useQuery(['courses'], readAllGroups, {
@@ -34,7 +34,7 @@ export default function ManageStudyPage() {
 
    const handleExcelDownload = () => {
       const sheetData = buildStudySheetData();
-      downloadExcel(buildWorkBook(sheetData), '스터디그룹활동.xlsx');
+      downloadExcelFromSheetData(sheetData, '스터디그룹활동.xlsx');
 
       function buildStudySheetData() {
          if (!activities) return [];

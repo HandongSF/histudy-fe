@@ -1,14 +1,16 @@
 import * as xlsx from 'xlsx';
 
-export function buildWorkBook<T>(sheetData: T[]) {
-   const workBook = xlsx.utils.book_new();
-   const workSheet = xlsx.utils.json_to_sheet(sheetData);
+export function downloadExcelFromSheetData<T>(sheetData: T[], filename: string) {
+   const workBook = buildWorkBook(sheetData);
+   xlsx.writeFile(workBook, filename);
 
-   xlsx.utils.book_append_sheet(workBook, workSheet);
+   function buildWorkBook<T>(sheetData: T[]) {
+      const workBook = xlsx.utils.book_new();
 
-   return workBook;
-}
+      const workSheet = xlsx.utils.json_to_sheet(sheetData);
 
-export function downloadExcel(data: xlsx.WorkBook, filename: string) {
-   xlsx.writeFile(data, filename);
+      xlsx.utils.book_append_sheet(workBook, workSheet);
+
+      return workBook;
+   }
 }
