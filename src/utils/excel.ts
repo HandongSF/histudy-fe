@@ -1,13 +1,12 @@
 import * as xlsx from 'xlsx';
 
 export function buildWorkBook<T>(sheetData: T[]) {
-   const wb = xlsx.utils.book_new();
+   const workBook = xlsx.utils.book_new();
+   const workSheet = xlsx.utils.json_to_sheet(sheetData);
 
-   const ws = xlsx.utils.json_to_sheet(sheetData);
+   xlsx.utils.book_append_sheet(workBook, workSheet);
 
-   xlsx.utils.book_append_sheet(wb, ws);
-
-   return wb;
+   return workBook;
 }
 
 export function downloadExcel(data: xlsx.WorkBook, filename: string) {
