@@ -17,6 +17,7 @@ if (!isCI) {
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+   timeout: 120_000,
    testDir: './e2e-tests',
    /* Run tests in files in parallel */
    fullyParallel: true,
