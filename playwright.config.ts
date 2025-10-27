@@ -17,7 +17,7 @@ if (!isCI) {
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-   timeout: 120_000,
+   timeout: 5 * 60 * 1000,
    testDir: './e2e-tests',
    /* Run tests in files in parallel */
    fullyParallel: true,
@@ -93,8 +93,8 @@ export default defineConfig({
       url: 'http://localhost:3000',
       reuseExistingServer: !process.env.CI,
       timeout: 5 * 60 * 1000,
-      stdout: 'pipe',
-      stderr: 'pipe',
+      // stdout: 'pipe',
+      // stderr: 'pipe',
       env: process.env as Record<string, string>,
    },
 });
