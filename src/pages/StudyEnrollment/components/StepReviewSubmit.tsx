@@ -64,15 +64,15 @@ function SortableCourseItem({ course, index }: SortableCourseItemProps) {
 }
 
 interface StepReviewSubmitProps {
-   applicationData: {
+   enrollmentData: {
       friends: SimpleUser[];
       courses: Course[];
    };
    onUpdateCoursesOrder: (courses: Course[]) => void;
 }
 
-export function StepReviewSubmit({ applicationData, onUpdateCoursesOrder }: StepReviewSubmitProps) {
-   const { friends, courses } = applicationData;
+export function StepReviewSubmit({ enrollmentData, onUpdateCoursesOrder }: StepReviewSubmitProps) {
+   const { friends, courses } = enrollmentData;
 
    const sensors = useSensors(
       useSensor(PointerSensor),

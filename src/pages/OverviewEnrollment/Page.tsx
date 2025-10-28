@@ -10,13 +10,13 @@ import { paths } from '@/const/paths';
 import { useAuth } from '@/hooks/auth';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-export default function OverviewApplicationPage() {
+export default function OverviewEnrollmentPage() {
    const { data, isLoading } = useQuery(['checkMyApplication'], getMyGroup, {
       cacheTime: 1 * 30 * 1000,
       refetchOnWindowFocus: false,
    });
 
-   const myApplication = useMemo(() => {
+   const myEnrollment = useMemo(() => {
       if (!data)
          return {
             friends: [],
@@ -26,7 +26,7 @@ export default function OverviewApplicationPage() {
       return data;
    }, [data]);
 
-   const hasNoApplications = myApplication.courses.length === 0 && myApplication.friends.length === 0;
+   const hasNoEnrollments = myEnrollment.courses.length === 0 && myEnrollment.friends.length === 0;
 
    if (isLoading) {
       return <WaveLoading />;
@@ -39,12 +39,12 @@ export default function OverviewApplicationPage() {
                <header className="mb-8">
                   <h1 className="text-3xl font-bold tracking-tight mb-2">스터디 그룹 신청 내역</h1>
                   <p className="text-muted-foreground">
-                     {hasNoApplications ? '아직 스터디를 신청하지 않았습니다.' : '스터디 신청이 완료되었습니다.'}
+                     {hasNoEnrollments ? '아직 스터디를 신청하지 않았습니다.' : '스터디 신청이 완료되었습니다.'}
                   </p>
                </header>
 
-               <Link to={paths.application.add}>
-                  <Button>{hasNoApplications ? '스터디 그룹 신청' : '스터디 그룹 재신청'}</Button>
+               <Link to={paths.enrollment.add}>
+                  <Button>{hasNoEnrollments ? '스터디 그룹 신청' : '스터디 그룹 재신청'}</Button>
                </Link>
             </div>
 
@@ -56,7 +56,7 @@ export default function OverviewApplicationPage() {
                         <Users className="h-5 w-5 text-primary" />
                         함께하고 싶은 친구
                         <span className="text-sm font-normal text-muted-foreground">
-                           ({myApplication.friends.length}/3)
+                           ({myEnrollment.friends.length}/3)
                         </span>
                      </CardTitle>
                   </CardHeader>
@@ -69,14 +69,14 @@ export default function OverviewApplicationPage() {
                            </TableRow>
                         </TableHeader>
                         <TableBody>
-                           {myApplication.friends.map((friend, index) => (
+                           {myEnrollment.friends.map((friend, index) => (
                               <TableRow key={index}>
                                  <TableCell className="font-mono">{friend.sid}</TableCell>
                                  <TableCell>{friend.name}</TableCell>
                               </TableRow>
                            ))}
                            {/* 빈 행 추가 (최대 3명까지) */}
-                           {Array.from({ length: 3 - myApplication.friends.length }).map((_, index) => (
+                           {Array.from({ length: 3 - myEnrollment.friends.length }).map((_, index) => (
                               <TableRow key={`empty-friend-${index}`} className="text-muted-foreground">
                                  <TableCell colSpan={2} className="h-[41px] italic text-xs">
                                     (빈 자리)
@@ -95,7 +95,7 @@ export default function OverviewApplicationPage() {
                         <Book className="h-5 w-5 text-primary" />
                         강의
                         <span className="text-sm font-normal text-muted-foreground">
-                           ({myApplication.courses.length}/3)
+                           ({myEnrollment.courses.length}/3)
                         </span>
                      </CardTitle>
                   </CardHeader>
@@ -110,7 +110,7 @@ export default function OverviewApplicationPage() {
                            </TableRow>
                         </TableHeader>
                         <TableBody>
-                           {myApplication.courses.map((course, index) => (
+                           {myEnrollment.courses.map((course, index) => (
                               <TableRow key={index}>
                                  <TableCell className="font-mono">{index + 1}</TableCell>
                                  <TableCell className="font-mono">{course.code}</TableCell>
@@ -119,7 +119,7 @@ export default function OverviewApplicationPage() {
                               </TableRow>
                            ))}
                            {/* 빈 행 추가 (최대 3개까지) */}
-                           {Array.from({ length: 3 - myApplication.courses.length }).map((_, index) => (
+                           {Array.from({ length: 3 - myEnrollment.courses.length }).map((_, index) => (
                               <TableRow key={`empty-course-${index}`} className="text-muted-foreground">
                                  <TableCell colSpan={3} className="h-[41px] italic text-xs">
                                     (빈 자리)
