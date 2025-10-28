@@ -12,13 +12,17 @@ const cleanCourseName = (name: string) => name.replace(/\n/g, ' ');
 const cleanProfName = (prof: string) => prof.replace(/\n/g, '').trim();
 
 export default function CreateGroupPage() {
-   const { data, refetch, isLoading } = useQuery(['readApplicants'], readApplicants, {
+   const {
+      data: studyEnrolleesData,
+      refetch: studyEnrolleesRefetch,
+      isLoading: isStudyEnrolleesLoading,
+   } = useQuery(['readApplicants'], readApplicants, {
       cacheTime: 5 * 60 * 1000,
    });
 
    const { mutate: deleteUserFormMutation } = useMutation(deleteUserForm, {
       onSuccess: () => {
-         refetch();
+         studyEnrolleesRefetch();
          toast.success('삭제 완료!');
       },
       onError: () => {
@@ -32,7 +36,7 @@ export default function CreateGroupPage() {
 
    const { mutate: teamMatchMutation, isLoading: isTeamMatchLoading } = useMutation(teamMatch, {
       onSuccess: () => {
-         refetch();
+         studyEnrolleesRefetch();
          toast.success('매칭 완료!');
       },
       onError: () => {
@@ -45,9 +49,9 @@ export default function CreateGroupPage() {
    };
 
    const applicants = useMemo(() => {
-      if (!data) return [];
-      return data;
-   }, [data]);
+      if (!studyEnrolleesData) return [];
+      return studyEnrolleesData;
+   }, [studyEnrolleesData]);
 
    return (
       <div className="container mx-auto p-8">
@@ -57,7 +61,7 @@ export default function CreateGroupPage() {
                {isTeamMatchLoading ? '매칭 중...' : '그룹 매칭하기'}
             </Button>
          </div>
-         {isLoading ? (
+         {isStudyEnrolleesLoading ? (
             <div className="flex min-h-[500px] justify-center items-center">
                <SpinnerLoading />
             </div>

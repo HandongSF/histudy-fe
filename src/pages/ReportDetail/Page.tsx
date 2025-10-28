@@ -1,4 +1,4 @@
-import { readReportDetail } from '@/apis/manager';
+import { readOneReport } from '@/apis/manager';
 import { deleteReport } from '@/apis/report';
 
 import { NoData } from '@/components/NoData';
@@ -40,11 +40,11 @@ export default function ReportDetailPage() {
    // 관리자는 접근 가능.
    // 회원은 자기 페이지만 접근 가능.
    // eslint-disable-next-line react-hooks/rules-of-hooks
-   const { data: report, isLoading } = useQuery(
+   const { data: reportData, isLoading: isReportLoading } = useQuery(
       ['report', id],
       () => {
          if (isAdmin) {
-            return readReportDetail(+id);
+            return readOneReport(+id);
          }
          return state;
       },
@@ -56,30 +56,30 @@ export default function ReportDetailPage() {
    //TODO: 로딩 처리. 지금은 그냥 다 undefined 처리해버림
 
    const handleDelete = async () => {
-      if (!report) {
+      if (!reportData) {
          return;
       }
       if (window.confirm('정말 삭제하시겠습니까?')) {
          // TODO: 매니저가 접근했을 때는 파라메터로 state 자체를 넣어줘야 작동하던데... 이거 수정필요
          // 수정은 했는데 확인필요 (reportData.id 로 잘 수정한듯)
-         deleteReport(report.id).then(() => {
+         deleteReport(reportData.id).then(() => {
             toast.success('성공적으로 삭제되었습니다.');
             navigate(-1);
          });
       }
    };
    const handleEdit = async () => {
-      if (!report) {
+      if (!reportData) {
          return;
       }
-      navigate(paths.reports.edit(report.id.toString()), { state: state });
+      navigate(paths.reports.edit(reportData.id.toString()), { state: state });
    };
 
-   if (isLoading) {
+   if (isReportLoading) {
       return <WaveLoading />;
    }
 
-   if (!report) {
+   if (!reportData) {
       return (
          <div className="flex justify-center items-center h-screen">
             <NoData
@@ -104,7 +104,7 @@ export default function ReportDetailPage() {
                   <ArrowLeft className="h-3.5 w-3.5" />
                   <span className="text-xs">뒤로가기</span>
                </Button>
-               <h1 className="text-xl font-bold">{report?.title}</h1>
+               <h1 className="text-xl font-bold">{reportData?.title}</h1>
             </div>
             {role === 'MEMBER' && (
                <div className="flex gap-2">
@@ -140,11 +140,13 @@ export default function ReportDetailPage() {
                         <span className="text-muted-foreground flex items-center gap-1.5">
                            <Clock className="h-3.5 w-3.5" />총 스터디 시간
                         </span>
-                        <span className="font-medium">{formatTimeToHoursAndMinutes(report?.totalMinutes || 0)}</span>
+                        <span className="font-medium">
+                           {formatTimeToHoursAndMinutes(reportData?.totalMinutes || 0)}
+                        </span>
                      </div>
                      <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">작성일</span>
-                        <span className="font-medium">{getFormattedLocaleString(report?.regDate)}</span>
+                        <span className="font-medium">{getFormattedLocaleString(reportData?.regDate)}</span>
                      </div>
                   </CardContent>
                </Card>
@@ -153,12 +155,12 @@ export default function ReportDetailPage() {
                   <CardHeader className="p-4">
                      <CardTitle className="text-base flex items-center gap-2">
                         <Users className="h-4 w-4" />
-                        참여 멤버 ({report?.participants.length || 0}명)
+                        참여 멤버 ({reportData?.participants.length || 0}명)
                      </CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
                      <div className="flex flex-wrap gap-1.5">
-                        {report?.participants.map((participant: SimpleUser) => (
+                        {reportData?.participants.map((participant: SimpleUser) => (
                            <Badge key={participant.id} variant="secondary" className="text-xs px-2 py-0.5">
                               {participant.name}
                            </Badge>
@@ -171,11 +173,11 @@ export default function ReportDetailPage() {
                   <CardHeader className="p-4">
                      <CardTitle className="text-base flex items-center gap-2">
                         <BookOpen className="h-4 w-4" />
-                        스터디 과목 ({report?.courses.length || 0}개)
+                        스터디 과목 ({reportData?.courses.length || 0}개)
                      </CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0 space-y-1.5">
-                     {report?.courses.map((course) => (
+                     {reportData?.courses.map((course) => (
                         <div key={course.id} className="text-xs flex items-center justify-between">
                            <span className="font-medium">{course.name}</span>
                            <span className="text-muted-foreground whitespace-nowrap">{course.prof}</span>
@@ -192,7 +194,7 @@ export default function ReportDetailPage() {
                <CardContent className="p-4 pt-0 ">
                   <div className="prose prose-sm max-w-none rounded-md min-h-[200px] border px-4 py-3">
                      <div
-                        dangerouslySetInnerHTML={{ __html: report?.content || '' }}
+                        dangerouslySetInnerHTML={{ __html: reportData?.content || '' }}
                         className="prose dark:prose-invert"
                      />
                   </div>
@@ -204,12 +206,12 @@ export default function ReportDetailPage() {
                <CardHeader className="p-4">
                   <CardTitle className="text-base flex items-center gap-2">
                      <ImageIcon className="h-4 w-4" />
-                     인증 사진 ({report?.images.length || 0}장)
+                     인증 사진 ({reportData?.images.length || 0}장)
                   </CardTitle>
                </CardHeader>
                <CardContent className="p-4 pt-0 ">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                     {report?.images.map((image) => (
+                     {reportData?.images.map((image) => (
                         <div key={image.id} className="relative group aspect-w-4 aspect-h-3">
                            <img
                               src={addImagePrefix(image.url)}

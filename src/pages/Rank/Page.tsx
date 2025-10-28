@@ -1,4 +1,4 @@
-import { getAllTeamsForRank } from '@/apis/rank';
+import { getAllTeamRanks } from '@/apis/rank';
 import { NoData } from '@/components/NoData';
 import TeamInfoModal from '@/components/TeamInfoModal';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,23 +14,23 @@ import { useQuery } from 'react-query';
 export default function RankPage() {
    const [view, setView] = useState('list');
 
-   const { data, isLoading } = useQuery(['AllTeamRanks'], getAllTeamsForRank, {
+   const { data: teamRanksData, isLoading: isTeamRanksLoading } = useQuery(['AllTeamRanks'], getAllTeamRanks, {
       cacheTime: 10 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
 
    const [modalInfo, setModalInfo] = useState<Team | null>(null);
 
-   const teams = useMemo(() => {
-      if (!data) return [];
+   const teamRanks = useMemo(() => {
+      if (!teamRanksData) return [];
 
-      return data.teams.map((team) => ({
+      return teamRanksData.teams.map((team) => ({
          ...team,
          members: team.members.map((name) => maskName(name)),
       }));
-   }, [data]);
+   }, [teamRanksData]);
 
-   if (isLoading) {
+   if (isTeamRanksLoading) {
       return <WaveLoading />;
    }
 
@@ -45,7 +45,7 @@ export default function RankPage() {
                </header>
 
                <div className="flex justify-between items-center mb-6">
-                  <div className="text-sm text-muted-foreground">총 {teams.length}개 그룹</div>
+                  <div className="text-sm text-muted-foreground">총 {teamRanks.length}개 그룹</div>
                   <Tabs defaultValue={view} onValueChange={(v) => setView(v as 'grid' | 'list')}>
                      <TabsList>
                         <TabsTrigger value="grid" className="flex items-center gap-2">
@@ -60,15 +60,14 @@ export default function RankPage() {
                   </Tabs>
                </div>
 
-               {/* 랭킹 순위 테이블 */}
-               {teams.length === 0 ? (
+               {teamRanks.length === 0 ? (
                   <NoData title="데이터가 없습니다" description="아직 표시할 데이터가 없습니다." />
                ) : (
                   <>
                      {view === 'grid' ? (
-                        <GroupGridView studyGroups={teams} setModalInfo={setModalInfo} />
+                        <GroupGridView studyGroups={teamRanks} setModalInfo={setModalInfo} />
                      ) : (
-                        <GroupListView studyGroups={teams} />
+                        <GroupListView studyGroups={teamRanks} />
                      )}
                   </>
                )}

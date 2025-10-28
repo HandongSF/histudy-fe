@@ -1,4 +1,4 @@
-import { getSemester, patchCurrentSemester, postSemester } from '@/apis/semester';
+import { getSemesters, patchCurrentSemester, postSemester } from '@/apis/semester';
 import { WaveLoading } from '@/components/WaveLoading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,10 +13,10 @@ import { useMutation, useQuery } from 'react-query';
 import { toast } from 'sonner';
 export default function ManageSemesterPage() {
    const {
-      data,
-      isLoading,
+      data: semestersData,
+      isLoading: isSemestersLoading,
       refetch: semestersRefetch,
-   } = useQuery(['semester'], getSemester, {
+   } = useQuery(['semester'], getSemesters, {
       cacheTime: 10 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
@@ -71,7 +71,7 @@ export default function ManageSemesterPage() {
       }
    };
 
-   if (!data || isLoading) {
+   if (!semestersData || isSemestersLoading) {
       return <WaveLoading />;
    }
 
@@ -153,7 +153,7 @@ export default function ManageSemesterPage() {
                   </TableRow>
                </TableHeader>
                <TableBody>
-                  {data.academicTerms.map((semester) => (
+                  {semestersData.academicTerms.map((semester) => (
                      <TableRow key={semester.academicTermId} className={semester.isCurrent ? 'bg-primary/5' : ''}>
                         <TableCell className="px-3">
                            {semester.isCurrent && <Badge variant="default">활성</Badge>}

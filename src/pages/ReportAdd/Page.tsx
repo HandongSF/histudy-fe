@@ -11,7 +11,7 @@ import * as z from 'zod';
 import { teamCourses } from '@/apis/course';
 import { ImageUploadApi as ImageUploadToServer } from '@/apis/rank';
 import { postReport } from '@/apis/report';
-import { getMyTeamUsers } from '@/apis/users';
+import { getMyTeamMembers } from '@/apis/users';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { paths } from '@/const/paths';
 import { NewReport } from '@/interface/report';
@@ -103,19 +103,21 @@ export default function ReportAddPage() {
       navigate(paths.reports.root);
    };
 
-   const [{ data: coursesRes, isLoading: coursesLoading }, { data: participants, isLoading: participantsLoading }] =
-      useQueries([
-         {
-            queryKey: ['teamCourses'],
-            queryFn: teamCourses,
-            cacheTime: 5 * 60 * 1000,
-         },
-         {
-            queryKey: ['teamMembers'],
-            queryFn: getMyTeamUsers,
-            cacheTime: 5 * 60 * 1000,
-         },
-      ]);
+   const [
+      { data: myGroupCoursesData, isLoading: myGroupCoursesLoading },
+      { data: myGroupMembersData, isLoading: myGroupMembersLoading },
+   ] = useQueries([
+      {
+         queryKey: ['teamCourses'],
+         queryFn: teamCourses,
+         cacheTime: 5 * 60 * 1000,
+      },
+      {
+         queryKey: ['teamMembers'],
+         queryFn: getMyTeamMembers,
+         cacheTime: 5 * 60 * 1000,
+      },
+   ]);
 
    const inputRef = useRef<HTMLInputElement>(null);
    const onUploadImageButtonClick = useCallback(() => {
@@ -166,7 +168,7 @@ export default function ReportAddPage() {
       ]);
    };
 
-   if (coursesLoading || participantsLoading) {
+   if (myGroupCoursesLoading || myGroupMembersLoading) {
       return <WaveLoading />;
    }
 
@@ -261,7 +263,7 @@ export default function ReportAddPage() {
                         name="courses"
                         render={() => (
                            <FormItem className="space-y-2">
-                              {coursesRes?.courses?.map((course) => (
+                              {myGroupCoursesData?.courses?.map((course) => (
                                  <FormField
                                     key={course.id}
                                     control={form.control}
@@ -314,7 +316,7 @@ export default function ReportAddPage() {
                         name="participants"
                         render={() => (
                            <FormItem>
-                              {participants?.map((participant) => (
+                              {myGroupMembersData?.map((participant) => (
                                  <FormField
                                     key={participant.id}
                                     control={form.control}

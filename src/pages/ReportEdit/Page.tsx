@@ -8,10 +8,10 @@ import { BookOpen, Clock, FileText, ImageIcon, Users, XCircle } from 'lucide-rea
 import * as z from 'zod';
 
 import { teamCourses } from '@/apis/course';
-import { readReportDetail } from '@/apis/manager';
+import { readOneReport } from '@/apis/manager';
 import { ImageUploadApi as ImageUploadToServer } from '@/apis/rank';
 import { modifyReport } from '@/apis/report';
-import { getMyTeamUsers } from '@/apis/users';
+import { getMyTeamMembers } from '@/apis/users';
 import { NoData } from '@/components/NoData';
 import { WaveLoading } from '@/components/WaveLoading';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -49,9 +49,9 @@ export default function ReportEditPage() {
    const queryClient = useQueryClient();
 
    const { id } = useParams() as { id: string };
-   const { data: report, isLoading } = useQuery({
+   const { data: reportData, isLoading: isReportLoading } = useQuery({
       queryKey: ['report', id],
-      queryFn: () => readReportDetail(+id),
+      queryFn: () => readOneReport(+id),
    });
 
    const form = useForm<ReportFormState>({
@@ -69,19 +69,19 @@ export default function ReportEditPage() {
    });
 
    useEffect(() => {
-      if (report) {
+      if (reportData) {
          form.reset({
-            title: report.title,
-            content: report.content,
-            participants: report.participants.map((participant) => participant.id),
-            totalMinutes: String(report.totalMinutes),
-            images: report.images.map((image) => image.url),
-            courses: report.courses.map((course) => course.id),
-            previewImages: report.images.map((image) => image.url),
+            title: reportData.title,
+            content: reportData.content,
+            participants: reportData.participants.map((participant) => participant.id),
+            totalMinutes: String(reportData.totalMinutes),
+            images: reportData.images.map((image) => image.url),
+            courses: reportData.courses.map((course) => course.id),
+            previewImages: reportData.images.map((image) => image.url),
             blobImages: [],
          });
       }
-   }, [report, form]);
+   }, [reportData, form]);
 
    form.watch(['previewImages', 'blobImages']);
 
@@ -134,7 +134,7 @@ export default function ReportEditPage() {
          },
          {
             queryKey: ['teamMembers'],
-            queryFn: getMyTeamUsers,
+            queryFn: getMyTeamMembers,
             cacheTime: 5 * 60 * 1000,
          },
       ]);
@@ -188,11 +188,11 @@ export default function ReportEditPage() {
       ]);
    };
 
-   if (isLoading || coursesLoading || participantsLoading) {
+   if (isReportLoading || coursesLoading || participantsLoading) {
       return <WaveLoading />;
    }
 
-   if (!report) {
+   if (!reportData) {
       return (
          <div className="flex justify-center items-center h-screen">
             <NoData
@@ -246,7 +246,7 @@ export default function ReportEditPage() {
 
                               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                                  {form.getValues('previewImages').map((url, index) => {
-                                    const isExistingImage = report?.images.some((img) => img.url === url);
+                                    const isExistingImage = reportData?.images.some((img) => img.url === url);
 
                                     return (
                                        <div key={`image-${index}`} className="relative group aspect-square">
@@ -275,7 +275,8 @@ export default function ReportEditPage() {
                                                       .getValues('previewImages')
                                                       .slice(0, index)
                                                       .filter(
-                                                         (imgUrl) => !report?.images.some((img) => img.url === imgUrl),
+                                                         (imgUrl) =>
+                                                            !reportData?.images.some((img) => img.url === imgUrl),
                                                       ).length;
 
                                                    form.setValue(

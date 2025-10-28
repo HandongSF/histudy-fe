@@ -15,7 +15,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function ReportListUserPage() {
    const navigate = useNavigate();
-   const { data, isLoading } = useQuery(['reports'], getMyTeamReport, {
+   const { data: reportsData, isLoading: isReportsLoading } = useQuery(['reports'], getMyTeamReport, {
       cacheTime: 1 * 30 * 1000,
    });
 
@@ -26,11 +26,11 @@ export default function ReportListUserPage() {
    };
 
    const reports = useMemo(() => {
-      if (!data) return [];
-      return data.reports;
-   }, [data]);
+      if (!reportsData) return [];
+      return reportsData.reports;
+   }, [reportsData]);
 
-   if (isLoading) {
+   if (isReportsLoading) {
       return <WaveLoading />;
    }
 

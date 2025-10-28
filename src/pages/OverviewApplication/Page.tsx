@@ -1,4 +1,4 @@
-import { getMyGroup } from '@/apis/study';
+import { getMyStudyEnrollment } from '@/apis/study';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Book, Users } from 'lucide-react';
@@ -7,28 +7,31 @@ import { useQuery } from 'react-query';
 import { Button } from '@/components/ui/button';
 import { WaveLoading } from '@/components/WaveLoading';
 import { paths } from '@/const/paths';
-import { useAuth } from '@/hooks/auth';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 export default function OverviewApplicationPage() {
-   const { data, isLoading } = useQuery(['checkMyApplication'], getMyGroup, {
-      cacheTime: 1 * 30 * 1000,
-      refetchOnWindowFocus: false,
-   });
+   const { data: myStudyEnrollmentData, isLoading: isMyStudyEnrollmentLoading } = useQuery(
+      ['checkMyApplication'],
+      getMyStudyEnrollment,
+      {
+         cacheTime: 1 * 30 * 1000,
+         refetchOnWindowFocus: false,
+      },
+   );
 
    const myApplication = useMemo(() => {
-      if (!data)
+      if (!myStudyEnrollmentData)
          return {
             friends: [],
             courses: [],
             semesterInfo: '',
          };
-      return data;
-   }, [data]);
+      return myStudyEnrollmentData;
+   }, [myStudyEnrollmentData]);
 
    const hasNoApplications = myApplication.courses.length === 0 && myApplication.friends.length === 0;
 
-   if (isLoading) {
+   if (isMyStudyEnrollmentLoading) {
       return <WaveLoading />;
    }
 

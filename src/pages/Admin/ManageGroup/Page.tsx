@@ -5,8 +5,8 @@ import GroupTable from './components/GroupTable';
 
 export default function MatchedGroupListPage() {
    const [
-      { data: groups, refetch: groupsRefetch, isLoading: groupsLoading },
-      { data: ungroups, refetch: ungroupsRefetch, isLoading: ungroupsLoading },
+      { data: groupsData, refetch: groupsRefetch, isLoading: groupsLoading },
+      { data: ungroupsData, refetch: ungroupsRefetch, isLoading: ungroupsLoading },
    ] = useQueries([
       {
          queryKey: ['groups'],
@@ -21,20 +21,20 @@ export default function MatchedGroupListPage() {
    ]);
 
    const flatGroups = useMemo(() => {
-      if (!groups) return [];
-      return groups.flatMap((group) => group.members);
-   }, [groups]);
+      if (!groupsData) return [];
+      return groupsData.flatMap((group) => group.members);
+   }, [groupsData]);
 
    const flatUngroups = useMemo(() => {
-      if (!ungroups) return [];
-      return ungroups.flatMap((ungroup) => ungroup);
-   }, [ungroups]);
+      if (!ungroupsData) return [];
+      return ungroupsData.flatMap((ungroup) => ungroup);
+   }, [ungroupsData]);
    return (
       <div className="min-h-screen p-4 sm:p-8 space-y-8">
          <header className="text-2xl">매칭된 그룹 목록</header>
 
          <GroupTable
-            groups={groups}
+            groups={groupsData}
             loading={groupsLoading}
             refetch={() => {
                groupsRefetch();
@@ -46,7 +46,7 @@ export default function MatchedGroupListPage() {
          <header className="text-2xl">미매칭 학생 목록</header>
 
          <GroupTable
-            groups={groups}
+            groups={groupsData}
             loading={ungroupsLoading}
             refetch={() => {
                groupsRefetch();

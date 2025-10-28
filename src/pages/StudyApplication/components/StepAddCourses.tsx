@@ -23,7 +23,7 @@ export function StepAddCourses({ selectedCourses, onUpdateCourses }: StepAddCour
 
    const [debouncedSearchTerm] = useDebounce(searchTerm, 250);
 
-   const { data: searchResults } = useQuery(['searchCourse', debouncedSearchTerm], () =>
+   const { data: searchCourseResults } = useQuery(['searchCourse', debouncedSearchTerm], () =>
       searchCourses(debouncedSearchTerm),
    );
 
@@ -39,7 +39,7 @@ export function StepAddCourses({ selectedCourses, onUpdateCourses }: StepAddCour
       onUpdateCourses(selectedCourses.filter((course) => course.id !== courseId));
    };
 
-   const filteredSearchResults = searchResults?.courses.filter(
+   const filteredSearchResults = searchCourseResults?.courses.filter(
       (course) => !selectedCourses.some((sc) => sc.id === course.id),
    );
 

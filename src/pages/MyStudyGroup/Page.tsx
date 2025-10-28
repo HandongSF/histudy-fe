@@ -1,4 +1,4 @@
-import { getMyTeamUsers } from '@/apis/users';
+import { getMyTeamMembers } from '@/apis/users';
 import { NoData } from '@/components/NoData';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import { GroupIcon } from 'lucide-react';
 import { useQuery } from 'react-query';
 
 export default function MyStudyGroupPage() {
-   const { data: studyGroupInfo, isLoading } = useQuery(['studyGroupInfo'], getMyTeamUsers, {
+   const { data: myTeamMembersData, isLoading } = useQuery(['studyGroupInfo'], getMyTeamMembers, {
       cacheTime: 60 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
@@ -17,7 +17,7 @@ export default function MyStudyGroupPage() {
       return <WaveLoading />;
    }
 
-   if (!studyGroupInfo) {
+   if (!myTeamMembersData) {
       return (
          <div className="flex justify-center items-center h-screen">
             <NoData
@@ -34,9 +34,11 @@ export default function MyStudyGroupPage() {
          <div className="mb-6 text-center">
             <h1 className="text-3xl font-bold tracking-tight flex items-center justify-center gap-2">
                <GroupIcon className="h-8 w-8 text-primary" />
-               스터디 그룹: {studyGroupInfo[0].tag}
+               스터디 그룹: {myTeamMembersData[0].tag}
             </h1>
-            <p className="text-muted-foreground mt-1">총 {studyGroupInfo.length}명의 스터디원이 함께하고 있습니다.</p>
+            <p className="text-muted-foreground mt-1">
+               총 {myTeamMembersData.length}명의 스터디원이 함께하고 있습니다.
+            </p>
          </div>
 
          <div className="space-y-4">
@@ -53,7 +55,7 @@ export default function MyStudyGroupPage() {
                            </TableRow>
                         </TableHeader>
                         <TableBody>
-                           {studyGroupInfo.map((member) => (
+                           {myTeamMembersData.map((member) => (
                               <TableRow key={member.id}>
                                  <TableCell className="pl-6">
                                     <div className="flex items-center gap-3">

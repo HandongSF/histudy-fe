@@ -17,24 +17,24 @@ const roleMap = {
 };
 
 export default function ProfilePage() {
-   const { data, isLoading } = useQuery(['profile'], getProfile, {
+   const { data: myProfileData, isLoading: isMyProfileLoading } = useQuery(['profile'], getProfile, {
       cacheTime: 24 * 60 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
 
    const role = useHIStateValue(roleState);
 
-   const userInfo = useMemo(() => {
-      if (!data)
+   const myProfile = useMemo(() => {
+      if (!myProfileData)
          return {
             name: 'NONUSER',
             sid: '********',
             email: '********',
          };
-      return data;
-   }, [data]);
+      return myProfileData;
+   }, [myProfileData]);
 
-   if (isLoading) {
+   if (isMyProfileLoading) {
       return <WaveLoading />;
    }
 
@@ -48,11 +48,11 @@ export default function ProfilePage() {
                <CardHeader className="pb-4">
                   <div className="flex items-center gap-4">
                      <Avatar className="h-20 w-20 border-2 border-primary/10">
-                        <AvatarImage src={'/img/default-profile.png'} alt={userInfo.name} />
-                        <AvatarFallback className="text-2xl bg-primary/10">{userInfo.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={'/img/default-profile.png'} alt={myProfile.name} />
+                        <AvatarFallback className="text-2xl bg-primary/10">{myProfile.name.charAt(0)}</AvatarFallback>
                      </Avatar>
                      <div>
-                        <CardTitle className="text-2xl">{userInfo.name}</CardTitle>
+                        <CardTitle className="text-2xl">{myProfile.name}</CardTitle>
                         <CardDescription>{roleMap[role]}</CardDescription>
                      </div>
                   </div>
@@ -64,7 +64,7 @@ export default function ProfilePage() {
                         <User className="h-5 w-5 text-muted-foreground mr-3" />
                         <div>
                            <div className="text-sm font-medium text-muted-foreground">이름</div>
-                           <div className="font-medium">{userInfo.name}</div>
+                           <div className="font-medium">{myProfile.name}</div>
                         </div>
                      </div>
 
@@ -72,7 +72,7 @@ export default function ProfilePage() {
                         <IdCard className="h-5 w-5 text-muted-foreground mr-3" />
                         <div>
                            <div className="text-sm font-medium text-muted-foreground">학번</div>
-                           <div className="font-medium">{userInfo.sid}</div>
+                           <div className="font-medium">{myProfile.sid}</div>
                         </div>
                      </div>
 
@@ -80,7 +80,7 @@ export default function ProfilePage() {
                         <Mail className="h-5 w-5 text-muted-foreground mr-3" />
                         <div>
                            <div className="text-sm font-medium text-muted-foreground">이메일</div>
-                           <div className="font-medium">{userInfo.email}</div>
+                           <div className="font-medium">{myProfile.email}</div>
                         </div>
                      </div>
                   </div>

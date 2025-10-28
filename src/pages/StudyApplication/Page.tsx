@@ -1,4 +1,4 @@
-import { getMyGroup } from '@/apis/study';
+import { getMyStudyEnrollment } from '@/apis/study';
 import { WaveLoading } from '@/components/WaveLoading';
 import { useQuery } from 'react-query';
 import { StudyApplicationForm } from './components/StudyApplicationForm';
@@ -7,9 +7,12 @@ import { StudyApplicationForm } from './components/StudyApplicationForm';
 const CURRENT_SEMESTER_INFO = '2025년 2학기';
 
 export default function StudyApplicationPage() {
-   const { data: myStudyApplication, isLoading } = useQuery('getMyStudyApplication', getMyGroup);
+   const { data: myStudyEnrollment, isLoading: isMyStudyEnrollmentLoading } = useQuery(
+      'getMyStudyApplication',
+      getMyStudyEnrollment,
+   );
 
-   if (isLoading) {
+   if (isMyStudyEnrollmentLoading) {
       return <WaveLoading />;
    }
 
@@ -25,7 +28,7 @@ export default function StudyApplicationPage() {
                </p>
             </header>
 
-            <StudyApplicationForm currentSemesterInfo={CURRENT_SEMESTER_INFO} myStudyApplication={myStudyApplication} />
+            <StudyApplicationForm currentSemesterInfo={CURRENT_SEMESTER_INFO} myStudyApplication={myStudyEnrollment} />
          </div>
       </div>
    );

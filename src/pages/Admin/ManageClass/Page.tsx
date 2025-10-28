@@ -13,18 +13,21 @@ export default function ManageClassPage() {
 
    const [debouncedSearchTerm] = useDebounce(searchTerm, 200);
 
-   const { data, refetch } = useQuery(['searchCourse', debouncedSearchTerm], () => searchCourses(debouncedSearchTerm));
+   const { data: searchCourseResultsData, refetch: searchCourseResultsRefetch } = useQuery(
+      ['searchCourse', debouncedSearchTerm],
+      () => searchCourses(debouncedSearchTerm),
+   );
 
-   const courses = useMemo(() => {
-      if (!data) return [];
-      return data.courses;
-   }, [data]);
+   const searchedCourses = useMemo(() => {
+      if (!searchCourseResultsData) return [];
+      return searchCourseResultsData.courses;
+   }, [searchCourseResultsData]);
 
    return (
       <div className="container mx-auto p-4 md:p-8  space-y-8">
          <div className="flex justify-between items-center mb-6 ">
             <h1 className="text-2xl font-semibold">등록된 수업 목록</h1>
-            <ClassRegisterButton refetch={refetch} />
+            <ClassRegisterButton refetch={searchCourseResultsRefetch} />
          </div>
 
          <div className="relative">
@@ -48,8 +51,8 @@ export default function ManageClassPage() {
                   </TableRow>
                </TableHeader>
                <TableBody>
-                  {courses.length > 0 ? (
-                     courses.map((course) => (
+                  {searchedCourses.length > 0 ? (
+                     searchedCourses.map((course) => (
                         <TableRow key={course.id}>
                            <TableCell className="px-4 py-3 text-sm">{course.name}</TableCell>
                            <TableCell className="px-4 py-3 text-sm">{course.code}</TableCell>

@@ -17,9 +17,9 @@ const cleanProfName = (prof: string) => prof.replace(/\n/g, '').trim();
 
 export default function ManageStudentPage() {
    const {
-      data: applicants,
-      refetch,
-      isLoading,
+      data: studyEnrolleesData,
+      refetch: studyEnrolleesRefetch,
+      isLoading: isStudyEnrolleesLoading,
    } = useQuery(['allStudyApplyUsers'], readAllStudyApplyUsers, {
       cacheTime: 5 * 60 * 1000,
    });
@@ -50,7 +50,7 @@ export default function ManageStudentPage() {
             sid: formData.sid!,
             team: formData.group!,
          });
-         refetch();
+         studyEnrolleesRefetch();
          setEditingId(null);
          setFormData({});
       } catch (error) {
@@ -75,21 +75,21 @@ export default function ManageStudentPage() {
       }
    };
 
-   const filteredApplicants = React.useMemo(() => {
-      if (!applicants) return [];
-      return applicants.filter(
+   const filteredEnrollees = React.useMemo(() => {
+      if (!studyEnrolleesData) return [];
+      return studyEnrolleesData.filter(
          (applicant) =>
             applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (applicant.group !== null && applicant.group.toString().includes(searchTerm.toLowerCase())) ||
             applicant.sid.toLowerCase().includes(searchTerm.toLowerCase()) ||
             applicant.email.toLowerCase().includes(searchTerm.toLowerCase()),
       );
-   }, [applicants, searchTerm]);
+   }, [studyEnrolleesData, searchTerm]);
 
    const handleExcelDownload = () => {
-      if (!applicants) return;
+      if (!studyEnrolleesData) return;
 
-      downloadExcelFromSheetData(buildApplicantsSheetData(applicants), '스터디신청자목록.xlsx');
+      downloadExcelFromSheetData(buildApplicantsSheetData(studyEnrolleesData), '스터디신청자목록.xlsx');
 
       function buildApplicantsSheetData(applicants: StudyApplyUser[]) {
          return applicants.map((student) => ({
@@ -124,7 +124,7 @@ export default function ManageStudentPage() {
          </div>
 
          <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-            {isLoading ? (
+            {isStudyEnrolleesLoading ? (
                <div className="flex justify-center items-center min-h-[500px] h-full w-full">
                   <SpinnerLoading />
                </div>
@@ -141,7 +141,7 @@ export default function ManageStudentPage() {
                      </TableRow>
                   </TableHeader>
                   <TableBody>
-                     {filteredApplicants.map((applicant) =>
+                     {filteredEnrollees.map((applicant) =>
                         editingId === applicant.id ? (
                            // 편집 모드
                            <TableRow key={applicant.id}>
@@ -225,7 +225,7 @@ export default function ManageStudentPage() {
                            </TableRow>
                         ),
                      )}
-                     {filteredApplicants.length === 0 && (
+                     {filteredEnrollees.length === 0 && (
                         <TableRow>
                            <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                               신청자가 없거나 검색 결과가 없습니다.

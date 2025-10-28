@@ -45,7 +45,7 @@ export const deleteCourse = async (id: number) => {
    return response.data;
 };
 
-export const readReportDetail = async (reportId: number): Promise<Report> => {
+export const readOneReport = async (reportId: number): Promise<Report> => {
    const response = await axiosInstance.get(`/api/team/reports/${reportId}`);
    return response.data;
 };

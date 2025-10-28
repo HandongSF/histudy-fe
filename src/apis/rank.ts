@@ -3,7 +3,7 @@ import axiosInstance from '../utils/axiosInstance';
 import { Teams } from '../interface/teams';
 import { BACKEND_BASE_URL } from '@/const/endpoints';
 
-export const getAllTeamsForRank = async (): Promise<Teams> => {
+export const getAllTeamRanks = async (): Promise<Teams> => {
    const response = await axiosInstance.get(`/api/public/teams`);
    return response.data;
 };
