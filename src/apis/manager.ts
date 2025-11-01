@@ -33,7 +33,7 @@ export const readGroupReport = async (id: number): Promise<GroupReportResponse> 
    return response.data;
 };
 
-export const readApplicants = async (): Promise<UnAssignedUser[]> => {
+export const readEnrollees = async (): Promise<UnAssignedUser[]> => {
    const response = await axiosInstance.get(`/api/admin/users/unassigned`);
    return response.data;
 };

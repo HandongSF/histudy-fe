@@ -16,7 +16,7 @@ const cleanProfName = (prof: string) => prof.replace(/\n/g, '').trim();
 
 export default function ManageStudentPage() {
    const {
-      data: applicants,
+      data: enrollees,
       refetch,
       isLoading,
    } = useQuery(['allStudyApplyUsers'], readAllStudyApplyUsers, {
@@ -27,12 +27,12 @@ export default function ManageStudentPage() {
    const [formData, setFormData] = React.useState<Partial<StudyApplyUser>>({});
    const [searchTerm, setSearchTerm] = React.useState('');
 
-   const handleEdit = (applicant: StudyApplyUser) => {
-      setEditingId(applicant.id);
+   const handleEdit = (enrollee: StudyApplyUser) => {
+      setEditingId(enrollee.id);
       // 희망과목은 첫 번째 과목의 이름만 수정 가능하도록 단순화
       setFormData({
-         ...applicant,
-         courses: applicant.courses.length > 0 ? [{ ...applicant.courses[0] }] : [],
+         ...enrollee,
+         courses: enrollee.courses.length > 0 ? [{ ...enrollee.courses[0] }] : [],
       });
    };
 
@@ -74,20 +74,20 @@ export default function ManageStudentPage() {
       }
    };
 
-   const filteredApplicants = React.useMemo(() => {
-      if (!applicants) return [];
-      return applicants.filter(
-         (applicant) =>
-            applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (applicant.group !== null && applicant.group.toString().includes(searchTerm.toLowerCase())) ||
-            applicant.sid.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            applicant.email.toLowerCase().includes(searchTerm.toLowerCase()),
+   const filteredEnrollees = React.useMemo(() => {
+      if (!enrollees) return [];
+      return enrollees.filter(
+         (enrollee) =>
+            enrollee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (enrollee.group !== null && enrollee.group.toString().includes(searchTerm.toLowerCase())) ||
+            enrollee.sid.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            enrollee.email.toLowerCase().includes(searchTerm.toLowerCase()),
       );
-   }, [applicants, searchTerm]);
+   }, [enrollees, searchTerm]);
 
    const handleExcelDownload = () => {
-      if (applicants) {
-         const sheetData = applicants.map((student) => ({
+      if (enrollees) {
+         const sheetData = enrollees.map((student) => ({
             ID: student.id,
             Name: student.name,
             StudentId: student.sid,
@@ -142,10 +142,10 @@ export default function ManageStudentPage() {
                      </TableRow>
                   </TableHeader>
                   <TableBody>
-                     {filteredApplicants.map((applicant) =>
-                        editingId === applicant.id ? (
+                     {filteredEnrollees.map((enrollee) =>
+                        editingId === enrollee.id ? (
                            // 편집 모드
-                           <TableRow key={applicant.id}>
+                           <TableRow key={enrollee.id}>
                               <TableCell>
                                  <Input
                                     name="group"
@@ -166,14 +166,14 @@ export default function ManageStudentPage() {
                               <TableCell>
                                  <Input name="sid" value={formData.sid ?? ''} onChange={handleChange} className="h-8" />
                               </TableCell>
-                              <TableCell>{applicant.email}</TableCell>
+                              <TableCell>{enrollee.email}</TableCell>
                               <TableCell>
-                                 {applicant.courses.length > 0 ? (
+                                 {enrollee.courses.length > 0 ? (
                                     <>
-                                       {cleanCourseName(applicant.courses[0].name)}
+                                       {cleanCourseName(enrollee.courses[0].name)}
                                        <span className="text-xs text-muted-foreground">
                                           {' '}
-                                          ({cleanProfName(applicant.courses[0].prof)})
+                                          ({cleanProfName(enrollee.courses[0].prof)})
                                        </span>
                                     </>
                                  ) : (
@@ -195,18 +195,18 @@ export default function ManageStudentPage() {
                            </TableRow>
                         ) : (
                            // 일반 모드
-                           <TableRow key={applicant.id}>
-                              <TableCell>{applicant.group !== null ? `Group${applicant.group}` : '-'}</TableCell>
-                              <TableCell>{applicant.name}</TableCell>
-                              <TableCell>{applicant.sid}</TableCell>
-                              <TableCell>{applicant.email}</TableCell>
+                           <TableRow key={enrollee.id}>
+                              <TableCell>{enrollee.group !== null ? `Group${enrollee.group}` : '-'}</TableCell>
+                              <TableCell>{enrollee.name}</TableCell>
+                              <TableCell>{enrollee.sid}</TableCell>
+                              <TableCell>{enrollee.email}</TableCell>
                               <TableCell>
-                                 {applicant.courses.length > 0 ? (
+                                 {enrollee.courses.length > 0 ? (
                                     <>
-                                       {cleanCourseName(applicant.courses[0].name)}
+                                       {cleanCourseName(enrollee.courses[0].name)}
                                        <span className="text-xs text-muted-foreground">
                                           {' '}
-                                          ({cleanProfName(applicant.courses[0].prof)})
+                                          ({cleanProfName(enrollee.courses[0].prof)})
                                        </span>
                                     </>
                                  ) : (
@@ -218,7 +218,7 @@ export default function ManageStudentPage() {
                                     variant="outline"
                                     size="icon"
                                     className="h-8 w-8"
-                                    onClick={() => handleEdit(applicant)}
+                                    onClick={() => handleEdit(enrollee)}
                                  >
                                     <PencilIcon className="h-4 w-4" />
                                  </Button>
@@ -226,7 +226,7 @@ export default function ManageStudentPage() {
                            </TableRow>
                         ),
                      )}
-                     {filteredApplicants.length === 0 && (
+                     {filteredEnrollees.length === 0 && (
                         <TableRow>
                            <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                               신청자가 없거나 검색 결과가 없습니다.
