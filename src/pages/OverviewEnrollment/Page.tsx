@@ -11,7 +11,7 @@ import { useAuth } from '@/hooks/auth';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 export default function OverviewEnrollmentPage() {
-   const { data, isLoading } = useQuery(['checkMyApplication'], getMyGroup, {
+   const { data, isLoading } = useQuery(['checkMyEnrollment'], getMyGroup, {
       cacheTime: 1 * 30 * 1000,
       refetchOnWindowFocus: false,
    });

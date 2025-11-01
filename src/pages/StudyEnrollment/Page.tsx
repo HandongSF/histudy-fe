@@ -7,7 +7,7 @@ import { StudyEnrollmentForm } from './components/StudyEnrollmentForm';
 const CURRENT_SEMESTER_INFO = '2025년 2학기';
 
 export default function StudyEnrollmentPage() {
-   const { data: myStudyEnrollment, isLoading } = useQuery('getMyStudyApplication', getMyGroup);
+   const { data: myStudyEnrollment, isLoading } = useQuery('getMyStudyEnrollment', getMyGroup);
 
    if (isLoading) {
       return <WaveLoading />;
