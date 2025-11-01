@@ -48,13 +48,14 @@ export function StudyApplicationForm({ currentSemesterInfo, myStudyApplication }
    }, [myStudyApplication, currentSemesterInfo]);
 
    const handleClickNextStep = () => {
-      if (currentStep < TOTAL_STEPS) {
-         if (currentStep === 2 && applicationData.courses.length === 0) {
-            toast('최소 하나의 수업을 추가해주세요.');
-            return;
-         }
-         setCurrentStep((prev) => prev + 1);
+      const COURSE_STEP = 2;
+      if (currentStep >= TOTAL_STEPS) return;
+
+      if (currentStep === COURSE_STEP && applicationData.courses.length === 0) {
+         toast('최소 하나의 수업을 추가해주세요.');
+         return;
       }
+      setCurrentStep((prev) => prev + 1);
    };
 
    const handleClickPrevStep = () => {
