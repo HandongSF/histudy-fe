@@ -1,12 +1,11 @@
-import * as xlsx from 'xlsx';
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { PencilIcon, SaveIcon, XIcon, SearchIcon } from 'lucide-react';
-import { editUser, readAllStudyApplyUsers } from '@/apis/manager';
+import { editUser, readAllStudyEnrollees } from '@/apis/manager';
 import { useQuery } from 'react-query';
-import { StudyApplyUser } from '@/interface/user';
+import { StudyEnrollee } from '@/interface/user';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { toast } from 'sonner';
 import { downloadExcelFromSheetData } from '@/utils/excel';
@@ -20,15 +19,15 @@ export default function ManageStudentPage() {
       data: enrollees,
       refetch,
       isLoading,
-   } = useQuery(['allStudyApplyUsers'], readAllStudyApplyUsers, {
+   } = useQuery(['allStudyEnrollees'], readAllStudyEnrollees, {
       cacheTime: 5 * 60 * 1000,
    });
 
    const [editingId, setEditingId] = React.useState<number | null>(null);
-   const [formData, setFormData] = React.useState<Partial<StudyApplyUser>>({});
+   const [formData, setFormData] = React.useState<Partial<StudyEnrollee>>({});
    const [searchTerm, setSearchTerm] = React.useState('');
 
-   const handleEdit = (enrollee: StudyApplyUser) => {
+   const handleEdit = (enrollee: StudyEnrollee) => {
       setEditingId(enrollee.id);
       // 희망과목은 첫 번째 과목의 이름만 수정 가능하도록 단순화
       setFormData({
@@ -91,7 +90,7 @@ export default function ManageStudentPage() {
 
       downloadExcelFromSheetData(buildEnrolleesSheetData(enrollees), '스터디신청자목록.xlsx');
 
-      function buildEnrolleesSheetData(enrollees: StudyApplyUser[]) {
+      function buildEnrolleesSheetData(enrollees: StudyEnrollee[]) {
          return enrollees.map((student) => ({
             ID: student.id,
             Name: student.name,

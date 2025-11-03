@@ -26,7 +26,7 @@ export type UnAssignedUser = User & {
 };
 
 /** for 어드민 페이지 */
-export interface StudyApplyUser {
+export interface StudyEnrollee {
    id: number;
    name: string;
    sid: string;
