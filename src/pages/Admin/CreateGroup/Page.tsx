@@ -1,4 +1,4 @@
-import { deleteUserForm, readEnrollees, teamMatch } from '@/apis/manager';
+import { deleteUserForm, readStudyEnrollees, teamMatch } from '@/apis/manager';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ export default function CreateGroupPage() {
       data: studyEnrolleesData,
       refetch: studyEnrolleesRefetch,
       isLoading: isStudyEnrolleesLoading,
-   } = useQuery(['readEnrollees'], readEnrollees, {
+   } = useQuery(['readStudyEnrollees'], readStudyEnrollees, {
       cacheTime: 5 * 60 * 1000,
    });
 

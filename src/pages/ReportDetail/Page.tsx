@@ -1,4 +1,4 @@
-import { readOneReport } from '@/apis/manager';
+import { readReport } from '@/apis/manager';
 import { deleteReport } from '@/apis/report';
 
 import { NoData } from '@/components/NoData';
@@ -44,7 +44,7 @@ export default function ReportDetailPage() {
       ['report', id],
       () => {
          if (isAdmin) {
-            return readOneReport(+id);
+            return readReport(+id);
          }
          return state;
       },

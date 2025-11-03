@@ -7,7 +7,7 @@ import { StudyEnrollmentForm } from './components/StudyEnrollmentForm';
 const CURRENT_SEMESTER_INFO = '2025년 2학기';
 
 export default function StudyApplicationPage() {
-   const { data: myStudyEnrollment, isLoading: isMyStudyEnrollmentLoading } = useQuery(
+   const { data: myStudyEnrollmentData, isLoading: isMyStudyEnrollmentLoading } = useQuery(
       ['checkMyEnrollment'],
       getMyStudyEnrollment,
    );
@@ -28,7 +28,10 @@ export default function StudyApplicationPage() {
                </p>
             </header>
 
-            <StudyEnrollmentForm currentSemesterInfo={CURRENT_SEMESTER_INFO} myStudyEnrollment={myStudyEnrollment} />
+            <StudyEnrollmentForm
+               currentSemesterInfo={CURRENT_SEMESTER_INFO}
+               myStudyEnrollmentData={myStudyEnrollmentData}
+            />
          </div>
       </div>
    );

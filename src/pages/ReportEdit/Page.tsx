@@ -8,7 +8,7 @@ import { BookOpen, Clock, FileText, ImageIcon, Users, XCircle } from 'lucide-rea
 import * as z from 'zod';
 
 import { teamCourses } from '@/apis/course';
-import { readOneReport } from '@/apis/manager';
+import { readReport } from '@/apis/manager';
 import { ImageUploadApi as ImageUploadToServer } from '@/apis/rank';
 import { modifyReport } from '@/apis/report';
 import { getMyTeamMembers } from '@/apis/users';
@@ -51,7 +51,7 @@ export default function ReportEditPage() {
    const { id } = useParams() as { id: string };
    const { data: reportData, isLoading: isReportLoading } = useQuery({
       queryKey: ['report', id],
-      queryFn: () => readOneReport(+id),
+      queryFn: () => readReport(+id),
    });
 
    const form = useForm<ReportFormState>({
