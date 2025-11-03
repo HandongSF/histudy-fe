@@ -13,7 +13,7 @@ const validateByAuth = (access: Role, pathname: string) => {
    switch (true) {
       case pathname.includes(paths.reports.root):
          return access === 'MEMBER' || access === 'ADMIN';
-      case pathname.includes(paths.application.root):
+      case pathname.includes(paths.enrollment.root):
          return access === 'USER';
       case pathname === paths.myGroup.root:
          return access === 'MEMBER';

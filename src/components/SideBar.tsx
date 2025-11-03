@@ -75,7 +75,7 @@ const navGroupsData: NavGroup[] = [
          {
             name: '스터디 신청',
             icon: LifeBuoy,
-            href: paths.application.root,
+            href: paths.enrollment.root,
             allowedRoles: ['USER'],
          },
       ],

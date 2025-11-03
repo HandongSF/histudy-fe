@@ -1,6 +1,6 @@
 import { Group } from 'src/interface/group';
 import axiosInstance from '../utils/axiosInstance';
-import { SimpleUser, StudyApplyUser, UnAssignedUser } from 'src/interface/user';
+import { SimpleUser, StudyEnrollee, UnAssignedUser } from 'src/interface/user';
 import { Report, SimpleReport } from 'src/interface/report';
 
 export interface EditUserRequest {
@@ -23,7 +23,7 @@ export const readAllGroups = async (): Promise<Group[]> => {
    return response.data;
 };
 
-export const readAllStudyApplyUsers = async (): Promise<StudyApplyUser[]> => {
+export const readAllStudyEnrollees = async (): Promise<StudyEnrollee[]> => {
    const response = await axiosInstance.get(`/api/admin/allUsers`);
    return response.data;
 };
@@ -33,7 +33,7 @@ export const readGroupReport = async (id: number): Promise<GroupReportResponse> 
    return response.data;
 };
 
-export const readApplicants = async (): Promise<UnAssignedUser[]> => {
+export const readEnrollees = async (): Promise<UnAssignedUser[]> => {
    const response = await axiosInstance.get(`/api/admin/users/unassigned`);
    return response.data;
 };

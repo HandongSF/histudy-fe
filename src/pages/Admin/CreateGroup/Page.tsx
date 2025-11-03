@@ -1,4 +1,4 @@
-import { deleteUserForm, readApplicants, teamMatch } from '@/apis/manager';
+import { deleteUserForm, readEnrollees, teamMatch } from '@/apis/manager';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ export default function CreateGroupPage() {
       data: studyEnrolleesData,
       refetch: studyEnrolleesRefetch,
       isLoading: isStudyEnrolleesLoading,
-   } = useQuery(['readApplicants'], readApplicants, {
+   } = useQuery(['readEnrollees'], readEnrollees, {
       cacheTime: 5 * 60 * 1000,
    });
 
@@ -30,7 +30,7 @@ export default function CreateGroupPage() {
       },
    });
 
-   const handleDeleteApplicant = (sid: string) => {
+   const handleDeleteEnrollee = (sid: string) => {
       deleteUserFormMutation(sid);
    };
 
@@ -48,7 +48,7 @@ export default function CreateGroupPage() {
       teamMatchMutation();
    };
 
-   const applicants = useMemo(() => {
+   const enrollees = useMemo(() => {
       if (!studyEnrolleesData) return [];
       return studyEnrolleesData;
    }, [studyEnrolleesData]);
@@ -79,22 +79,22 @@ export default function CreateGroupPage() {
                      </TableRow>
                   </TableHeader>
                   <TableBody>
-                     {applicants.length > 0 ? (
-                        applicants.map((applicant) => (
-                           <TableRow key={applicant.id}>
+                     {enrollees.length > 0 ? (
+                        enrollees.map((enrollee) => (
+                           <TableRow key={enrollee.id}>
                               <TableCell>
-                                 <div className="font-medium">{applicant.name}</div>
-                                 <div className="text-xs text-muted-foreground">{applicant.sid}</div>
-                                 <div className="text-xs text-muted-foreground">{applicant.email}</div>
+                                 <div className="font-medium">{enrollee.name}</div>
+                                 <div className="text-xs text-muted-foreground">{enrollee.sid}</div>
+                                 <div className="text-xs text-muted-foreground">{enrollee.email}</div>
                               </TableCell>
                               {[0, 1, 2].map((index) => (
                                  <TableCell key={index}>
-                                    {applicant.courses[index] ? (
+                                    {enrollee.courses[index] ? (
                                        <div>
-                                          {cleanCourseName(applicant.courses[index].name)}
+                                          {cleanCourseName(enrollee.courses[index].name)}
                                           <span className="text-xs text-muted-foreground">
                                              {' '}
-                                             ({cleanProfName(applicant.courses[index].prof)})
+                                             ({cleanProfName(enrollee.courses[index].prof)})
                                           </span>
                                        </div>
                                     ) : (
@@ -103,9 +103,9 @@ export default function CreateGroupPage() {
                                  </TableCell>
                               ))}
                               <TableCell>
-                                 {applicant.friends.length > 0 ? (
+                                 {enrollee.friends.length > 0 ? (
                                     <div className="flex flex-wrap gap-1">
-                                       {applicant.friends.map((friend) => (
+                                       {enrollee.friends.map((friend) => (
                                           <Badge key={friend.id} variant="secondary">
                                              {friend.name} ({friend.sid})
                                           </Badge>
@@ -119,8 +119,8 @@ export default function CreateGroupPage() {
                                  <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => handleDeleteApplicant(applicant.sid)}
-                                    aria-label={`신청자 ${applicant.name} 삭제`}
+                                    onClick={() => handleDeleteEnrollee(enrollee.sid)}
+                                    aria-label={`신청자 ${enrollee.name} 삭제`}
                                  >
                                     <XIcon className="h-4 w-4 text-destructive" />
                                  </Button>

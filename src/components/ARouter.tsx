@@ -47,15 +47,15 @@ export const router = createBrowserRouter([
             }),
          },
          {
-            path: paths.application.root,
+            path: paths.enrollment.root,
             lazy: async () => ({
-               Component: (await import('@/pages/OverviewApplication/Page')).default,
+               Component: (await import('@/pages/OverviewEnrollment/Page')).default,
             }),
          },
          {
-            path: paths.application.add,
+            path: paths.enrollment.add,
             lazy: async () => ({
-               Component: (await import('@/pages/StudyApplication/Page')).default,
+               Component: (await import('@/pages/StudyEnrollment/Page')).default,
             }),
          },
          {
