@@ -48,9 +48,9 @@ export function StudyEnrollmentForm({ currentSemesterInfo, myStudyEnrollment }: 
    }, [myStudyEnrollment, currentSemesterInfo]);
 
    const handleClickNextStep = () => {
-      const COURSE_STEP = 2;
       if (currentStep >= TOTAL_STEPS) return;
 
+      const COURSE_STEP = 2;
       if (currentStep === COURSE_STEP && enrollmentData.courses.length === 0) {
          toast('최소 하나의 수업을 추가해주세요.');
          return;
