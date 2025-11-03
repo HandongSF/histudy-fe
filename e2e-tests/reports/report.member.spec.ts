@@ -28,7 +28,7 @@ export function formatMinutesToHoursAndMinutes(totalMinutes: string | number): s
    return `${hours}시간 ${remainingMinutes}분`;
 }
 
-test.use({ storageState: 'tests/auth/member.json' });
+test.use({ storageState: 'e2e-tests/auth/member.json' });
 
 test.describe('스터디원 리포트 테스트', () => {
    // 업로드한 이미지와 실제 올라간 이미지를 구분 못하는 이슈 존재

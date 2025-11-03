@@ -1,4 +1,3 @@
-import * as xlsx from 'xlsx';
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,8 @@ import { useQuery } from 'react-query';
 import SpinnerLoading from '@/components/SpinnerLoading';
 import { Link } from 'react-router-dom';
 import { paths } from '@/const/paths';
+import { downloadExcelFromSheetData } from '@/utils/excel';
+import { Group } from '@/interface/group';
 
 export default function ManageStudyPage() {
    const { data: activities, isLoading } = useQuery(['courses'], readAllGroups, {
@@ -33,9 +34,13 @@ export default function ManageStudyPage() {
    }, [activities, searchTerm]);
 
    const handleExcelDownload = () => {
-      if (activities) {
-         const sheetData = activities.flatMap((group) =>
-            group.members.map((member) => ({
+      if (!activities) return;
+
+      downloadExcelFromSheetData(buildStudySheetData(activities), '스터디그룹활동.xlsx');
+
+      function buildStudySheetData(activities: Group[]) {
+         return activities.flatMap((group) => {
+            const sheetRow = group.members.map((member) => ({
                Group: group.group,
                MemberID: member.id,
                MemberName: member.name,
@@ -44,15 +49,10 @@ export default function ManageStudyPage() {
                Subjects: member.courses.map((subject) => subject.name).join(', '),
                Reports: group.reports,
                Times: group.times,
-            })),
-         );
-         const ws = xlsx.utils.json_to_sheet([...sheetData]);
-         const wb = xlsx.utils.book_new();
-         xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+            }));
 
-         xlsx.writeFile(wb, '스터디그룹활동.xlsx');
-      } else {
-         console.log('데이터가 비어있습니다.');
+            return sheetRow;
+         });
       }
    };
 
@@ -71,7 +71,7 @@ export default function ManageStudyPage() {
                      onChange={(e) => setSearchTerm(e.target.value)}
                   />
                </div>
-               <Button onClick={handleExcelDownload}>
+               <Button onClick={activities && handleExcelDownload}>
                   <DownloadIcon className="mr-2 h-4 w-4" />
                   그룹 활동 목록 엑셀 다운
                </Button>

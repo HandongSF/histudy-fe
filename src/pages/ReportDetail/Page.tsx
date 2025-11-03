@@ -12,6 +12,7 @@ import { Report } from '@/interface/report';
 import { SimpleUser } from '@/interface/user';
 import { roleState } from '@/store/HISAtom';
 import { getFormattedLocaleString } from '@/utils/DateFormat';
+import { formatTimeToHoursAndMinutes } from '@/utils/formatTimeToHoursAndMinutes';
 import { addImagePrefix } from '@/utils/imagePrefix';
 import { ArrowLeft, BookOpen, Calendar, Clock, Edit, ImageIcon, Trash2, Users } from 'lucide-react';
 import { useMemo } from 'react';
@@ -72,12 +73,6 @@ export default function ReportDetailPage() {
          return;
       }
       navigate(paths.reports.edit(report.id.toString()), { state: state });
-   };
-   // 시간을 시간과 분으로 포맷팅하는 함수
-   const formatStudyTime = (minutes: number) => {
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      return `${hours}시간 ${mins}분`;
    };
 
    if (isLoading) {
@@ -145,7 +140,7 @@ export default function ReportDetailPage() {
                         <span className="text-muted-foreground flex items-center gap-1.5">
                            <Clock className="h-3.5 w-3.5" />총 스터디 시간
                         </span>
-                        <span className="font-medium">{formatStudyTime(report?.totalMinutes || 0)}</span>
+                        <span className="font-medium">{formatTimeToHoursAndMinutes(report?.totalMinutes || 0)}</span>
                      </div>
                      <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">작성일</span>
