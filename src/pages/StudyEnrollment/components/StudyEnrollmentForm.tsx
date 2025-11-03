@@ -55,6 +55,7 @@ export function StudyEnrollmentForm({ currentSemesterInfo, myStudyEnrollment }: 
          toast('최소 하나의 수업을 추가해주세요.');
          return;
       }
+
       setCurrentStep((prev) => prev + 1);
    };
 
