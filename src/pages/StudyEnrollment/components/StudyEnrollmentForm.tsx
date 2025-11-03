@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 
-import { studyEnroll, StudyEnrollResponse } from '@/apis/study';
+import { studyEnrollment, StudyEnrollmentResponse } from '@/apis/study';
 import { paths } from '@/const/paths';
 import { Course } from '@/interface/course';
 import { SimpleUser } from '@/interface/user';
@@ -15,7 +15,7 @@ import { StepAddFriends } from './StepAddFriend';
 import { StepReviewSubmit } from './StepReviewSubmit';
 import { useMutation } from 'react-query';
 
-export interface ApplicationData {
+export interface EnrollmentData {
    friends: SimpleUser[];
    courses: Course[];
    semesterInfo: string;
@@ -23,35 +23,35 @@ export interface ApplicationData {
 
 const TOTAL_STEPS = 3;
 
-interface StudyApplicationFormProps {
+interface StudyEnrollmentFormProps {
    currentSemesterInfo: string;
-   myStudyApplication?: StudyEnrollResponse;
+   myStudyEnrollment?: StudyEnrollmentResponse;
 }
 
-export function StudyApplicationForm({ currentSemesterInfo, myStudyApplication }: StudyApplicationFormProps) {
+export function StudyEnrollmentForm({ currentSemesterInfo, myStudyEnrollment }: StudyEnrollmentFormProps) {
    const navigate = useNavigate();
    const [currentStep, setCurrentStep] = useState(1);
-   const [applicationData, setApplicationData] = useState<ApplicationData>({
+   const [enrollmentData, setEnrollmentData] = useState<EnrollmentData>({
       friends: [],
       courses: [],
       semesterInfo: currentSemesterInfo,
    });
 
    useEffect(() => {
-      if (myStudyApplication && (myStudyApplication.courses.length > 0 || myStudyApplication.friends.length > 0)) {
-         setApplicationData({
-            friends: myStudyApplication.friends,
-            courses: myStudyApplication.courses,
+      if (myStudyEnrollment && (myStudyEnrollment.courses.length > 0 || myStudyEnrollment.friends.length > 0)) {
+         setEnrollmentData({
+            friends: myStudyEnrollment.friends,
+            courses: myStudyEnrollment.courses,
             semesterInfo: currentSemesterInfo,
          });
       }
-   }, [myStudyApplication, currentSemesterInfo]);
+   }, [myStudyEnrollment, currentSemesterInfo]);
 
    const handleClickNextStep = () => {
       const COURSE_STEP = 2;
       if (currentStep >= TOTAL_STEPS) return;
 
-      if (currentStep === COURSE_STEP && applicationData.courses.length === 0) {
+      if (currentStep === COURSE_STEP && enrollmentData.courses.length === 0) {
          toast('최소 하나의 수업을 추가해주세요.');
          return;
       }
@@ -65,18 +65,18 @@ export function StudyApplicationForm({ currentSemesterInfo, myStudyApplication }
    };
 
    const updateFriends = (friends: SimpleUser[]) => {
-      setApplicationData((prev) => ({ ...prev, friends }));
+      setEnrollmentData((prev) => ({ ...prev, friends }));
    };
 
    const updateCourses = (courses: Course[]) => {
-      setApplicationData((prev) => ({ ...prev, courses }));
+      setEnrollmentData((prev) => ({ ...prev, courses }));
    };
 
-   const { mutate: studyEnrollMutation, isLoading } = useMutation(studyEnroll, {
+   const { mutate: studyEnrollmentMutation, isLoading } = useMutation(studyEnrollment, {
       onSuccess: () => {
-         toast.success(`${applicationData.semesterInfo} 스터디 신청이 성공적으로 제출되었습니다.`);
+         toast.success(`${enrollmentData.semesterInfo} 스터디 신청이 성공적으로 제출되었습니다.`);
 
-         navigate(paths.application.root);
+         navigate(paths.enrollment.root);
       },
       onError: (error) => {
          console.log(error);
@@ -86,9 +86,9 @@ export function StudyApplicationForm({ currentSemesterInfo, myStudyApplication }
 
    //TODO: 테스트 필요
    const handleSubmit = () => {
-      studyEnrollMutation({
-         courseIds: applicationData.courses.map((course) => course.id),
-         friendIds: applicationData.friends.map((friend) => friend.id),
+      studyEnrollmentMutation({
+         courseIds: enrollmentData.courses.map((course) => course.id),
+         friendIds: enrollmentData.friends.map((friend) => friend.id),
       });
    };
 
@@ -99,13 +99,13 @@ export function StudyApplicationForm({ currentSemesterInfo, myStudyApplication }
          <CardContent className="p-6">
             <Progress value={progressValue} className="mb-8" />
             {currentStep === 1 && (
-               <StepAddFriends selectedFriends={applicationData.friends} onUpdateFriends={updateFriends} />
+               <StepAddFriends selectedFriends={enrollmentData.friends} onUpdateFriends={updateFriends} />
             )}
             {currentStep === 2 && (
-               <StepAddCourses selectedCourses={applicationData.courses} onUpdateCourses={updateCourses} />
+               <StepAddCourses selectedCourses={enrollmentData.courses} onUpdateCourses={updateCourses} />
             )}
             {currentStep === 3 && (
-               <StepReviewSubmit applicationData={applicationData} onUpdateCoursesOrder={updateCourses} />
+               <StepReviewSubmit enrollmentData={enrollmentData} onUpdateCoursesOrder={updateCourses} />
             )}
          </CardContent>
          <CardFooter className="flex justify-between p-6 border-t">

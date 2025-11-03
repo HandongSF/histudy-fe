@@ -2,7 +2,7 @@ const ROOTS = {
    home: '/',
    reports: '/reports',
    admin: '/admin',
-   application: '/application',
+   enrollment: '/enrollment',
    ranks: '/ranks',
    profile: '/profile',
    myGroup: '/my-group',
@@ -18,9 +18,9 @@ export const paths = {
       oneReport: (reportId: string) => `${ROOTS.reports}/${reportId}`,
       edit: (reportId: string) => `${ROOTS.reports}/${reportId}/edit`,
    },
-   application: {
-      root: `${ROOTS.application}`,
-      add: `${ROOTS.application}/new`,
+   enrollment: {
+      root: `${ROOTS.enrollment}`,
+      add: `${ROOTS.enrollment}/new`,
    },
    admin: {
       manageClass: `${ROOTS.admin}/manage-class`,
