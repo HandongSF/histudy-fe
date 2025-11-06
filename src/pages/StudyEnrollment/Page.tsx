@@ -1,4 +1,4 @@
-import { getMyGroup } from '@/apis/study';
+import { getMyStudyEnrollment } from '@/apis/study';
 import { WaveLoading } from '@/components/WaveLoading';
 import { useQuery } from 'react-query';
 import { StudyEnrollmentForm } from './components/StudyEnrollmentForm';
@@ -6,10 +6,13 @@ import { StudyEnrollmentForm } from './components/StudyEnrollmentForm';
 // 예시: 현재 학기 정보 (실제로는 동적으로 가져오거나 설정 파일 등에서 관리)
 const CURRENT_SEMESTER_INFO = '2025년 2학기';
 
-export default function StudyEnrollmentPage() {
-   const { data: myStudyEnrollment, isLoading } = useQuery('getMyStudyEnrollment', getMyGroup);
+export default function StudyApplicationPage() {
+   const { data: myStudyEnrollmentData, isLoading: isMyStudyEnrollmentLoading } = useQuery(
+      ['checkMyEnrollment'],
+      getMyStudyEnrollment,
+   );
 
-   if (isLoading) {
+   if (isMyStudyEnrollmentLoading) {
       return <WaveLoading />;
    }
 
@@ -25,7 +28,10 @@ export default function StudyEnrollmentPage() {
                </p>
             </header>
 
-            <StudyEnrollmentForm currentSemesterInfo={CURRENT_SEMESTER_INFO} myStudyEnrollment={myStudyEnrollment} />
+            <StudyEnrollmentForm
+               currentSemesterInfo={CURRENT_SEMESTER_INFO}
+               myStudyEnrollmentData={myStudyEnrollmentData}
+            />
          </div>
       </div>
    );

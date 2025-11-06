@@ -5,7 +5,7 @@ interface SemesterResponse {
    academicTerms: Semester[];
 }
 
-export const getSemester = async (): Promise<SemesterResponse> => {
+export const getSemesters = async (): Promise<SemesterResponse> => {
    const response = await axiosInstance.get('/api/admin/academicTerm');
    return response.data;
 };

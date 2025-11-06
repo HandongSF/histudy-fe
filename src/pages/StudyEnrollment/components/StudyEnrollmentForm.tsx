@@ -25,10 +25,10 @@ const TOTAL_STEPS = 3;
 
 interface StudyEnrollmentFormProps {
    currentSemesterInfo: string;
-   myStudyEnrollment?: StudyEnrollmentResponse;
+   myStudyEnrollmentData?: StudyEnrollmentResponse;
 }
 
-export function StudyEnrollmentForm({ currentSemesterInfo, myStudyEnrollment }: StudyEnrollmentFormProps) {
+export function StudyEnrollmentForm({ currentSemesterInfo, myStudyEnrollmentData }: StudyEnrollmentFormProps) {
    const navigate = useNavigate();
    const [currentStep, setCurrentStep] = useState(1);
    const [enrollmentData, setEnrollmentData] = useState<EnrollmentData>({
@@ -38,14 +38,17 @@ export function StudyEnrollmentForm({ currentSemesterInfo, myStudyEnrollment }: 
    });
 
    useEffect(() => {
-      if (myStudyEnrollment && (myStudyEnrollment.courses.length > 0 || myStudyEnrollment.friends.length > 0)) {
+      if (
+         myStudyEnrollmentData &&
+         (myStudyEnrollmentData.courses.length > 0 || myStudyEnrollmentData.friends.length > 0)
+      ) {
          setEnrollmentData({
-            friends: myStudyEnrollment.friends,
-            courses: myStudyEnrollment.courses,
+            friends: myStudyEnrollmentData.friends,
+            courses: myStudyEnrollmentData.courses,
             semesterInfo: currentSemesterInfo,
          });
       }
-   }, [myStudyEnrollment, currentSemesterInfo]);
+   }, [myStudyEnrollmentData, currentSemesterInfo]);
 
    const handleClickNextStep = () => {
       if (currentStep >= TOTAL_STEPS) return;

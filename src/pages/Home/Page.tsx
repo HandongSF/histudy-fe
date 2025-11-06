@@ -1,4 +1,4 @@
-import { getAllTeamsForRank } from '@/apis/rank';
+import { getAllTeamRanks } from '@/apis/rank';
 
 import TeamInfoModal from '@/components/TeamInfoModal';
 import { Team } from '@/interface/teams';
@@ -14,21 +14,22 @@ import { maskName } from '@/utils/masking';
 import EmblaCarousel, { CAROUSEL_SLIDES } from './components/EmblaCarousel';
 
 export default function HomePage() {
-   const { data, isLoading } = useQuery(['AllTeamRanks'], getAllTeamsForRank, {
+   const { data: teamRanksData, isLoading: isTeamRanksLoading } = useQuery(['AllTeamRanks'], getAllTeamRanks, {
       cacheTime: 10 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
+
    const [modalInfo, setModalInfo] = useState<Team | null>(null);
 
-   const teams = useMemo(() => {
-      if (!data) return [];
-      return data.teams.map((team) => ({
+   const topThreeTeams = useMemo(() => {
+      if (!teamRanksData) return [];
+      return teamRanksData.teams.slice(0, 3).map((team) => ({
          ...team,
          members: team.members.map((name) => maskName(name)),
       }));
-   }, [data]);
+   }, [teamRanksData]);
 
-   if (isLoading) {
+   if (isTeamRanksLoading) {
       return <WaveLoading />;
    }
 
@@ -70,13 +71,13 @@ export default function HomePage() {
                      현재 활발한 스터디 그룹
                   </h2>
 
-                  {teams.length === 0 ? (
+                  {topThreeTeams.length === 0 ? (
                      <NoData title="현재 그룹이 없습니다" description="현재 스터디 그룹이 없습니다." />
                   ) : (
                      <>
                         <TeamInfoModal selectedTeam={modalInfo} closeModal={() => setModalInfo(null)} />
 
-                        <GroupGridView studyGroups={teams.slice(0, 3) || []} setModalInfo={setModalInfo} />
+                        <GroupGridView studyGroups={topThreeTeams} setModalInfo={setModalInfo} />
                      </>
                   )}
                </section>

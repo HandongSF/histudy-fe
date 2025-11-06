@@ -17,7 +17,7 @@ export const studyEnrollment = async (data: StudyEnrollmentRequest): Promise<Stu
    return response.data;
 };
 
-export const getMyGroup = async (): Promise<StudyEnrollmentResponse> => {
+export const getMyStudyEnrollment = async (): Promise<StudyEnrollmentResponse> => {
    const response = await axiosInstance.get(`/api/v2/users/me/forms`);
    return response.data;
 };

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
@@ -11,17 +10,18 @@ import { Link } from 'react-router-dom';
 import { paths } from '@/const/paths';
 import { downloadExcelFromSheetData } from '@/utils/excel';
 import { Group } from '@/interface/group';
+import { useMemo, useState } from 'react';
 
 export default function ManageStudyPage() {
-   const { data: activities, isLoading } = useQuery(['courses'], readAllGroups, {
+   const { data: groupsData, isLoading: isGroupsLoading } = useQuery(['groups'], readAllGroups, {
       cacheTime: 5 * 60 * 1000,
    });
 
-   const [searchTerm, setSearchTerm] = React.useState('');
+   const [searchTerm, setSearchTerm] = useState('');
 
-   const filteredActivities = React.useMemo(() => {
-      if (!activities) return [];
-      return activities.filter((activity) => {
+   const filteredGroups = useMemo(() => {
+      if (!groupsData) return [];
+      return groupsData.filter((activity) => {
          const searchTermLower = searchTerm.toLowerCase();
          const groupMatch = activity.tag.toString().includes(searchTermLower);
          const memberMatch = activity.members.some(
@@ -31,12 +31,12 @@ export default function ManageStudyPage() {
          );
          return groupMatch || memberMatch;
       });
-   }, [activities, searchTerm]);
+   }, [groupsData, searchTerm]);
 
    const handleExcelDownload = () => {
-      if (!activities) return;
+      if (!groupsData) return;
 
-      downloadExcelFromSheetData(buildStudySheetData(activities), '스터디그룹활동.xlsx');
+      downloadExcelFromSheetData(buildStudySheetData(groupsData), '스터디그룹활동.xlsx');
 
       function buildStudySheetData(activities: Group[]) {
          return activities.flatMap((group) => {
@@ -71,7 +71,7 @@ export default function ManageStudyPage() {
                      onChange={(e) => setSearchTerm(e.target.value)}
                   />
                </div>
-               <Button onClick={activities && handleExcelDownload}>
+               <Button onClick={groupsData && handleExcelDownload}>
                   <DownloadIcon className="mr-2 h-4 w-4" />
                   그룹 활동 목록 엑셀 다운
                </Button>
@@ -79,7 +79,7 @@ export default function ManageStudyPage() {
          </div>
 
          <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-            {isLoading ? (
+            {isGroupsLoading ? (
                <div className="flex min-h-[500px] justify-center items-center">
                   <SpinnerLoading />
                </div>
@@ -95,8 +95,8 @@ export default function ManageStudyPage() {
                      </TableRow>
                   </TableHeader>
                   <TableBody>
-                     {filteredActivities.length > 0 ? (
-                        filteredActivities.map((activity) => (
+                     {filteredGroups.length > 0 ? (
+                        filteredGroups.map((activity) => (
                            <TableRow key={activity.tag}>
                               <TableCell className="font-medium">{activity.tag}</TableCell>
                               <TableCell>

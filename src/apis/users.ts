@@ -27,7 +27,7 @@ export const searchUser = async (search: string): Promise<SearchFriendResponse> 
    return response.data;
 };
 
-export const getMyTeamUsers = async (): Promise<TeamMember[]> => {
+export const getMyTeamMembers = async (): Promise<TeamMember[]> => {
    const response = await axiosInstance.get(`/api/team/users`);
    return response.data;
 };

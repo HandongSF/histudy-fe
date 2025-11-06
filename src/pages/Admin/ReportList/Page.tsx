@@ -14,9 +14,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 export default function ReportListAdminPage() {
    const { state: groupId } = useLocation();
    const navigate = useNavigate();
-   const { data, isLoading } = useQuery(['reports'], () => readGroupReport(groupId), {
-      cacheTime: 1 * 30 * 1000,
-   });
+   const { data: groupReportsData, isLoading: isGroupReportsLoading } = useQuery(
+      ['groupReports', groupId],
+      () => readGroupReport(groupId),
+      {
+         cacheTime: 1 * 30 * 1000,
+      },
+   );
 
    const handleReportClick = (report: SimpleReport) => {
       navigate(paths.reports.oneReport(report.id.toString()), {
@@ -25,11 +29,11 @@ export default function ReportListAdminPage() {
    };
 
    const reports = useMemo(() => {
-      if (!data) return [];
-      return data.reports;
-   }, [data]);
+      if (!groupReportsData) return [];
+      return groupReportsData.reports;
+   }, [groupReportsData]);
 
-   if (isLoading) {
+   if (isGroupReportsLoading) {
       return <WaveLoading />;
    }
 
@@ -39,7 +43,7 @@ export default function ReportListAdminPage() {
             <div className="flex justify-between items-center">
                <header className="mb-8">
                   <h1 className="text-3xl font-bold tracking-tight mb-2">
-                     {data?.tag || 'UNKNOWN'} 그룹의 레포트 목록
+                     {groupReportsData?.tag || 'UNKNOWN'} 그룹의 레포트 목록
                   </h1>
                   <p className="text-muted-foreground">총 {reports.length}개의 레포트가 있습니다.</p>
                </header>

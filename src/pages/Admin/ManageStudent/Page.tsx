@@ -16,9 +16,9 @@ const cleanProfName = (prof: string) => prof.replace(/\n/g, '').trim();
 
 export default function ManageStudentPage() {
    const {
-      data: enrollees,
-      refetch,
-      isLoading,
+      data: studyEnrolleesData,
+      refetch: studyEnrolleesRefetch,
+      isLoading: isStudyEnrolleesLoading,
    } = useQuery(['allStudyEnrollees'], readAllStudyEnrollees, {
       cacheTime: 5 * 60 * 1000,
    });
@@ -49,7 +49,7 @@ export default function ManageStudentPage() {
             sid: formData.sid!,
             team: formData.group!,
          });
-         refetch();
+         studyEnrolleesRefetch();
          setEditingId(null);
          setFormData({});
       } catch (error) {
@@ -75,20 +75,20 @@ export default function ManageStudentPage() {
    };
 
    const filteredEnrollees = React.useMemo(() => {
-      if (!enrollees) return [];
-      return enrollees.filter(
+      if (!studyEnrolleesData) return [];
+      return studyEnrolleesData.filter(
          (enrollee) =>
             enrollee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (enrollee.group !== null && enrollee.group.toString().includes(searchTerm.toLowerCase())) ||
             enrollee.sid.toLowerCase().includes(searchTerm.toLowerCase()) ||
             enrollee.email.toLowerCase().includes(searchTerm.toLowerCase()),
       );
-   }, [enrollees, searchTerm]);
+   }, [studyEnrolleesData, searchTerm]);
 
    const handleExcelDownload = () => {
-      if (!enrollees) return;
+      if (!studyEnrolleesData) return;
 
-      downloadExcelFromSheetData(buildEnrolleesSheetData(enrollees), '스터디신청자목록.xlsx');
+      downloadExcelFromSheetData(buildEnrolleesSheetData(studyEnrolleesData), '스터디신청자목록.xlsx');
 
       function buildEnrolleesSheetData(enrollees: StudyEnrollee[]) {
          return enrollees.map((student) => ({
@@ -123,7 +123,7 @@ export default function ManageStudentPage() {
          </div>
 
          <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-            {isLoading ? (
+            {isStudyEnrolleesLoading ? (
                <div className="flex justify-center items-center min-h-[500px] h-full w-full">
                   <SpinnerLoading />
                </div>
