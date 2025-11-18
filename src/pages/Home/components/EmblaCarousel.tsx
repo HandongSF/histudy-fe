@@ -11,6 +11,11 @@ type PropType = {
 
 export const CAROUSEL_SLIDES = [
    {
+      imageUrl: '/img/LIKE_LION_Banner.jpg',
+      linkUrl: 'https://worried-machine-6fa.notion.site/2025-28bccad2592d80b7b28dcb432a138e29',
+      alt: '멋쟁이사자처럼',
+   },
+   {
       imageUrl: '/img/SLE_Banner.png',
       linkUrl: 'https://sle-recruitng.vercel.app/',
       alt: '슬기짜기',
