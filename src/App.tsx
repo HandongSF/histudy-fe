@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { router } from './components/ARouter';
 import './globals.css';
+import { CurrentSemesterInitializer } from './components/CurrentSemesterInitializer';
 
 const queryClient = new QueryClient({
    defaultOptions: {
@@ -20,8 +21,9 @@ function App() {
    return (
       <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
          <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
-
+            <CurrentSemesterInitializer>
+               <RouterProvider router={router} />
+            </CurrentSemesterInitializer>
             <Toaster position="top-center" richColors />
          </QueryClientProvider>
       </GoogleOAuthProvider>

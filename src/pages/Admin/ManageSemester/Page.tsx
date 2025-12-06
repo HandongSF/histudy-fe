@@ -6,12 +6,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useSetHiState } from '@/hooks/HIState';
 import { SemesterType } from '@/interface/semester';
+import { currentSemesterState } from '@/store/HISAtom';
+import { getSemesterLabel } from '@/utils/semester';
 import { Plus, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { toast } from 'sonner';
+
 export default function ManageSemesterPage() {
+   const setCurrentSemester = useSetHiState(currentSemesterState);
+
    const {
       data,
       isLoading,
@@ -22,22 +28,12 @@ export default function ManageSemesterPage() {
    });
 
    const { mutateAsync: createSemester } = useMutation(postSemester);
-   const { mutateAsync: setCurrentSemester } = useMutation(patchCurrentSemester);
+   const { mutateAsync: setCurrentSemesterAPI } = useMutation(patchCurrentSemester);
 
    const [year, setYear] = useState(new Date().getFullYear());
    const [semester, setSemester] = useState<SemesterType>('SPRING');
 
    const [isCreating, setIsCreating] = useState(false);
-
-   const getSemesterLabel = (semester: SemesterType) => {
-      const labels = {
-         SPRING: '봄학기',
-         SUMMER: '여름학기',
-         FALL: '가을학기',
-         WINTER: '겨울학기',
-      };
-      return labels[semester];
-   };
 
    const handleSave = async () => {
       try {
@@ -63,9 +59,17 @@ export default function ManageSemesterPage() {
          return;
       }
       try {
-         await setCurrentSemester(accademyTermId);
+         await setCurrentSemesterAPI(accademyTermId);
          toast.success('현재 설정 학기가 변경되었습니다.');
-         semestersRefetch();
+
+         // 학기 데이터 다시 가져오기
+         const updatedData = await semestersRefetch();
+
+         // 전역 state 업데이트
+         if (updatedData.data?.academicTerms) {
+            const newCurrentSemester = updatedData.data.academicTerms.find((term) => term.isCurrent);
+            setCurrentSemester(newCurrentSemester || null);
+         }
       } catch (error) {
          toast.error(error.response.data.message || '학기 설정에 실패하였습니다.');
       }

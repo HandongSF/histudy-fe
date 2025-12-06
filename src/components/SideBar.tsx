@@ -34,7 +34,8 @@ import {
    type LucideIcon,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { useHIState, useHIStateValue } from '@/hooks/HIState';
+import { useHIStateValue } from '@/hooks/HIState';
+import { CurrentSemester } from '@/components/CurrentSemester';
 
 interface NavItem {
    name: string;
@@ -183,6 +184,7 @@ export function CommonSidebar() {
 
                <SidebarTrigger className="mr-4" />
             </div>
+            <CurrentSemester />
          </SidebarHeader>
 
          <SidebarContent className="flex-1 p-3 space-y-1">
