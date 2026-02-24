@@ -29,11 +29,6 @@ export default function GoogleButton() {
       }
       const decodedToken = jwtDecode(credentialResponse.credential) as JwtHIStudyPayload;
 
-      if (decodedToken.hd !== 'handong.edu' && decodedToken.hd !== 'handong.ac.kr') {
-         toast.error('한동대학교 이메일로 로그인해주세요.');
-         return;
-      }
-
       if (!decodedToken.sub) {
          toast.error('로그인에 실패하였습니다.');
          return;
@@ -48,6 +43,10 @@ export default function GoogleButton() {
          // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생
          .catch((error) => {
             if (error.response && error.response.data.isRegistered === false) {
+               if (decodedToken.hd !== 'handong.edu' && decodedToken.hd !== 'handong.ac.kr') {
+                  toast.error('한동대학교 이메일로 로그인해주세요.');
+                  return;
+               }
                setIsRegisterModalState(true);
                setUserLoginInfo(decodedToken);
             }
