@@ -4,6 +4,7 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { useSetHiState } from '@/hooks/HIState';
 import { Role } from '@/interface/role';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { toast } from 'sonner';
 import { useAuth } from 'src/hooks/auth';
@@ -16,6 +17,8 @@ export interface JwtHIStudyPayload extends JwtPayload {
    name: string;
    email: string;
 }
+
+const ALLOWED_DOMAINS = ['handong.edu', 'handong.ac.kr'];
 
 export default function GoogleButton() {
    const setIsRegisterModalState = useSetHiState(isRegisterModalState);
@@ -42,8 +45,12 @@ export default function GoogleButton() {
          })
          // 구글 로그인 성공 후 히즈스터디 서버 로그인 API 에러 발생
          .catch((error) => {
-            if (error.response && error.response.data.isRegistered === false) {
-               if (decodedToken.hd !== 'handong.edu' && decodedToken.hd !== 'handong.ac.kr') {
+            if (
+               axios.isAxiosError(error) &&
+               error.response?.status === 404 &&
+               (error.response.data as { isRegistered?: boolean } | undefined)?.isRegistered === false
+            ) {
+               if (!ALLOWED_DOMAINS.includes(decodedToken.hd)) {
                   toast.error('한동대학교 이메일로 로그인해주세요.');
                   return;
                }
