@@ -112,6 +112,12 @@ export const router = createBrowserRouter([
                Component: (await import('@/pages/Admin/ManageSemester/Page')).default,
             }),
          },
+         {
+            path: paths.admin.manageBanner,
+            lazy: async () => ({
+               Component: (await import('@/pages/Admin/ManageBanner/Page')).default,
+            }),
+         },
 
          // 테스트를 위한 공간
          ...(process.env.NODE_ENV === 'development'
