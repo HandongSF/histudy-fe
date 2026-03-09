@@ -191,7 +191,12 @@ function SortableBannerItem({
 }
 
 export default function ManageBannerPage() {
-   const { data, isLoading, refetch } = useQuery(['adminBanners'], getAdminBanners, {
+   const {
+      data,
+      isLoading,
+      isError: isBannerLoadError,
+      refetch,
+   } = useQuery(['adminBanners'], getAdminBanners, {
       cacheTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
@@ -568,7 +573,17 @@ export default function ManageBannerPage() {
          </div>
 
          <div className="space-y-4">
-            {displayBanners.length === 0 && editingRowId !== NEW_BANNER_ROW_ID ? (
+            {isBannerLoadError && displayBanners.length === 0 && editingRowId !== NEW_BANNER_ROW_ID ? (
+               <NoData
+                  title="배너 목록을 불러오지 못했습니다"
+                  description="네트워크 상태를 확인한 뒤 다시 시도해주세요."
+                  actionText="다시 시도"
+                  onAction={() => {
+                     void refetch();
+                  }}
+                  className="border-0 shadow-none"
+               />
+            ) : displayBanners.length === 0 && editingRowId !== NEW_BANNER_ROW_ID ? (
                <NoData
                   title="등록된 배너가 없습니다"
                   description="목록 상단에서 새 배너를 추가해보세요."

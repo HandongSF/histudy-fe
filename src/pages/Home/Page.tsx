@@ -21,7 +21,12 @@ export default function HomePage() {
       cacheTime: 10 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
-   const { data: banners, isLoading: isBannerLoading } = useQuery<PublicBanner[]>(['publicBanners'], getPublicBanners, {
+   const {
+      data: banners,
+      isLoading: isBannerLoading,
+      isError: isBannerError,
+      refetch: refetchBanners,
+   } = useQuery<PublicBanner[]>(['publicBanners'], getPublicBanners, {
       staleTime: 10 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
@@ -50,6 +55,16 @@ export default function HomePage() {
 
                   {isBannerLoading ? (
                      <WaveLoading className="relative z-10" height="100%" />
+                  ) : isBannerError && !banners ? (
+                     <NoData
+                        title="배너를 불러오지 못했습니다"
+                        description="잠시 후 다시 시도해주세요."
+                        actionText="다시 시도"
+                        onAction={() => {
+                           void refetchBanners();
+                        }}
+                        className="relative z-10 h-full w-full border-0 bg-transparent shadow-none"
+                     />
                   ) : banners && banners.length > 0 ? (
                      <EmblaCarousel className="h-full w-full">
                         {banners.map((banner) => {
