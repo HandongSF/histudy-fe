@@ -1,6 +1,7 @@
 export interface PublicBanner {
    id: number;
    imageUrl: string;
+   label?: string | null;
    redirectUrl: string | null;
 }
 

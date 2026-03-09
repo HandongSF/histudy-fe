@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 import StatsDashboard from './components/activity-dashboard';
 import SignUpDialog from '@/components/SignUpDialog';
 import { maskName } from '@/utils/masking';
+import { getBannerAltText, getSafeExternalUrl } from '@/utils/banner';
 import EmblaCarousel from './components/EmblaCarousel';
 
 export default function HomePage() {
@@ -20,14 +21,10 @@ export default function HomePage() {
       cacheTime: 10 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
-   const { data: banners, isLoading: isBannerLoading } = useQuery<PublicBanner[]>(
-      ['publicBanners'],
-      getPublicBanners,
-      {
-         staleTime: 10 * 60 * 1000,
-         refetchOnWindowFocus: false,
-      },
-   );
+   const { data: banners, isLoading: isBannerLoading } = useQuery<PublicBanner[]>(['publicBanners'], getPublicBanners, {
+      staleTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: false,
+   });
    const [modalInfo, setModalInfo] = useState<Team | null>(null);
 
    const teams = useMemo(() => {
@@ -55,17 +52,18 @@ export default function HomePage() {
                      <WaveLoading className="relative z-10" height="100%" />
                   ) : banners && banners.length > 0 ? (
                      <EmblaCarousel className="h-full w-full">
-                        {banners.map((banner, index) => {
+                        {banners.map((banner) => {
+                           const safeRedirectUrl = getSafeExternalUrl(banner.redirectUrl);
                            const image = (
                               <img
                                  src={banner.imageUrl}
-                                 alt={`홈 배너 ${index + 1}`}
+                                 alt={getBannerAltText(banner)}
                                  className="relative z-10 h-full w-full object-cover"
                                  draggable={false}
                               />
                            );
 
-                           if (!banner.redirectUrl) {
+                           if (!safeRedirectUrl) {
                               return (
                                  <div key={banner.id} className="block h-full w-full">
                                     {image}
@@ -76,7 +74,7 @@ export default function HomePage() {
                            return (
                               <a
                                  key={banner.id}
-                                 href={banner.redirectUrl}
+                                 href={safeRedirectUrl}
                                  target="_blank"
                                  rel="noopener noreferrer"
                                  className="block h-full w-full"

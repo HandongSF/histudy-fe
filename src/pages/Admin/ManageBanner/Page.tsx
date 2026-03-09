@@ -27,10 +27,19 @@ import { WaveLoading } from '@/components/WaveLoading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+   Dialog,
+   DialogContent,
+   DialogDescription,
+   DialogFooter,
+   DialogHeader,
+   DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AdminBanner, BannerFormPayload } from '@/interface/banner';
 import { cn } from '@/lib/utils';
+import { getSafeExternalUrl } from '@/utils/banner';
 import { ChevronDown, Eye, EyeOff, GripVertical, ImagePlus, Save, Trash2, X } from 'lucide-react';
 import { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
@@ -58,6 +67,7 @@ const DEFAULT_FORM_STATE: BannerFormState = {
 };
 
 const NEW_BANNER_ROW_ID = 'new';
+const INVALID_REDIRECT_URL_MESSAGE = '이동 URL은 http:// 또는 https://로 시작하는 주소만 사용할 수 있습니다.';
 
 const formatErrorMessage = (error: unknown, fallback: string) => {
    if (typeof error === 'object' && error !== null && 'response' in error) {
@@ -119,46 +129,48 @@ function SortableBannerItem({
                         <img src={banner.imageUrl} alt={banner.label} className="h-full w-full object-contain" />
                      </div>
                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                  <div className="absolute left-3 top-3 flex flex-wrap items-center gap-2">
-                     <Badge variant="secondary" className="bg-background/90 text-foreground">
-                        순서 {banner.displayOrder}
-                     </Badge>
+                     <div className="absolute left-3 top-3 flex flex-wrap items-center gap-2">
+                        <Badge variant="secondary" className="bg-background/90 text-foreground">
+                           순서 {banner.displayOrder}
+                        </Badge>
+                     </div>
+                     <div className="absolute bottom-3 left-3">
+                        <Badge
+                           variant={banner.active ? 'default' : 'secondary'}
+                           className={cn(
+                              'px-2.5 py-1 text-xs shadow-sm',
+                              banner.active
+                                 ? 'bg-emerald-500 text-white hover:bg-emerald-500'
+                                 : 'bg-slate-900/80 text-white hover:bg-slate-900/80',
+                           )}
+                        >
+                           {banner.active ? '노출 중' : '비노출'}
+                        </Badge>
+                     </div>
+                     <div className="absolute right-3 top-3">
+                        <Button
+                           variant="secondary"
+                           size="icon"
+                           onClick={() => onToggleActive(banner)}
+                           disabled={isBusy}
+                           className="h-9 w-9 rounded-full bg-background/90"
+                           aria-label={banner.active ? '배너 숨기기' : '배너 노출하기'}
+                        >
+                           {banner.active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        </Button>
+                     </div>
                   </div>
-                  <div className="absolute bottom-3 left-3">
-                     <Badge
-                        variant={banner.active ? 'default' : 'secondary'}
-                        className={cn(
-                           'px-2.5 py-1 text-xs shadow-sm',
-                           banner.active
-                              ? 'bg-emerald-500 text-white hover:bg-emerald-500'
-                              : 'bg-slate-900/80 text-white hover:bg-slate-900/80',
-                        )}
-                     >
-                        {banner.active ? '노출 중' : '비노출'}
-                     </Badge>
-                  </div>
-                  <div className="absolute right-3 top-3">
-                     <Button
-                        variant="secondary"
-                        size="icon"
-                        onClick={() => onToggleActive(banner)}
-                        disabled={isBusy}
-                        className="h-9 w-9 rounded-full bg-background/90"
-                        aria-label={banner.active ? '배너 숨기기' : '배너 노출하기'}
-                     >
-                        {banner.active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                     </Button>
-                  </div>
-               </div>
 
-               <div className="min-w-0 space-y-3">
-                  <div className="break-words text-base font-semibold">{banner.label}</div>
+                  <div className="min-w-0 space-y-3">
+                     <div className="break-words text-base font-semibold">{banner.label}</div>
 
-                  <div className="rounded-lg border bg-muted/20 p-3 text-sm">
-                     <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">클릭 URL</div>
-                     <div className="mt-1 break-all text-muted-foreground">{banner.redirectUrl || '설정 안 됨'}</div>
+                     <div className="rounded-lg border bg-muted/20 p-3 text-sm">
+                        <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                           클릭 URL
+                        </div>
+                        <div className="mt-1 break-all text-muted-foreground">{banner.redirectUrl || '설정 안 됨'}</div>
+                     </div>
                   </div>
-               </div>
 
                   <div className="flex flex-col gap-2">
                      <button
@@ -179,11 +191,7 @@ function SortableBannerItem({
 }
 
 export default function ManageBannerPage() {
-   const {
-      data,
-      isLoading,
-      refetch,
-   } = useQuery(['adminBanners'], getAdminBanners, {
+   const { data, isLoading, refetch } = useQuery(['adminBanners'], getAdminBanners, {
       cacheTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
@@ -194,9 +202,11 @@ export default function ManageBannerPage() {
    const { mutateAsync: reorderBanners, isLoading: isReordering } = useMutation(reorderAdminBanners);
 
    const banners = useMemo(() => data ?? [], [data]);
+   const [displayBanners, setDisplayBanners] = useState<AdminBanner[]>([]);
    const [editingRowId, setEditingRowId] = useState<number | typeof NEW_BANNER_ROW_ID | null>(null);
    const [formState, setFormState] = useState<BannerFormState>(DEFAULT_FORM_STATE);
    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+   const [bannerPendingDelete, setBannerPendingDelete] = useState<AdminBanner | null>(null);
 
    const sensors = useSensors(
       useSensor(PointerSensor, {
@@ -211,9 +221,14 @@ export default function ManageBannerPage() {
 
    const isSubmitting = isCreating || isUpdating || isDeleting || isReordering;
    const editingBanner = useMemo(
-      () => (typeof editingRowId === 'number' ? banners.find((banner) => banner.id === editingRowId) ?? null : null),
-      [banners, editingRowId],
+      () =>
+         typeof editingRowId === 'number' ? displayBanners.find((banner) => banner.id === editingRowId) ?? null : null,
+      [displayBanners, editingRowId],
    );
+
+   useEffect(() => {
+      setDisplayBanners(banners);
+   }, [banners]);
 
    useEffect(() => {
       if (!formState.image) {
@@ -256,13 +271,12 @@ export default function ManageBannerPage() {
       });
    };
 
-   const handleTextChange =
-      (field: keyof Omit<BannerFormState, 'image'>) => (event: ChangeEvent<HTMLInputElement>) => {
-         setFormState((prev) => ({
-            ...prev,
-            [field]: event.target.value,
-         }));
-      };
+   const handleTextChange = (field: keyof Omit<BannerFormState, 'image'>) => (event: ChangeEvent<HTMLInputElement>) => {
+      setFormState((prev) => ({
+         ...prev,
+         [field]: event.target.value,
+      }));
+   };
 
    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
       setFormState((prev) => ({
@@ -271,17 +285,26 @@ export default function ManageBannerPage() {
       }));
    };
 
-   const buildUpdatePayload = (banner: AdminBanner): BannerFormPayload => {
+   const normalizeRedirectUrl = (value: string) => {
+      const trimmedValue = value.trim();
+
+      if (!trimmedValue) {
+         return '';
+      }
+
+      return getSafeExternalUrl(trimmedValue);
+   };
+
+   const buildUpdatePayload = (banner: AdminBanner, normalizedRedirectUrl: string): BannerFormPayload => {
       const payload: BannerFormPayload = {};
       const trimmedLabel = formState.label.trim();
-      const trimmedRedirectUrl = formState.redirectUrl.trim();
-      const currentRedirectUrl = banner.redirectUrl ?? '';
+      const currentRedirectUrl = getSafeExternalUrl(banner.redirectUrl) ?? banner.redirectUrl ?? '';
 
       if (trimmedLabel !== banner.label) {
          payload.label = trimmedLabel;
       }
-      if (trimmedRedirectUrl !== currentRedirectUrl) {
-         payload.redirectUrl = trimmedRedirectUrl;
+      if (normalizedRedirectUrl !== currentRedirectUrl) {
+         payload.redirectUrl = normalizedRedirectUrl;
       }
       if (formState.image) {
          payload.image = formState.image;
@@ -292,9 +315,15 @@ export default function ManageBannerPage() {
 
    const handleSubmit = async () => {
       const trimmedLabel = formState.label.trim();
+      const normalizedRedirectUrl = normalizeRedirectUrl(formState.redirectUrl);
 
       if (!trimmedLabel) {
          toast.error('배너 라벨을 입력해주세요.');
+         return;
+      }
+
+      if (formState.redirectUrl.trim() && !normalizedRedirectUrl) {
+         toast.error(INVALID_REDIRECT_URL_MESSAGE);
          return;
       }
 
@@ -307,13 +336,13 @@ export default function ManageBannerPage() {
 
             await createBanner({
                label: trimmedLabel,
-               redirectUrl: formState.redirectUrl.trim(),
+               redirectUrl: normalizedRedirectUrl ?? '',
                image: formState.image,
                active: true,
             });
             toast.success('배너가 생성되었습니다.');
          } else if (editingBanner) {
-            const payload = buildUpdatePayload(editingBanner);
+            const payload = buildUpdatePayload(editingBanner, normalizedRedirectUrl ?? '');
 
             if (Object.keys(payload).length === 0) {
                toast.error('변경된 내용이 없습니다.');
@@ -334,16 +363,17 @@ export default function ManageBannerPage() {
       }
    };
 
-      const handleDelete = async (banner: AdminBanner) => {
-      if (!confirm(`'${banner.label}' 배너를 삭제하시겠습니까?`)) {
+   const handleDelete = async () => {
+      if (!bannerPendingDelete) {
          return;
       }
 
       try {
-         await removeBanner(banner.id);
-         if (editingRowId === banner.id) {
+         await removeBanner(bannerPendingDelete.id);
+         if (editingRowId === bannerPendingDelete.id) {
             resetEditor();
          }
+         setBannerPendingDelete(null);
          toast.success('배너가 삭제되었습니다.');
          refetch();
       } catch (error) {
@@ -373,20 +403,27 @@ export default function ManageBannerPage() {
          return;
       }
 
-      const oldIndex = banners.findIndex((banner) => banner.id === active.id);
-      const newIndex = banners.findIndex((banner) => banner.id === over.id);
+      const oldIndex = displayBanners.findIndex((banner) => banner.id === active.id);
+      const newIndex = displayBanners.findIndex((banner) => banner.id === over.id);
 
       if (oldIndex < 0 || newIndex < 0) {
          return;
       }
 
-      const reordered = arrayMove(banners, oldIndex, newIndex);
+      const previousBanners = displayBanners;
+      const reordered = arrayMove(displayBanners, oldIndex, newIndex).map((banner, index) => ({
+         ...banner,
+         displayOrder: index + 1,
+      }));
+
+      setDisplayBanners(reordered);
 
       try {
          await reorderBanners(reordered.map((banner) => banner.id));
          toast.success('배너 순서가 변경되었습니다.');
          refetch();
       } catch (error) {
+         setDisplayBanners(previousBanners);
          toast.error(formatErrorMessage(error, '배너 순서 변경에 실패했습니다.'));
       }
    };
@@ -465,8 +502,8 @@ export default function ManageBannerPage() {
                         {formState.image
                            ? `선택된 파일: ${formState.image.name}`
                            : mode === 'edit'
-                             ? '이미지를 바꾸지 않으면 기존 이미지를 유지합니다.'
-                             : '생성 시 이미지 파일이 필수입니다.'}
+                           ? '이미지를 바꾸지 않으면 기존 이미지를 유지합니다.'
+                           : '생성 시 이미지 파일이 필수입니다.'}
                      </p>
                   </div>
                   <div className="rounded-md border bg-muted/20 p-3 text-xs text-muted-foreground">
@@ -486,7 +523,7 @@ export default function ManageBannerPage() {
                      {mode === 'edit' && banner && (
                         <Button
                            variant="destructive"
-                           onClick={() => handleDelete(banner)}
+                           onClick={() => setBannerPendingDelete(banner)}
                            disabled={isSubmitting}
                            className="sm:flex-1"
                         >
@@ -511,7 +548,7 @@ export default function ManageBannerPage() {
             <div>
                <div className="flex flex-wrap items-center gap-3">
                   <h1 className="text-2xl font-bold">배너 관리</h1>
-                  <Badge variant="secondary">총 {banners.length}개</Badge>
+                  <Badge variant="secondary">총 {displayBanners.length}개</Badge>
                </div>
                <p className="mt-2 text-sm text-muted-foreground">
                   드래그로 순서를 바꾸고, 눈 아이콘으로 노출 여부를 바로 전환할 수 있습니다.
@@ -531,7 +568,7 @@ export default function ManageBannerPage() {
          </div>
 
          <div className="space-y-4">
-            {banners.length === 0 && editingRowId !== NEW_BANNER_ROW_ID ? (
+            {displayBanners.length === 0 && editingRowId !== NEW_BANNER_ROW_ID ? (
                <NoData
                   title="등록된 배너가 없습니다"
                   description="목록 상단에서 새 배너를 추가해보세요."
@@ -544,9 +581,12 @@ export default function ManageBannerPage() {
                   {editingRowId === NEW_BANNER_ROW_ID && renderEditorCard('create')}
 
                   <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                     <SortableContext items={banners.map((banner) => banner.id)} strategy={verticalListSortingStrategy}>
+                     <SortableContext
+                        items={displayBanners.map((banner) => banner.id)}
+                        strategy={verticalListSortingStrategy}
+                     >
                         <div className="space-y-4">
-                           {banners.map((banner) => (
+                           {displayBanners.map((banner) => (
                               <Fragment key={banner.id}>
                                  <SortableBannerItem
                                     banner={banner}
@@ -565,6 +605,27 @@ export default function ManageBannerPage() {
                </>
             )}
          </div>
+
+         <Dialog open={!!bannerPendingDelete} onOpenChange={(open) => !open && setBannerPendingDelete(null)}>
+            <DialogContent className="sm:max-w-md">
+               <DialogHeader>
+                  <DialogTitle>배너를 삭제할까요?</DialogTitle>
+                  <DialogDescription>
+                     {bannerPendingDelete
+                        ? `'${bannerPendingDelete.label}' 배너를 삭제하면 되돌릴 수 없습니다.`
+                        : '선택한 배너를 삭제하면 되돌릴 수 없습니다.'}
+                  </DialogDescription>
+               </DialogHeader>
+               <DialogFooter>
+                  <Button variant="outline" onClick={() => setBannerPendingDelete(null)} disabled={isDeleting}>
+                     취소
+                  </Button>
+                  <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+                     삭제
+                  </Button>
+               </DialogFooter>
+            </DialogContent>
+         </Dialog>
       </div>
    );
 }
