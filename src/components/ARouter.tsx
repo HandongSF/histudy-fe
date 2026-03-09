@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { paths } from '@/const/paths';
 import { ErrorElement } from './ErrorElement';
+import PrivateRoute from './PrivateRoute';
 import RootLayout from './RootLayout';
 
 export const router = createBrowserRouter([
@@ -111,6 +112,15 @@ export const router = createBrowserRouter([
             lazy: async () => ({
                Component: (await import('@/pages/Admin/ManageSemester/Page')).default,
             }),
+         },
+         {
+            path: paths.admin.manageBanner,
+            lazy: async () => {
+               const ManageBannerPage = (await import('@/pages/Admin/ManageBanner/Page')).default;
+               return {
+                  Component: () => <PrivateRoute component={<ManageBannerPage />} />,
+               };
+            },
          },
 
          // 테스트를 위한 공간

@@ -1,21 +1,33 @@
+import { getPublicBanners } from '@/apis/banner';
 import { getAllTeamsForRank } from '@/apis/rank';
 
+import { NoData } from '@/components/NoData';
 import TeamInfoModal from '@/components/TeamInfoModal';
+import { WaveLoading } from '@/components/WaveLoading';
+import { PublicBanner } from '@/interface/banner';
 import { Team } from '@/interface/teams';
 import GroupGridView from '@/pages/Rank/components/GroupGridView';
 import { Trophy } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import StatsDashboard from './components/activity-dashboard';
-import { WaveLoading } from '@/components/WaveLoading';
-import { NoData } from '@/components/NoData';
 import SignUpDialog from '@/components/SignUpDialog';
 import { maskName } from '@/utils/masking';
-import EmblaCarousel, { CAROUSEL_SLIDES } from './components/EmblaCarousel';
+import { getBannerAltText, getSafeExternalUrl } from '@/utils/banner';
+import EmblaCarousel from './components/EmblaCarousel';
 
 export default function HomePage() {
    const { data, isLoading } = useQuery(['AllTeamRanks'], getAllTeamsForRank, {
       cacheTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: false,
+   });
+   const {
+      data: banners,
+      isLoading: isBannerLoading,
+      isError: isBannerError,
+      refetch: refetchBanners,
+   } = useQuery<PublicBanner[]>(['publicBanners'], getPublicBanners, {
+      staleTime: 10 * 60 * 1000,
       refetchOnWindowFocus: false,
    });
    const [modalInfo, setModalInfo] = useState<Team | null>(null);
@@ -41,27 +53,59 @@ export default function HomePage() {
                   <div className="absolute top-10 left-10 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
                   <div className="absolute bottom-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
 
-                  <EmblaCarousel className="h-full w-full">
-                     {CAROUSEL_SLIDES.map((slide, index) => (
-                        <a
-                           key={index}
-                           href={slide.linkUrl}
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           className="block h-full w-full"
-                        >
-                           <div
-                              className="relative z-10 h-full w-full"
-                              style={{
-                                 backgroundImage: `url("${slide.imageUrl}")`,
-                                 backgroundSize: 'cover',
-                                 backgroundPosition: 'center',
-                              }}
-                              aria-label={slide.alt}
-                           ></div>
-                        </a>
-                     ))}
-                  </EmblaCarousel>
+                  {isBannerLoading ? (
+                     <WaveLoading className="relative z-10" height="100%" />
+                  ) : isBannerError && !banners ? (
+                     <NoData
+                        title="배너를 불러오지 못했습니다"
+                        description="잠시 후 다시 시도해주세요."
+                        actionText="다시 시도"
+                        onAction={() => {
+                           void refetchBanners();
+                        }}
+                        className="relative z-10 h-full w-full border-0 bg-transparent shadow-none"
+                     />
+                  ) : banners && banners.length > 0 ? (
+                     <EmblaCarousel className="h-full w-full">
+                        {banners.map((banner) => {
+                           const safeRedirectUrl = getSafeExternalUrl(banner.redirectUrl);
+                           const image = (
+                              <img
+                                 src={banner.imageUrl}
+                                 alt={getBannerAltText(banner)}
+                                 className="relative z-10 h-full w-full object-cover"
+                                 draggable={false}
+                              />
+                           );
+
+                           if (!safeRedirectUrl) {
+                              return (
+                                 <div key={banner.id} className="block h-full w-full">
+                                    {image}
+                                 </div>
+                              );
+                           }
+
+                           return (
+                              <a
+                                 key={banner.id}
+                                 href={safeRedirectUrl}
+                                 target="_blank"
+                                 rel="noopener noreferrer"
+                                 className="block h-full w-full"
+                              >
+                                 {image}
+                              </a>
+                           );
+                        })}
+                     </EmblaCarousel>
+                  ) : (
+                     <NoData
+                        title="표시할 배너가 없습니다"
+                        description="현재 노출 중인 홈 배너가 없습니다."
+                        className="relative z-10 h-full w-full border-0 bg-transparent shadow-none"
+                     />
+                  )}
                </div>
 
                <section className="container mx-auto flex flex-col gap-8">

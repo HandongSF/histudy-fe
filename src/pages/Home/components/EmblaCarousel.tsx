@@ -9,34 +9,11 @@ type PropType = {
    className?: string;
 };
 
-export const CAROUSEL_SLIDES = [
-   {
-      imageUrl: '/img/LIKE_LION_Banner.jpg',
-      linkUrl: 'https://worried-machine-6fa.notion.site/2025-28bccad2592d80b7b28dcb432a138e29',
-      alt: '멋쟁이사자처럼',
-   },
-   {
-      imageUrl: '/img/SLE_Banner.png',
-      linkUrl: 'https://sle-recruitng.vercel.app/',
-      alt: '슬기짜기',
-   },
-   {
-      imageUrl: '/img/CRA_Banner.png',
-      linkUrl: 'https://cra206.org/',
-      alt: 'CRA',
-   },
-   {
-      imageUrl: '/img/HISTUDY_Banner.png',
-      linkUrl: 'https://docs.google.com/forms/d/1xnEGzFTi1AZ9xMefcUGlxSxvECbePaPAGjFn0QQSqag',
-      alt: '배너 폼',
-   },
-];
-
 const CAROUSEL_OPTIONS: EmblaOptionsType = { loop: true };
 
 export default function EmblaCarousel(props: PropType) {
-   const { children, className } = props;
-   const [emblaRef, emblaApi] = useEmblaCarousel(CAROUSEL_OPTIONS, [Autoplay({ stopOnInteraction: false })]);
+   const { children, className, options } = props;
+   const [emblaRef] = useEmblaCarousel(options ?? CAROUSEL_OPTIONS, [Autoplay({ stopOnInteraction: false })]);
 
    return (
       <section className={`embla ${className || ''}`}>

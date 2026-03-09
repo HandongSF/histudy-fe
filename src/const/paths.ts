@@ -30,6 +30,7 @@ export const paths = {
       manageReport: `${ROOTS.admin}/manage-report`,
       manageStudent: `${ROOTS.admin}/manage-student`,
       manageSemester: `${ROOTS.admin}/manage-semester`,
+      manageBanner: `${ROOTS.admin}/manage-banner`,
    },
    ranks: {
       root: `${ROOTS.ranks}`,
