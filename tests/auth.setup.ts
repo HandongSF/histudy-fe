@@ -2,7 +2,7 @@ import { test as setup, expect } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import './loadEnv';
+import { userLogin } from '@/apis/users';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,16 +15,10 @@ if (!fs.existsSync(authDir)) {
 
 const adminAuthFile = path.join(authDir, 'admin.json');
 
-const loginAs = async (sub: string) => {
-   const { userLogin } = await import('@/apis/users');
-
-   return userLogin(sub);
-};
-
 setup('ADMIN 인증 토큰 로컬 스토리지 저장', async ({ page }) => {
    await page.goto('/');
 
-   const loginResult = await loginAs('test3');
+   const loginResult = await userLogin('test3');
    expect(loginResult.isRegistered).toBe(true);
 
    await page.evaluate((tokens) => {
@@ -41,7 +35,7 @@ setup('MEMBER 인증 토큰 로컬 스토리지 저장', async ({ page }) => {
    // 먼저 페이지를 로드
    await page.goto('/');
 
-   const loginResult = await loginAs('test2');
+   const loginResult = await userLogin('test2');
    expect(loginResult.isRegistered).toBe(true);
 
    await page.evaluate((tokens) => {
