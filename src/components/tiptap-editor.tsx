@@ -46,6 +46,7 @@ import { on } from 'events';
 interface TiptapEditorProps {
    content: string;
    onUpdate: (html: string) => void;
+   describedBy?: string;
 }
 
 const MenuBar = ({ editor }: { editor: Editor }) => {
@@ -265,8 +266,15 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
    );
 };
 
-export function TiptapEditor({ content, onUpdate }: TiptapEditorProps) {
+export function TiptapEditor({ content, onUpdate, describedBy }: TiptapEditorProps) {
    if (content === undefined) return null;
+   const editorAttributes = {
+      class: 'prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0',
+      style: '--ring: transparent; --border: transparent;',
+      'aria-label': '보고서 내용',
+      ...(describedBy ? { 'aria-describedby': describedBy } : {}),
+   };
+
    const editor = useEditor({
       extensions: [
          Document,
@@ -294,10 +302,7 @@ export function TiptapEditor({ content, onUpdate }: TiptapEditorProps) {
          onUpdate(editor.getHTML());
       },
       editorProps: {
-         attributes: {
-            class: 'prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0',
-            style: '--ring: transparent; --border: transparent;',
-         },
+         attributes: editorAttributes,
       },
    });
 

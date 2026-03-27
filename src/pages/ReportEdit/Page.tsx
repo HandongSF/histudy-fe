@@ -18,6 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { paths } from '@/const/paths';
 import { NewReport } from '@/interface/report';
 import { StudyCertificationDialog } from '@/pages/ReportAdd/components/StudyCertificationDialog';
+import { REPORT_CONTENT_MAX_LENGTH, REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES, getReportContentCharacterCount } from '@/utils/reportForm';
 import Heic2Jpg from '@/utils/Heic2Jpg';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect, useRef } from 'react';
@@ -30,7 +31,23 @@ import { TiptapEditor } from '@/components/tiptap-editor';
 // Zod 스키마 정의 (유효성 검사)
 const reportFormSchema = z.object({
    title: z.string().min(1, '제목을 입력해주세요.'),
-   content: z.string().min(1, '보고서 내용을 입력해주세요.'),
+   content: z.string().superRefine((value, ctx) => {
+      const characterCount = getReportContentCharacterCount(value);
+
+      if (characterCount === 0) {
+         ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: '보고서 내용을 입력해주세요.',
+         });
+      }
+
+      if (characterCount > REPORT_CONTENT_MAX_LENGTH) {
+         ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `보고서 내용은 ${REPORT_CONTENT_MAX_LENGTH}자 이하로 작성해주세요.`,
+         });
+      }
+   }),
    participants: z.array(z.number()).min(1, '스터디 참여 멤버를 선택해주세요.'),
    totalMinutes: z.string().min(1, '스터디 시간을 입력해주세요.'),
    courses: z.array(z.number()).min(1, '스터디 과목을 선택해주세요.'),
@@ -58,7 +75,7 @@ export default function ReportEditPage() {
       resolver: zodResolver(reportFormSchema),
       defaultValues: {
          title: '',
-         content: undefined,
+         content: '',
          participants: [],
          totalMinutes: '',
          images: [],
@@ -83,7 +100,9 @@ export default function ReportEditPage() {
       }
    }, [report, form]);
 
-   form.watch(['previewImages', 'blobImages']);
+   const [previewImages, blobImages, content] = form.watch(['previewImages', 'blobImages', 'content']);
+   const contentCharacterCount = getReportContentCharacterCount(content || '');
+   const isContentOverLimit = contentCharacterCount > REPORT_CONTENT_MAX_LENGTH;
 
    const onValid = async (formData: ReportFormState) => {
       const imageServerUploadPromises = formData.blobImages.map((file, i) => {
@@ -157,14 +176,26 @@ export default function ReportEditPage() {
 
    const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
-      if (form.getValues('previewImages').length >= 3) {
+      if (previewImages.length >= 3) {
          toast.warning('최대 3개의 이미지만 업로드 가능합니다.');
+         e.target.value = '';
          return;
       }
+
       const file = e.target.files;
-      if (!file) return null;
+      if (!file) {
+         e.target.value = '';
+         return;
+      }
 
       const targetFile = file[0];
+
+      if (targetFile.size > REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES) {
+         toast.error('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.');
+         e.target.value = '';
+         return;
+      }
+
       let targetBlob;
 
       if (targetFile.type === 'image/heic' || targetFile.type === 'image/heif') {
@@ -177,7 +208,9 @@ export default function ReportEditPage() {
       const reader = new FileReader();
 
       reader.onloadend = () => {
-         form.setValue('previewImages', [...form.getValues('previewImages'), reader.result as string]);
+         form.setValue('previewImages', [...form.getValues('previewImages'), reader.result as string], {
+            shouldValidate: true,
+         });
       };
 
       reader.readAsDataURL(targetBlob);
@@ -185,7 +218,11 @@ export default function ReportEditPage() {
       form.setValue('blobImages', [
          ...form.getValues('blobImages'),
          blobToFile(targetBlob, `histudy_${new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)}.webp`),
-      ]);
+      ], {
+         shouldValidate: true,
+      });
+
+      e.target.value = '';
    };
 
    if (isLoading || coursesLoading || participantsLoading) {
@@ -243,9 +280,13 @@ export default function ReportEditPage() {
                                     onChange={onImageChange}
                                  />
                               </div>
+                              <div className="flex flex-wrap gap-2 text-sm">
+                                 <span className="text-muted-foreground">최대 3개 업로드 가능</span>
+                                 <span className="text-destructive">파일당 5MB 이하만 업로드 가능</span>
+                              </div>
 
                               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                 {form.getValues('previewImages').map((url, index) => {
+                                 {previewImages.map((url, index) => {
                                     const isExistingImage = report?.images.some((img) => img.url === url);
 
                                     return (
@@ -470,6 +511,22 @@ export default function ReportEditPage() {
                         />
                      </div>
                      <div className="space-y-2">
+                        <div
+                           id="report-content-counter"
+                           className="flex items-center justify-between gap-3 text-sm"
+                           aria-live="polite"
+                        >
+                           <span className="text-muted-foreground">공백 포함 글자 수</span>
+                           <span
+                              className={
+                                 isContentOverLimit
+                                    ? 'font-medium text-destructive'
+                                    : 'text-muted-foreground'
+                              }
+                           >
+                              {contentCharacterCount} / {REPORT_CONTENT_MAX_LENGTH}자
+                           </span>
+                        </div>
                         <FormField
                            control={form.control}
                            name="content"
@@ -477,7 +534,14 @@ export default function ReportEditPage() {
                               <FormItem>
                                  <FormLabel>내용</FormLabel>
                                  <FormControl>
-                                    <TiptapEditor content={field.value} onUpdate={(html) => field.onChange(html)} />
+                                    <TiptapEditor
+                                       content={field.value}
+                                       describedBy="report-content-counter"
+                                       onUpdate={(html) => {
+                                          field.onChange(html);
+                                          void form.trigger('content');
+                                       }}
+                                    />
                                  </FormControl>
                                  <FormMessage />
                               </FormItem>
@@ -492,7 +556,7 @@ export default function ReportEditPage() {
                   <Button type="button" variant="outline" onClick={() => navigate(paths.reports.root)}>
                      취소
                   </Button>
-                  <Button type="submit" disabled={form.formState.isSubmitting}>
+                  <Button type="submit" disabled={form.formState.isSubmitting || isContentOverLimit}>
                      제출
                   </Button>
                </div>

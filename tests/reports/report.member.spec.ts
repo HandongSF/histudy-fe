@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const imageDirPath = path.join(__dirname, '../../public/img');
+const REPORT_CONTENT_MAX_LENGTH = 1000;
 
 export function formatMinutesToHoursAndMinutes(totalMinutes: string | number): string {
    const minutes = typeof totalMinutes === 'string' ? parseInt(totalMinutes, 10) : totalMinutes;
@@ -41,6 +42,9 @@ test.describe('스터디원 리포트 테스트', () => {
 
       await test.step('리포트 작성', async () => {
          await page.goto(paths.reports.add);
+
+         await expect(page.getByText(`0 / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
+         await expect(page.getByText('파일당 5MB 이하만 업로드 가능')).toHaveClass(/text-destructive/);
 
          await page.getByRole('button', { name: '인증 코드 생성' }).click();
          await page.getByRole('button', { name: 'Close' }).click();
@@ -83,6 +87,7 @@ test.describe('스터디원 리포트 테스트', () => {
 
          await page.locator('.tiptap').click();
          await page.locator('.tiptap').fill(testContent);
+         await expect(page.getByText(`${testContent.length} / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
 
          await page.getByRole('button', { name: '제출' }).click();
 
@@ -123,7 +128,7 @@ test.describe('스터디원 리포트 테스트', () => {
       });
    });
 
-   test('7MB 이미지를 포함한 리포트 작성 후 삭제', async ({ page }) => {
+   test('7MB 이미지 업로드는 차단되고 이후 정상 이미지로 리포트 작성 후 삭제', async ({ page }) => {
       const testTitle = '테스트 보고서 제목2';
       const testContent = '테스트 보고서 내용2';
       const testTotalMinutes = '61';
@@ -142,6 +147,15 @@ test.describe('스터디원 리포트 테스트', () => {
          ]);
 
          await fileChooser.setFiles(path.join(imageDirPath, 'test_7MB.jpg'));
+         await expect(page.getByText('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.')).toBeVisible();
+         await expect(page.locator('img[alt^="새 이미지"]')).toHaveCount(0);
+
+         const [validFileChooser] = await Promise.all([
+            page.waitForEvent('filechooser'),
+            page.getByRole('button', { name: '인증샷 업로드' }).click(),
+         ]);
+
+         await validFileChooser.setFiles(path.join(imageDirPath, 'test_png.png'));
 
          await page.waitForTimeout(5000);
 
@@ -210,5 +224,26 @@ test.describe('스터디원 리포트 테스트', () => {
          // 삭제 확인
          await expect(page.locator('tbody').getByText(testTitle, { exact: true })).toHaveCount(0);
       });
+   });
+
+   test('보고서 내용은 1000자까지 허용하고 1001자부터 제출이 비활성화된다', async ({ page }) => {
+      const withinLimitContent = 'a'.repeat(REPORT_CONTENT_MAX_LENGTH);
+      const overLimitContent = 'a'.repeat(REPORT_CONTENT_MAX_LENGTH + 1);
+
+      await page.goto(paths.reports.add);
+
+      await page.locator('.tiptap').click();
+      await page.locator('.tiptap').fill(withinLimitContent);
+
+      await expect(page.getByText(`${REPORT_CONTENT_MAX_LENGTH} / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
+      await expect(page.getByRole('button', { name: '제출' })).toBeEnabled();
+
+      await page.locator('.tiptap').fill(overLimitContent);
+
+      await expect(page.getByText(`${REPORT_CONTENT_MAX_LENGTH + 1} / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
+      await expect(page.getByRole('button', { name: '제출' })).toBeDisabled();
+      await expect(
+         page.getByText(`보고서 내용은 ${REPORT_CONTENT_MAX_LENGTH}자 이하로 작성해주세요.`),
+      ).toBeVisible();
    });
 });
