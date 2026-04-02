@@ -32,7 +32,7 @@ export default function ReportListUserPage() {
 
    const reports = useMemo(() => {
       if (!data) return [];
-      return data.reports;
+      return Array.isArray(data.reports) ? data.reports : [];
    }, [data]);
 
    if (isLoading) {

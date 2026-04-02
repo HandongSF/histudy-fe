@@ -1,4 +1,5 @@
 import { EditorContent, useEditor, Editor } from '@tiptap/react';
+import { useEffect } from 'react';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
@@ -41,7 +42,6 @@ import {
    AlignRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { on } from 'events';
 
 interface TiptapEditorProps {
    content: string;
@@ -305,6 +305,17 @@ export function TiptapEditor({ content, onUpdate, describedBy }: TiptapEditorPro
          attributes: editorAttributes,
       },
    });
+
+   useEffect(() => {
+      if (!editor) {
+         return;
+      }
+
+      const currentContent = editor.getHTML();
+      if (currentContent !== content) {
+         editor.commands.setContent(content, { emitUpdate: false });
+      }
+   }, [content, editor]);
 
    return (
       <div className="tiptap-editor border rounded-md">

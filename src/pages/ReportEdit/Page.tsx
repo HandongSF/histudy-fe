@@ -21,7 +21,7 @@ import { StudyCertificationDialog } from '@/pages/ReportAdd/components/StudyCert
 import { REPORT_CONTENT_MAX_LENGTH, REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES, getReportContentCharacterCount } from '@/utils/reportForm';
 import Heic2Jpg from '@/utils/Heic2Jpg';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueries, useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -64,6 +64,7 @@ type ReportFormState = z.infer<typeof reportFormSchema>;
 export default function ReportEditPage() {
    const navigate = useNavigate();
    const queryClient = useQueryClient();
+   const [imageUploadError, setImageUploadError] = useState('');
 
    const { id } = useParams() as { id: string };
    const { data: report, isLoading } = useQuery({
@@ -158,6 +159,9 @@ export default function ReportEditPage() {
          },
       ]);
 
+   const courseOptions = Array.isArray(coursesRes?.courses) ? coursesRes.courses : [];
+   const participantOptions = Array.isArray(participants) ? participants : [];
+
    const inputRef = useRef<HTMLInputElement>(null);
    const onUploadImageButtonClick = useCallback(() => {
       if (!inputRef.current) {
@@ -177,6 +181,7 @@ export default function ReportEditPage() {
    const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
       if (previewImages.length >= 3) {
+         setImageUploadError('');
          toast.warning('최대 3개의 이미지만 업로드 가능합니다.');
          e.target.value = '';
          return;
@@ -191,10 +196,13 @@ export default function ReportEditPage() {
       const targetFile = file[0];
 
       if (targetFile.size > REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES) {
+         setImageUploadError('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.');
          toast.error('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.');
          e.target.value = '';
          return;
       }
+
+      setImageUploadError('');
 
       let targetBlob;
 
@@ -284,6 +292,11 @@ export default function ReportEditPage() {
                                  <span className="text-muted-foreground">최대 3개 업로드 가능</span>
                                  <span className="text-destructive">파일당 5MB 이하만 업로드 가능</span>
                               </div>
+                              {imageUploadError && (
+                                 <p className="text-sm text-destructive" aria-live="polite">
+                                    {imageUploadError}
+                                 </p>
+                              )}
 
                               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                                  {previewImages.map((url, index) => {
@@ -362,7 +375,7 @@ export default function ReportEditPage() {
                         name="courses"
                         render={() => (
                            <FormItem className="space-y-2">
-                              {coursesRes?.courses.map((course) => (
+                              {courseOptions.map((course) => (
                                  <FormField
                                     key={course.id}
                                     control={form.control}
@@ -415,7 +428,7 @@ export default function ReportEditPage() {
                         name="participants"
                         render={() => (
                            <FormItem>
-                              {participants?.map((participant) => (
+                              {participantOptions.map((participant) => (
                                  <FormField
                                     key={participant.id}
                                     control={form.control}

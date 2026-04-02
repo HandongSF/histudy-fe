@@ -33,5 +33,7 @@ node_modules/
 /playwright/.auth/
 
 playwright/.auth
+.playwright-cli/
+output/
 
 tests/auth/
