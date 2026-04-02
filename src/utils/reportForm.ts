@@ -38,6 +38,10 @@ const BLOCK_TAG_NAMES = new Set([
 let htmlTemplateElement: HTMLTemplateElement | null = null;
 
 function getHtmlTemplateElement() {
+   if (typeof document === 'undefined' || typeof document.createElement !== 'function') {
+      return null;
+   }
+
    if (!htmlTemplateElement) {
       htmlTemplateElement = document.createElement('template');
    }
@@ -79,6 +83,10 @@ export function getReportContentCharacterCount(html: string): number {
    }
 
    const template = getHtmlTemplateElement();
+   if (!template) {
+      return html.replace(/<[^>]*>/g, '').length;
+   }
+
    template.innerHTML = html;
 
    const text = Array.from(template.content.childNodes).map(getNodeText).join('');

@@ -1,4 +1,5 @@
 import { paths } from '@/const/paths';
+import { REPORT_CONTENT_MAX_LENGTH } from '@/utils/reportForm';
 import test, { expect } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -6,7 +7,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const imageDirPath = path.join(__dirname, '../../public/img');
-const REPORT_CONTENT_MAX_LENGTH = 1000;
 
 export function formatMinutesToHoursAndMinutes(totalMinutes: string | number): string {
    const minutes = typeof totalMinutes === 'string' ? parseInt(totalMinutes, 10) : totalMinutes;

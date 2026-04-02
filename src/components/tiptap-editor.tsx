@@ -312,7 +312,10 @@ export function TiptapEditor({ content, onUpdate, describedBy }: TiptapEditorPro
       }
 
       const currentContent = editor.getHTML();
-      if (currentContent !== content) {
+      const normalizedCurrentContent = !currentContent || currentContent === '<p></p>' ? '' : currentContent;
+      const normalizedNextContent = content || '';
+
+      if (normalizedCurrentContent !== normalizedNextContent) {
          editor.commands.setContent(content, { emitUpdate: false });
       }
    }, [content, editor]);
