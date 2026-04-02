@@ -35,6 +35,16 @@ const BLOCK_TAG_NAMES = new Set([
    'UL',
 ]);
 
+let htmlTemplateElement: HTMLTemplateElement | null = null;
+
+function getHtmlTemplateElement() {
+   if (!htmlTemplateElement) {
+      htmlTemplateElement = document.createElement('template');
+   }
+
+   return htmlTemplateElement;
+}
+
 function getNodeText(node: ChildNode): string {
    if (node.nodeType === Node.TEXT_NODE) {
       return node.textContent ?? '';
@@ -68,7 +78,7 @@ export function getReportContentCharacterCount(html: string): number {
       return 0;
    }
 
-   const template = document.createElement('template');
+   const template = getHtmlTemplateElement();
    template.innerHTML = html;
 
    const text = Array.from(template.content.childNodes).map(getNodeText).join('');

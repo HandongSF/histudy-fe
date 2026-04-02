@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { Control, useForm, useWatch } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,6 +61,83 @@ const reportFormSchema = z.object({
 
 type ReportFormState = z.infer<typeof reportFormSchema>;
 
+function ReportContentField({ control, trigger }: { control: Control<ReportFormState>; trigger: () => Promise<boolean> }) {
+   const content = useWatch({
+      control,
+      name: 'content',
+   });
+   const contentCharacterCount = getReportContentCharacterCount(content || '');
+   const isContentOverLimit = contentCharacterCount > REPORT_CONTENT_MAX_LENGTH;
+
+   return (
+      <div className="space-y-2">
+         <div
+            id="report-content-counter"
+            className="flex items-center justify-between gap-3 text-sm"
+            aria-live="polite"
+         >
+            <span className="text-muted-foreground">공백 포함 글자 수</span>
+            <span
+               className={
+                  isContentOverLimit
+                     ? 'font-medium text-destructive'
+                     : 'text-muted-foreground'
+               }
+            >
+               {contentCharacterCount} / {REPORT_CONTENT_MAX_LENGTH}자
+            </span>
+         </div>
+         <FormField
+            control={control}
+            name="content"
+            render={({ field }) => (
+               <FormItem>
+                  <FormLabel>내용</FormLabel>
+                  <FormControl>
+                     <TiptapEditor
+                        content={field.value}
+                        describedBy="report-content-counter"
+                        onUpdate={(html) => {
+                           field.onChange(html);
+                           void trigger();
+                        }}
+                     />
+                  </FormControl>
+                  <FormMessage />
+               </FormItem>
+            )}
+         />
+      </div>
+   );
+}
+
+function ReportSubmitButtons({
+   control,
+   isSubmitting,
+   onCancel,
+}: {
+   control: Control<ReportFormState>;
+   isSubmitting: boolean;
+   onCancel: () => void;
+}) {
+   const content = useWatch({
+      control,
+      name: 'content',
+   });
+   const isContentOverLimit = getReportContentCharacterCount(content || '') > REPORT_CONTENT_MAX_LENGTH;
+
+   return (
+      <div className="flex justify-end gap-2">
+         <Button type="button" variant="outline" onClick={onCancel}>
+            취소
+         </Button>
+         <Button type="submit" disabled={isSubmitting || isContentOverLimit}>
+            제출
+         </Button>
+      </div>
+   );
+}
+
 export default function ReportEditPage() {
    const navigate = useNavigate();
    const queryClient = useQueryClient();
@@ -101,9 +178,7 @@ export default function ReportEditPage() {
       }
    }, [report, form]);
 
-   const [previewImages, blobImages, content] = form.watch(['previewImages', 'blobImages', 'content']);
-   const contentCharacterCount = getReportContentCharacterCount(content || '');
-   const isContentOverLimit = contentCharacterCount > REPORT_CONTENT_MAX_LENGTH;
+   const [previewImages, blobImages] = form.watch(['previewImages', 'blobImages']);
 
    const onValid = async (formData: ReportFormState) => {
       const imageServerUploadPromises = formData.blobImages.map((file, i) => {
@@ -523,56 +598,16 @@ export default function ReportEditPage() {
                            )}
                         />
                      </div>
-                     <div className="space-y-2">
-                        <div
-                           id="report-content-counter"
-                           className="flex items-center justify-between gap-3 text-sm"
-                           aria-live="polite"
-                        >
-                           <span className="text-muted-foreground">공백 포함 글자 수</span>
-                           <span
-                              className={
-                                 isContentOverLimit
-                                    ? 'font-medium text-destructive'
-                                    : 'text-muted-foreground'
-                              }
-                           >
-                              {contentCharacterCount} / {REPORT_CONTENT_MAX_LENGTH}자
-                           </span>
-                        </div>
-                        <FormField
-                           control={form.control}
-                           name="content"
-                           render={({ field }) => (
-                              <FormItem>
-                                 <FormLabel>내용</FormLabel>
-                                 <FormControl>
-                                    <TiptapEditor
-                                       content={field.value}
-                                       describedBy="report-content-counter"
-                                       onUpdate={(html) => {
-                                          field.onChange(html);
-                                          void form.trigger('content');
-                                       }}
-                                    />
-                                 </FormControl>
-                                 <FormMessage />
-                              </FormItem>
-                           )}
-                        />
-                     </div>
+                     <ReportContentField control={form.control} trigger={() => form.trigger('content')} />
                   </CardContent>
                </Card>
 
                {/* 제출/취소 버튼 */}
-               <div className="flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={() => navigate(paths.reports.root)}>
-                     취소
-                  </Button>
-                  <Button type="submit" disabled={form.formState.isSubmitting || isContentOverLimit}>
-                     제출
-                  </Button>
-               </div>
+               <ReportSubmitButtons
+                  control={form.control}
+                  isSubmitting={form.formState.isSubmitting}
+                  onCancel={() => navigate(paths.reports.root)}
+               />
             </form>
          </Form>
       </div>
