@@ -1,5 +1,5 @@
 import { EditorContent, useEditor, Editor } from '@tiptap/react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
@@ -268,6 +268,7 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
 
 export function TiptapEditor({ content, onUpdate, describedBy }: TiptapEditorProps) {
    if (content === undefined) return null;
+   const pendingContentRef = useRef<string | null>(null);
    const editorAttributes = {
       class: 'prose dark:prose-invert max-h-[400px] overflow-y-auto px-3 py-2 min-h-[200px] !outline-none !ring-0 !ring-offset-0',
       style: '--ring: transparent; --border: transparent;',
@@ -306,19 +307,53 @@ export function TiptapEditor({ content, onUpdate, describedBy }: TiptapEditorPro
       },
    });
 
-   useEffect(() => {
+   const syncContent = (nextContent: string) => {
       if (!editor) {
          return;
       }
 
       const currentContent = editor.getHTML();
       const normalizedCurrentContent = !currentContent || currentContent === '<p></p>' ? '' : currentContent;
-      const normalizedNextContent = content || '';
+      const normalizedNextContent = nextContent || '';
 
       if (normalizedCurrentContent !== normalizedNextContent) {
-         editor.commands.setContent(content, { emitUpdate: false });
+         editor.commands.setContent(nextContent, { emitUpdate: false });
       }
+   };
+
+   useEffect(() => {
+      if (!editor) {
+         return;
+      }
+
+      if (editor.isFocused) {
+         pendingContentRef.current = content;
+         return;
+      }
+
+      syncContent(content);
    }, [content, editor]);
+
+   useEffect(() => {
+      if (!editor) {
+         return;
+      }
+
+      const handleBlur = () => {
+         if (pendingContentRef.current === null) {
+            return;
+         }
+
+         syncContent(pendingContentRef.current);
+         pendingContentRef.current = null;
+      };
+
+      editor.on('blur', handleBlur);
+
+      return () => {
+         editor.off('blur', handleBlur);
+      };
+   }, [editor]);
 
    return (
       <div className="tiptap-editor border rounded-md">
