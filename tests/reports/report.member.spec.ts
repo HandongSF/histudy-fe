@@ -31,10 +31,19 @@ export function formatMinutesToHoursAndMinutes(totalMinutes: string | number): s
 
 test.use({ storageState: 'tests/auth/member.json' });
 
+async function uploadReportImage(page: import('@playwright/test').Page, fileName: string, expectedCount: number) {
+   await page.locator('#image-upload').setInputFiles(path.join(imageDirPath, fileName));
+   await expect(page.locator('img[alt^="새 이미지"]')).toHaveCount(expectedCount, { timeout: 10000 });
+}
+
+function reportTitleCell(page: import('@playwright/test').Page, title: string) {
+   return page.getByRole('cell', { name: title, exact: true }).first();
+}
+
 test.describe('스터디원 리포트 테스트', () => {
    // 업로드한 이미지와 실제 올라간 이미지를 구분 못하는 이슈 존재
    test('jpeg, png, heic 이미지 3개를 포함한 리포트 작성 후 삭제', async ({ page }) => {
-      const testTitle = '테스트 보고서 제목1';
+      const testTitle = `테스트 보고서 제목1-${Date.now()}`;
       const testContent = '테스트 보고서 내용1';
       const testTotalMinutes = '60';
       let testCourse = '';
@@ -49,16 +58,9 @@ test.describe('스터디원 리포트 테스트', () => {
          await page.getByRole('button', { name: '인증 코드 생성' }).click();
          await page.getByRole('button', { name: 'Close' }).click();
 
-         const [fileChooser] = await Promise.all([
-            page.waitForEvent('filechooser'),
-            page.getByRole('button', { name: '인증샷 업로드' }).click(),
-         ]);
-
-         await fileChooser.setFiles(path.join(imageDirPath, 'IMG_4055.heic'));
-         await fileChooser.setFiles(path.join(imageDirPath, 'test_png.png'));
-         await fileChooser.setFiles(path.join(imageDirPath, 'test_jpg.jpeg'));
-
-         await page.waitForTimeout(5000);
+         await uploadReportImage(page, 'IMG_4055.heic', 1);
+         await uploadReportImage(page, 'test_png.png', 2);
+         await uploadReportImage(page, 'test_jpg.jpeg', 3);
 
          const studyCard = page.locator('div[data-slot="card"]', {
             hasText: '스터디 과목',
@@ -92,11 +94,11 @@ test.describe('스터디원 리포트 테스트', () => {
          await page.getByRole('button', { name: '제출' }).click();
 
          // 이미지 올라간 것 확인
-         await page.locator('tbody').getByText(testTitle, { exact: true }).first().click();
+         await reportTitleCell(page, testTitle).click();
 
          await expect(page.getByRole('heading', { name: testTitle })).toBeVisible();
 
-         await page.getByText('인증 사진 (3장)').click();
+         await expect(page.getByText('인증 사진 (3장)')).toBeVisible();
          await expect(page.getByText(`${formatMinutesToHoursAndMinutes(testTotalMinutes)}`)).toBeVisible();
          await expect(page.getByText(testContent)).toBeVisible();
          await expect(page.getByText(testFriend)).toBeVisible();
@@ -107,11 +109,11 @@ test.describe('스터디원 리포트 테스트', () => {
          // 이미지 접속
          await page.goto(paths.reports.root);
 
-         await page.locator('tbody').getByText(testTitle, { exact: true }).first().click();
+         await reportTitleCell(page, testTitle).click();
 
          await expect(page.getByRole('heading', { name: testTitle })).toBeVisible();
 
-         await page.getByText('인증 사진 (3장)').click();
+         await expect(page.getByText('인증 사진 (3장)')).toBeVisible();
          await expect(page.getByText(`${formatMinutesToHoursAndMinutes(testTotalMinutes)}`)).toBeVisible();
          await expect(page.getByText(testContent)).toBeVisible();
 
@@ -124,12 +126,12 @@ test.describe('스터디원 리포트 테스트', () => {
          await page.getByRole('button', { name: '삭제' }).click();
 
          // 삭제 확인
-         await expect(page.locator('tbody').getByText(testTitle, { exact: true })).toHaveCount(0);
+         await expect(reportTitleCell(page, testTitle)).toHaveCount(0);
       });
    });
 
    test('7MB 이미지 업로드는 차단되고 이후 정상 이미지로 리포트 작성 후 삭제', async ({ page }) => {
-      const testTitle = '테스트 보고서 제목2';
+      const testTitle = `테스트 보고서 제목2-${Date.now()}`;
       const testContent = '테스트 보고서 내용2';
       const testTotalMinutes = '61';
       let testCourse = '';
@@ -141,23 +143,13 @@ test.describe('스터디원 리포트 테스트', () => {
          await page.getByRole('button', { name: '인증 코드 생성' }).click();
          await page.getByRole('button', { name: 'Close' }).click();
 
-         const [fileChooser] = await Promise.all([
-            page.waitForEvent('filechooser'),
-            page.getByRole('button', { name: '인증샷 업로드' }).click(),
-         ]);
-
-         await fileChooser.setFiles(path.join(imageDirPath, 'test_7MB.jpg'));
-         await expect(page.getByText('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.')).toBeVisible();
+         await page.locator('#image-upload').setInputFiles(path.join(imageDirPath, 'test_7MB.jpg'));
+         await expect(
+            page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
+         ).toBeVisible();
          await expect(page.locator('img[alt^="새 이미지"]')).toHaveCount(0);
 
-         const [validFileChooser] = await Promise.all([
-            page.waitForEvent('filechooser'),
-            page.getByRole('button', { name: '인증샷 업로드' }).click(),
-         ]);
-
-         await validFileChooser.setFiles(path.join(imageDirPath, 'test_png.png'));
-
-         await page.waitForTimeout(5000);
+         await uploadReportImage(page, 'test_png.png', 1);
 
          const studyCard = page.locator('div[data-slot="card"]', {
             hasText: '스터디 과목',
@@ -188,11 +180,11 @@ test.describe('스터디원 리포트 테스트', () => {
          await page.getByRole('button', { name: '제출' }).click();
 
          // 이미지 올라간 것 확인
-         await page.locator('tbody').getByText(testTitle, { exact: true }).first().click();
+         await reportTitleCell(page, testTitle).click();
 
          await expect(page.getByRole('heading', { name: testTitle })).toBeVisible();
 
-         await page.getByText('인증 사진 (1장)').click();
+         await expect(page.getByText('인증 사진 (1장)')).toBeVisible();
          await expect(page.getByText(`${formatMinutesToHoursAndMinutes(testTotalMinutes)}`)).toBeVisible();
          await expect(page.getByText(testContent)).toBeVisible();
          await expect(page.getByText(testFriend)).toBeVisible();
@@ -203,11 +195,11 @@ test.describe('스터디원 리포트 테스트', () => {
          // 이미지 접속
          await page.goto(paths.reports.root);
 
-         await page.locator('tbody').getByText(testTitle, { exact: true }).first().click();
+         await reportTitleCell(page, testTitle).click();
 
          await expect(page.getByRole('heading', { name: testTitle })).toBeVisible();
 
-         await page.getByText('인증 사진 (1장)').click();
+         await expect(page.getByText('인증 사진 (1장)')).toBeVisible();
          await expect(page.getByText(`${formatMinutesToHoursAndMinutes(testTotalMinutes)}`)).toBeVisible();
          await expect(page.getByText(testContent)).toBeVisible();
 
@@ -222,7 +214,7 @@ test.describe('스터디원 리포트 테스트', () => {
          await page.waitForTimeout(1000);
 
          // 삭제 확인
-         await expect(page.locator('tbody').getByText(testTitle, { exact: true })).toHaveCount(0);
+         await expect(reportTitleCell(page, testTitle)).toHaveCount(0);
       });
    });
 
