@@ -210,4 +210,25 @@ test.describe('스터디원 리포트 테스트', () => {
          page.getByText(`보고서 내용은 ${REPORT_CONTENT_MAX_LENGTH}자 이하로 작성해주세요.`),
       ).toBeVisible();
    });
+
+   test('보고서 내용은 1000자까지 허용하고 1001자부터 제출이 비활성화된다', async ({ page }) => {
+      const withinLimitContent = 'a'.repeat(REPORT_CONTENT_MAX_LENGTH);
+      const overLimitContent = 'a'.repeat(REPORT_CONTENT_MAX_LENGTH + 1);
+
+      await page.goto(paths.reports.add);
+
+      await page.locator('.tiptap').click();
+      await page.locator('.tiptap').fill(withinLimitContent);
+
+      await expect(page.getByText(`${REPORT_CONTENT_MAX_LENGTH} / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
+      await expect(page.getByRole('button', { name: '제출' })).toBeEnabled();
+
+      await page.locator('.tiptap').fill(overLimitContent);
+
+      await expect(page.getByText(`${REPORT_CONTENT_MAX_LENGTH + 1} / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
+      await expect(page.getByRole('button', { name: '제출' })).toBeDisabled();
+      await expect(
+         page.getByText(`보고서 내용은 ${REPORT_CONTENT_MAX_LENGTH}자 이하로 작성해주세요.`),
+      ).toBeVisible();
+   });
 });
