@@ -95,6 +95,7 @@ async function expectReportDetail(page: Page, draft: ReportDraft, studyInfo: Sel
    const coursesCard = page.locator('div[data-slot="card"]').filter({ hasText: '스터디 과목 (' }).first();
    const contentCard = reportDetailCard(page, '보고서 내용');
    const imagesCard = page.locator('div[data-slot="card"]').filter({ hasText: `인증 사진 (${imageCount}장)` }).first();
+   const detailImages = imagesCard.locator('img[alt^="인증 사진 "]');
 
    await expect(page.getByRole('heading', { name: draft.title })).toBeVisible();
    await expect(basicInfoCard).toContainText(formatMinutesToHoursAndMinutes(draft.totalMinutes));
@@ -102,6 +103,7 @@ async function expectReportDetail(page: Page, draft: ReportDraft, studyInfo: Sel
    await expect(coursesCard).toContainText(studyInfo.courseName);
    await expect(contentCard).toContainText(draft.content);
    await expect(imagesCard).toContainText(`인증 사진 (${imageCount}장)`);
+   await expect(detailImages).toHaveCount(imageCount);
 }
 
 async function deleteReportAndExpectRemoved(page: Page, title: string) {
@@ -188,27 +190,6 @@ test.describe('스터디원 리포트 테스트', () => {
          await expectReportDetail(page, draft, studyInfo, 1);
          await deleteReportAndExpectRemoved(page, draft.title);
       });
-   });
-
-   test('보고서 내용은 1000자까지 제출 가능하고 1001자부터 제출이 비활성화된다', async ({ page }) => {
-      const withinLimitContent = 'a'.repeat(REPORT_CONTENT_MAX_LENGTH);
-      const overLimitContent = 'a'.repeat(REPORT_CONTENT_MAX_LENGTH + 1);
-
-      await page.goto(paths.reports.add);
-
-      await page.locator('.tiptap').click();
-      await page.locator('.tiptap').fill(withinLimitContent);
-
-      await expect(page.getByText(`${REPORT_CONTENT_MAX_LENGTH} / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
-      await expect(page.getByRole('button', { name: '제출' })).toBeEnabled();
-
-      await page.locator('.tiptap').fill(overLimitContent);
-
-      await expect(page.getByText(`${REPORT_CONTENT_MAX_LENGTH + 1} / ${REPORT_CONTENT_MAX_LENGTH}자`)).toBeVisible();
-      await expect(page.getByRole('button', { name: '제출' })).toBeDisabled();
-      await expect(
-         page.getByText(`보고서 내용은 ${REPORT_CONTENT_MAX_LENGTH}자 이하로 작성해주세요.`),
-      ).toBeVisible();
    });
 
    test('보고서 내용은 1000자까지 허용하고 1001자부터 제출이 비활성화된다', async ({ page }) => {
