@@ -311,6 +311,10 @@ export function TiptapEditor({ content, onUpdate, describedBy }: TiptapEditorPro
          return;
       }
 
+      if (editor.isFocused) {
+         return;
+      }
+
       const currentContent = editor.getHTML();
       const normalizedCurrentContent = !currentContent || currentContent === '<p></p>' ? '' : currentContent;
       const normalizedNextContent = content || '';

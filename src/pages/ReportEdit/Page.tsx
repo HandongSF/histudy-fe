@@ -300,7 +300,7 @@ export default function ReportEditPage() {
 
       form.setValue('blobImages', [
          ...form.getValues('blobImages'),
-         blobToFile(targetBlob, `histudy_${new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)}.webp`),
+         blobToFile(targetBlob, `histudy_${crypto.randomUUID()}.webp`),
       ], {
          shouldValidate: true,
       });
