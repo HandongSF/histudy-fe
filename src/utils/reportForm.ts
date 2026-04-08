@@ -1,5 +1,6 @@
 export const REPORT_CONTENT_MAX_LENGTH = 1000;
 export const REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES = 5 * 1024 * 1024;
+export const REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE = '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.';
 
 const BLOCK_TAG_NAMES = new Set([
    'ADDRESS',
@@ -92,4 +93,8 @@ export function getReportContentCharacterCount(html: string): number {
    const text = Array.from(template.content.childNodes).map(getNodeText).join('');
 
    return text.endsWith('\n') ? text.slice(0, -1).length : text.length;
+}
+
+export function isReportImageFileSizeExceeded(file: Blob): boolean {
+   return file.size > REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES;
 }

@@ -18,7 +18,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { paths } from '@/const/paths';
 import { NewReport } from '@/interface/report';
 import { StudyCertificationDialog } from '@/pages/ReportAdd/components/StudyCertificationDialog';
-import { REPORT_CONTENT_MAX_LENGTH, REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES, getReportContentCharacterCount } from '@/utils/reportForm';
+import {
+   REPORT_CONTENT_MAX_LENGTH,
+   REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES,
+   REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE,
+   getReportContentCharacterCount,
+   isReportImageFileSizeExceeded,
+} from '@/utils/reportForm';
 import Heic2Jpg from '@/utils/Heic2Jpg';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -181,6 +187,12 @@ export default function ReportEditPage() {
    const [previewImages, blobImages] = form.watch(['previewImages', 'blobImages']);
 
    const onValid = async (formData: ReportFormState) => {
+      if (formData.blobImages.some(isReportImageFileSizeExceeded)) {
+         setImageUploadError(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         toast.error(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         return;
+      }
+
       const imageServerUploadPromises = formData.blobImages.map((file, i) => {
          return new Promise((resolve) => {
             setTimeout(async () => {
@@ -271,8 +283,8 @@ export default function ReportEditPage() {
       const targetFile = file[0];
 
       if (targetFile.size > REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES) {
-         setImageUploadError('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.');
-         toast.error('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.');
+         setImageUploadError(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         toast.error(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
          e.target.value = '';
          return;
       }
@@ -286,6 +298,13 @@ export default function ReportEditPage() {
          targetBlob = await convertBlobToWebp(targetBlob);
       } else {
          targetBlob = await convertBlobToWebp(targetFile);
+      }
+
+      if (isReportImageFileSizeExceeded(targetBlob)) {
+         setImageUploadError(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         toast.error(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         e.target.value = '';
+         return;
       }
 
       const reader = new FileReader();
