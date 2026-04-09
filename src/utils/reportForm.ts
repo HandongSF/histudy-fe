@@ -1,6 +1,9 @@
+import axios from 'axios';
+
 export const REPORT_CONTENT_MAX_LENGTH = 1000;
 export const REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES = 5 * 1024 * 1024;
 export const REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE = '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.';
+export const REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE = '이미지 업로드에 실패했습니다. 다시 시도해주세요.';
 
 const BLOCK_TAG_NAMES = new Set([
    'ADDRESS',
@@ -97,4 +100,8 @@ export function getReportContentCharacterCount(html: string): number {
 
 export function isReportImageFileSizeExceeded(file: Blob): boolean {
    return file.size > REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES;
+}
+
+export function isReportImageUploadTooLargeError(error: unknown): boolean {
+   return axios.isAxiosError(error) && error.response?.status === 413;
 }

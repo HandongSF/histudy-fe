@@ -79,6 +79,18 @@ async function forceBlobSizeToExceedLimitOnSubmit(page: Page) {
    });
 }
 
+async function mockReportImageUpload413(page: Page) {
+   await page.route('**/api/team/reports/image', async (route) => {
+      await route.fulfill({
+         status: 413,
+         contentType: 'application/json',
+         body: JSON.stringify({
+            code: 'REPORT_IMAGE_TOO_LARGE',
+         }),
+      });
+   });
+}
+
 function reportTitleCell(page: Page, title: string) {
    return page.getByRole('cell', { name: title, exact: true }).first();
 }
@@ -214,6 +226,34 @@ test.describe('스터디원 리포트 테스트', () => {
             page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
          ).toBeVisible();
          await expect(await waitForUnexpectedImageUploadRequest(page)).toBeNull();
+         await expect(page).toHaveURL(new RegExp(`${paths.reports.add}$`));
+         await expect(reportTitleCell(page, draft.title)).toHaveCount(0);
+      });
+   });
+
+   test('제출 후 이미지 업로드 API가 413을 반환하면 사용자에게 용량 초과 메시지를 보여준다', async ({ page }) => {
+      const draft: ReportDraft = {
+         title: `테스트 보고서 제목3-${Date.now()}`,
+         content: '테스트 보고서 내용3',
+         totalMinutes: '62',
+      };
+
+      await test.step('서버 413 응답을 받으면 보고서 저장 없이 같은 메시지로 안내한다', async () => {
+         await page.goto(paths.reports.add);
+
+         await page.getByRole('button', { name: '인증 코드 생성' }).click();
+         await page.getByRole('button', { name: 'Close' }).click();
+
+         await uploadReportImage(page, 'test_png.png', 1);
+         await chooseFirstCourseAndFriend(page);
+         await fillReportForm(page, draft);
+
+         await mockReportImageUpload413(page);
+         await page.getByRole('button', { name: '제출' }).click();
+
+         await expect(
+            page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
+         ).toBeVisible();
          await expect(page).toHaveURL(new RegExp(`${paths.reports.add}$`));
          await expect(reportTitleCell(page, draft.title)).toHaveCount(0);
       });

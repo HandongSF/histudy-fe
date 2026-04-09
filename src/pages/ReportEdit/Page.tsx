@@ -20,10 +20,12 @@ import { NewReport } from '@/interface/report';
 import { StudyCertificationDialog } from '@/pages/ReportAdd/components/StudyCertificationDialog';
 import {
    REPORT_CONTENT_MAX_LENGTH,
+   REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE,
    REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES,
    REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE,
    getReportContentCharacterCount,
    isReportImageFileSizeExceeded,
+   isReportImageUploadTooLargeError,
 } from '@/utils/reportForm';
 import Heic2Jpg from '@/utils/Heic2Jpg';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -193,24 +195,34 @@ export default function ReportEditPage() {
          return;
       }
 
-      const imageServerUploadPromises = formData.blobImages.map((file, i) => {
-         return new Promise((resolve) => {
-            setTimeout(async () => {
-               const fd = new FormData();
-               fd.append('image', file);
+      let newImagePaths: string[];
 
-               try {
-                  const res = await ImageUploadToServer(+id, fd);
-                  resolve(res.data.imagePath);
-               } catch (error) {
-                  resolve(null);
-               }
-            }, 1000 * i);
+      try {
+         const imageServerUploadPromises = formData.blobImages.map((file, i) => {
+            return new Promise<string>((resolve, reject) => {
+               setTimeout(async () => {
+                  const fd = new FormData();
+                  fd.append('image', file);
+
+                  try {
+                     const res = await ImageUploadToServer(+id, fd);
+                     resolve(res.data.imagePath);
+                  } catch (error) {
+                     reject(error);
+                  }
+               }, 1000 * i);
+            });
          });
-      });
 
-      const results = await Promise.all(imageServerUploadPromises);
-      const newImagePaths = results.filter((path) => path !== null) as string[];
+         newImagePaths = await Promise.all(imageServerUploadPromises);
+      } catch (error) {
+         const errorMessage = isReportImageUploadTooLargeError(error)
+            ? REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE
+            : REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE;
+         setImageUploadError(errorMessage);
+         toast.error(errorMessage);
+         return;
+      }
 
       // 기존 이미지와 새 이미지 합치기
       const existingImages = form.getValues('images');

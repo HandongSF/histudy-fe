@@ -18,10 +18,12 @@ import { NewReport } from '@/interface/report';
 import { StudyCertificationDialog } from '@/pages/ReportAdd/components/StudyCertificationDialog';
 import {
    REPORT_CONTENT_MAX_LENGTH,
+   REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE,
    REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES,
    REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE,
    getReportContentCharacterCount,
    isReportImageFileSizeExceeded,
+   isReportImageUploadTooLargeError,
 } from '@/utils/reportForm';
 import Heic2Jpg from '@/utils/Heic2Jpg';
 import { convertBlobToWebp } from '@/utils/convertBlobToWebp';
@@ -174,24 +176,33 @@ export default function ReportAddPage() {
          return;
       }
 
-      const imageServerUploadPromises = formData.blobImages.map((file, i) => {
-         return new Promise((resolve) => {
-            setTimeout(async () => {
-               const fd = new FormData();
-               fd.append('image', file);
+      try {
+         const imageServerUploadPromises = formData.blobImages.map((file, i) => {
+            return new Promise<string>((resolve, reject) => {
+               setTimeout(async () => {
+                  const fd = new FormData();
+                  fd.append('image', file);
 
-               try {
-                  const res = await ImageUploadToServer(null, fd);
-                  resolve(res.data.imagePath);
-               } catch (error) {
-                  resolve(null);
-               }
-            }, 1000 * i);
+                  try {
+                     const res = await ImageUploadToServer(null, fd);
+                     resolve(res.data.imagePath);
+                  } catch (error) {
+                     reject(error);
+                  }
+               }, 1000 * i);
+            });
          });
-      });
 
-      const results = await Promise.all(imageServerUploadPromises);
-      form.setValue('images', results.filter((path) => path !== null) as string[]);
+         const results = await Promise.all(imageServerUploadPromises);
+         form.setValue('images', results);
+      } catch (error) {
+         const errorMessage = isReportImageUploadTooLargeError(error)
+            ? REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE
+            : REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE;
+         setImageUploadError(errorMessage);
+         toast.error(errorMessage);
+         return;
+      }
 
       // 보고서 생성 api 연결
       const newReport = {
