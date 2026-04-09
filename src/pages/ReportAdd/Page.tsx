@@ -177,23 +177,20 @@ export default function ReportAddPage() {
       }
 
       try {
-         const imageServerUploadPromises = formData.blobImages.map((file, i) => {
-            return new Promise<string>((resolve, reject) => {
-               setTimeout(async () => {
-                  const fd = new FormData();
-                  fd.append('image', file);
+         const results: string[] = [];
 
-                  try {
-                     const res = await ImageUploadToServer(null, fd);
-                     resolve(res.data.imagePath);
-                  } catch (error) {
-                     reject(error);
-                  }
-               }, 1000 * i);
-            });
-         });
+         for (const [index, file] of formData.blobImages.entries()) {
+            if (index > 0) {
+               await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
 
-         const results = await Promise.all(imageServerUploadPromises);
+            const fd = new FormData();
+            fd.append('image', file);
+
+            const res = await ImageUploadToServer(null, fd);
+            results.push(res.data.imagePath);
+         }
+
          form.setValue('images', results);
       } catch (error) {
          const errorMessage = isReportImageUploadTooLargeError(error)

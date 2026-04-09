@@ -220,15 +220,27 @@ test.describe('스터디원 리포트 테스트', () => {
 
          await chooseFirstCourseAndFriend(page);
          await fillReportForm(page, draft);
+         const unexpectedUploadRequest = waitForUnexpectedImageUploadRequest(page);
          await page.getByRole('button', { name: '제출' }).click();
 
          await expect(
             page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
          ).toBeVisible();
-         await expect(await waitForUnexpectedImageUploadRequest(page)).toBeNull();
+         await expect(await unexpectedUploadRequest).toBeNull();
          await expect(page).toHaveURL(new RegExp(`${paths.reports.add}$`));
          await expect(reportTitleCell(page, draft.title)).toHaveCount(0);
       });
+   });
+
+   test('파일 선택 시 5MB를 초과하는 이미지는 업로드되지 않는다', async ({ page }) => {
+      await page.goto(paths.reports.add);
+
+      await page.locator('#image-upload').setInputFiles(path.join(imageDirPath, 'test_7MB.jpg'));
+
+      await expect(
+         page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
+      ).toBeVisible();
+      await expect(page.locator('img[alt^="새 이미지"]')).toHaveCount(0);
    });
 
    test('제출 후 이미지 업로드 API가 413을 반환하면 사용자에게 용량 초과 메시지를 보여준다', async ({ page }) => {

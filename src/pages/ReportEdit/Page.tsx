@@ -195,26 +195,20 @@ export default function ReportEditPage() {
          return;
       }
 
-      let newImagePaths: string[];
+      const newImagePaths: string[] = [];
 
       try {
-         const imageServerUploadPromises = formData.blobImages.map((file, i) => {
-            return new Promise<string>((resolve, reject) => {
-               setTimeout(async () => {
-                  const fd = new FormData();
-                  fd.append('image', file);
+         for (const [index, file] of formData.blobImages.entries()) {
+            if (index > 0) {
+               await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
 
-                  try {
-                     const res = await ImageUploadToServer(+id, fd);
-                     resolve(res.data.imagePath);
-                  } catch (error) {
-                     reject(error);
-                  }
-               }, 1000 * i);
-            });
-         });
+            const fd = new FormData();
+            fd.append('image', file);
 
-         newImagePaths = await Promise.all(imageServerUploadPromises);
+            const res = await ImageUploadToServer(+id, fd);
+            newImagePaths.push(res.data.imagePath);
+         }
       } catch (error) {
          const errorMessage = isReportImageUploadTooLargeError(error)
             ? REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE
