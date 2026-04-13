@@ -47,6 +47,50 @@ async function uploadReportImage(page: Page, fileName: string, expectedCount: nu
    await expect(page.locator('img[alt^="새 이미지"]')).toHaveCount(expectedCount, { timeout: 10000 });
 }
 
+async function waitForUnexpectedImageUploadRequest(page: Page, timeout = 1500) {
+   try {
+      return await page.waitForRequest(
+         (request) => {
+            const url = request.url();
+            return request.method() === 'POST' && url.includes('/api/team/reports/image');
+         },
+         { timeout },
+      );
+   } catch {
+      return null;
+   }
+}
+
+async function forceBlobSizeToExceedLimitOnSubmit(page: Page) {
+   await page.evaluate(() => {
+      const descriptor = Object.getOwnPropertyDescriptor(Blob.prototype, 'size');
+      const originalGetter = descriptor?.get;
+
+      if (!originalGetter) {
+         throw new Error('Blob.size getter를 찾을 수 없습니다.');
+      }
+
+      Object.defineProperty(Blob.prototype, 'size', {
+         configurable: true,
+         get() {
+            return 6 * 1024 * 1024;
+         },
+      });
+   });
+}
+
+async function mockReportImageUpload413(page: Page) {
+   await page.route('**/api/team/reports/image', async (route) => {
+      await route.fulfill({
+         status: 413,
+         contentType: 'application/json',
+         body: JSON.stringify({
+            code: 'REPORT_IMAGE_TOO_LARGE',
+         }),
+      });
+   });
+}
+
 function reportTitleCell(page: Page, title: string) {
    return page.getByRole('cell', { name: title, exact: true }).first();
 }
@@ -156,39 +200,74 @@ test.describe('스터디원 리포트 테스트', () => {
       });
    });
 
-   test('5MB 초과 이미지는 차단되고 이후 정상 이미지 1장으로 리포트를 작성 및 삭제할 수 있다', async ({ page }) => {
+   test('제출 시점에 최종 업로드 파일이 5MB를 초과하면 업로드 API 호출 없이 차단된다', async ({ page }) => {
       const draft: ReportDraft = {
          title: `테스트 보고서 제목2-${Date.now()}`,
          content: '테스트 보고서 내용2',
          totalMinutes: '61',
       };
-      let studyInfo: SelectedStudyInfo;
 
-      await test.step('초과 용량 업로드를 차단한 뒤 정상 이미지로 리포트를 작성한다', async () => {
+      await test.step('업로드 단계는 통과하지만 제출 직전 최종 파일 크기 검사에서 차단된다', async () => {
          await page.goto(paths.reports.add);
 
          await page.getByRole('button', { name: '인증 코드 생성' }).click();
          await page.getByRole('button', { name: 'Close' }).click();
 
-         await page.locator('#image-upload').setInputFiles(path.join(imageDirPath, 'test_7MB.jpg'));
+         await uploadReportImage(page, 'test_png.png', 1);
+         await expect(page.locator('p.text-sm.text-destructive')).toHaveCount(0);
+
+         await forceBlobSizeToExceedLimitOnSubmit(page);
+
+         await chooseFirstCourseAndFriend(page);
+         await fillReportForm(page, draft);
+         const unexpectedUploadRequest = waitForUnexpectedImageUploadRequest(page);
+         await page.getByRole('button', { name: '제출' }).click();
+
          await expect(
             page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
          ).toBeVisible();
-         await expect(page.locator('img[alt^="새 이미지"]')).toHaveCount(0);
+         await expect(await unexpectedUploadRequest).toBeNull();
+         await expect(page).toHaveURL(new RegExp(`${paths.reports.add}$`));
+         await expect(reportTitleCell(page, draft.title)).toHaveCount(0);
+      });
+   });
+
+   test('파일 선택 시 5MB를 초과하는 이미지는 업로드되지 않는다', async ({ page }) => {
+      await page.goto(paths.reports.add);
+
+      await page.locator('#image-upload').setInputFiles(path.join(imageDirPath, 'test_7MB.jpg'));
+
+      await expect(
+         page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
+      ).toBeVisible();
+      await expect(page.locator('img[alt^="새 이미지"]')).toHaveCount(0);
+   });
+
+   test('제출 후 이미지 업로드 API가 413을 반환하면 사용자에게 용량 초과 메시지를 보여준다', async ({ page }) => {
+      const draft: ReportDraft = {
+         title: `테스트 보고서 제목3-${Date.now()}`,
+         content: '테스트 보고서 내용3',
+         totalMinutes: '62',
+      };
+
+      await test.step('서버 413 응답을 받으면 보고서 저장 없이 같은 메시지로 안내한다', async () => {
+         await page.goto(paths.reports.add);
+
+         await page.getByRole('button', { name: '인증 코드 생성' }).click();
+         await page.getByRole('button', { name: 'Close' }).click();
 
          await uploadReportImage(page, 'test_png.png', 1);
-         studyInfo = await chooseFirstCourseAndFriend(page);
+         await chooseFirstCourseAndFriend(page);
          await fillReportForm(page, draft);
-         await page.getByRole('button', { name: '제출' }).click();
-         await openReportDetailFromList(page, draft.title);
-         await expectReportDetail(page, draft, studyInfo, 1);
-      });
 
-      await test.step('작성한 리포트를 삭제하고 목록에서 제거되었는지 확인한다', async () => {
-         await page.goto(paths.reports.root);
-         await openReportDetailFromList(page, draft.title);
-         await expectReportDetail(page, draft, studyInfo, 1);
-         await deleteReportAndExpectRemoved(page, draft.title);
+         await mockReportImageUpload413(page);
+         await page.getByRole('button', { name: '제출' }).click();
+
+         await expect(
+            page.locator('p.text-sm.text-destructive').filter({ hasText: '이미지는 파일당 5MB 이하만 업로드할 수 있습니다.' }),
+         ).toBeVisible();
+         await expect(page).toHaveURL(new RegExp(`${paths.reports.add}$`));
+         await expect(reportTitleCell(page, draft.title)).toHaveCount(0);
       });
    });
 

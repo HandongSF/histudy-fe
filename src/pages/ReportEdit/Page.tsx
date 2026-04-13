@@ -18,7 +18,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { paths } from '@/const/paths';
 import { NewReport } from '@/interface/report';
 import { StudyCertificationDialog } from '@/pages/ReportAdd/components/StudyCertificationDialog';
-import { REPORT_CONTENT_MAX_LENGTH, REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES, getReportContentCharacterCount } from '@/utils/reportForm';
+import {
+   REPORT_CONTENT_MAX_LENGTH,
+   REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE,
+   REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES,
+   REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE,
+   getReportContentCharacterCount,
+   isReportImageFileSizeExceeded,
+   isReportImageUploadTooLargeError,
+} from '@/utils/reportForm';
 import Heic2Jpg from '@/utils/Heic2Jpg';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -181,24 +189,34 @@ export default function ReportEditPage() {
    const [previewImages, blobImages] = form.watch(['previewImages', 'blobImages']);
 
    const onValid = async (formData: ReportFormState) => {
-      const imageServerUploadPromises = formData.blobImages.map((file, i) => {
-         return new Promise((resolve) => {
-            setTimeout(async () => {
-               const fd = new FormData();
-               fd.append('image', file);
+      if (formData.blobImages.some(isReportImageFileSizeExceeded)) {
+         setImageUploadError(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         toast.error(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         return;
+      }
 
-               try {
-                  const res = await ImageUploadToServer(+id, fd);
-                  resolve(res.data.imagePath);
-               } catch (error) {
-                  resolve(null);
-               }
-            }, 1000 * i);
-         });
-      });
+      const newImagePaths: string[] = [];
 
-      const results = await Promise.all(imageServerUploadPromises);
-      const newImagePaths = results.filter((path) => path !== null) as string[];
+      try {
+         for (const [index, file] of formData.blobImages.entries()) {
+            if (index > 0) {
+               await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+
+            const fd = new FormData();
+            fd.append('image', file);
+
+            const res = await ImageUploadToServer(+id, fd);
+            newImagePaths.push(res.data.imagePath);
+         }
+      } catch (error) {
+         const errorMessage = isReportImageUploadTooLargeError(error)
+            ? REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE
+            : REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE;
+         setImageUploadError(errorMessage);
+         toast.error(errorMessage);
+         return;
+      }
 
       // 기존 이미지와 새 이미지 합치기
       const existingImages = form.getValues('images');
@@ -271,8 +289,8 @@ export default function ReportEditPage() {
       const targetFile = file[0];
 
       if (targetFile.size > REPORT_IMAGE_UPLOAD_MAX_SIZE_BYTES) {
-         setImageUploadError('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.');
-         toast.error('이미지는 파일당 5MB 이하만 업로드할 수 있습니다.');
+         setImageUploadError(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         toast.error(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
          e.target.value = '';
          return;
       }
@@ -286,6 +304,13 @@ export default function ReportEditPage() {
          targetBlob = await convertBlobToWebp(targetBlob);
       } else {
          targetBlob = await convertBlobToWebp(targetFile);
+      }
+
+      if (isReportImageFileSizeExceeded(targetBlob)) {
+         setImageUploadError(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         toast.error(REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE);
+         e.target.value = '';
+         return;
       }
 
       const reader = new FileReader();
