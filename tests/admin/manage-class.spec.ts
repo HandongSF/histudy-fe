@@ -86,3 +86,48 @@ test('삭제는 성공했지만 목록 갱신이 실패하면 결과를 구분�
       timeout: 15_000,
    });
 });
+
+test('삭제 후 목록을 다시 불러오는 동안 중복 삭제를 막는다', async ({ page }) => {
+   let courseRequestCount = 0;
+   let releaseRefresh = () => {};
+   const refreshGate = new Promise<void>((resolve) => {
+      releaseRefresh = resolve;
+   });
+
+   await page.route('**/api/courses?search=*', async (route) => {
+      courseRequestCount += 1;
+      if (courseRequestCount > 1) await refreshGate;
+
+      await route.fulfill({
+         json: {
+            courses:
+               courseRequestCount === 1
+                  ? [
+                       {
+                          id: 101,
+                          name: '자료구조',
+                          code: 'CSE201',
+                          prof: '김교수',
+                          year: 2026,
+                          semester: 2,
+                       },
+                    ]
+                  : [],
+         },
+      });
+   });
+   await page.route('**/api/courses/delete', async (route) => {
+      await route.fulfill({ json: { success: true } });
+   });
+
+   await page.goto('/admin/manage-class');
+   const deleteButton = page.getByRole('button', { name: '자료구조 삭제' });
+   page.once('dialog', (dialog) => dialog.accept());
+   await deleteButton.click();
+
+   await expect.poll(() => courseRequestCount).toBe(2);
+   await expect(deleteButton).toBeDisabled();
+
+   releaseRefresh();
+   await expect(deleteButton).toHaveCount(0);
+});

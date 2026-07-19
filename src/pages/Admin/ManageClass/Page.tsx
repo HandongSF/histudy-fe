@@ -16,7 +16,9 @@ export default function ManageClassPage() {
 
    const [debouncedSearchTerm] = useDebounce(searchTerm, 200);
 
-   const { data, refetch } = useQuery(['searchCourse', debouncedSearchTerm], () => searchCourses(debouncedSearchTerm));
+   const { data, refetch, isFetching } = useQuery(['searchCourse', debouncedSearchTerm], () =>
+      searchCourses(debouncedSearchTerm),
+   );
    const { mutateAsync: removeCourse, isLoading: isDeleting } = useMutation(deleteCourse);
 
    const courses = useMemo(() => {
@@ -84,7 +86,7 @@ export default function ManageClassPage() {
                                  variant="destructive"
                                  size="sm"
                                  aria-label={`${course.name} 삭제`}
-                                 disabled={isDeleting}
+                                 disabled={isDeleting || isFetching}
                                  onClick={() => handleDelete(course)}
                               >
                                  <Trash2 className="h-4 w-4" />
