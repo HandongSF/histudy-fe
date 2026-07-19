@@ -30,10 +30,16 @@ export default function ManageClassPage() {
 
       try {
          await removeCourse(course.id);
-         await refetch();
          toast.success('수업이 삭제되었습니다.');
       } catch {
          toast.error('수업 삭제에 실패했습니다.');
+         return;
+      }
+
+      try {
+         await refetch({ throwOnError: true });
+      } catch {
+         toast.error('수업 목록 갱신에 실패했습니다. 새로고침해 주세요.');
       }
    };
 
