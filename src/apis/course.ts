@@ -20,7 +20,6 @@ export const searchCourses = async (search: string): Promise<Courses> => {
    return response.data;
 };
 
-export const deleteCourse = async (id: number) => {
-   const response = await axiosInstance.post('/api/courses/delete', { id });
-   return response.data;
+export const deleteCourse = async (id: number): Promise<void> => {
+   await axiosInstance.delete(`/api/courses/${id}`);
 };

@@ -11,6 +11,15 @@ import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import ClassRegisterButton from './components/ClassRegisterButton';
 
+const formatDeleteErrorMessage = (error: unknown) => {
+   if (typeof error === 'object' && error !== null && 'response' in error) {
+      const response = (error as { response?: { data?: { message?: string } } }).response;
+      return response?.data?.message || '수업 삭제에 실패했습니다.';
+   }
+
+   return '수업 삭제에 실패했습니다.';
+};
+
 export default function ManageClassPage() {
    const [searchTerm, setSearchTerm] = useState('');
 
@@ -33,8 +42,8 @@ export default function ManageClassPage() {
       try {
          await removeCourse(course.id);
          toast.success('수업이 삭제되었습니다.');
-      } catch {
-         toast.error('수업 삭제에 실패했습니다.');
+      } catch (error) {
+         toast.error(formatDeleteErrorMessage(error));
          return;
       }
 
