@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { Course } from '@/interface/course';
+import axios from 'axios';
 import { Search, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
@@ -12,9 +13,8 @@ import { useDebounce } from 'use-debounce';
 import ClassRegisterButton from './components/ClassRegisterButton';
 
 const formatDeleteErrorMessage = (error: unknown) => {
-   if (typeof error === 'object' && error !== null && 'response' in error) {
-      const response = (error as { response?: { data?: { message?: string } } }).response;
-      return response?.data?.message || '수업 삭제에 실패했습니다.';
+   if (axios.isAxiosError<{ message?: string }>(error)) {
+      return error.response?.data?.message || '수업 삭제에 실패했습니다.';
    }
 
    return '수업 삭제에 실패했습니다.';
