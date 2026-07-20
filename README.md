@@ -77,6 +77,15 @@ VITE_BACK_FILE_BASE_URL={파일 저장소 URL}
 VITE_CLIENT_ID={구글 로그인 클라이언트 ID}
 ```
 
+#### E2E 테스트
+
+고정 access token을 저장하지 않고, 권한별 테스트 계정으로 실행 시점마다 새 토큰을 발급합니다.
+
+```bash
+cp .env.test.example .env.test
+pnpm test
+```
+
 <br />
 
 ## 기여하기
