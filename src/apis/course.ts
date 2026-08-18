@@ -19,3 +19,7 @@ export const searchCourses = async (search: string): Promise<Courses> => {
    const response = await axiosInstance.get(`/api/courses?search=${search}`);
    return response.data;
 };
+
+export const deleteCourse = async (id: number): Promise<void> => {
+   await axiosInstance.delete(`/api/courses/${id}`);
+};

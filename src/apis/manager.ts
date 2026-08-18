@@ -38,13 +38,6 @@ export const readApplicants = async (): Promise<UnAssignedUser[]> => {
    return response.data;
 };
 
-export const deleteCourse = async (id: number) => {
-   const response = await axiosInstance.post(`/api/courses/delete`, {
-      id: id,
-   });
-   return response.data;
-};
-
 export const readReportDetail = async (reportId: number): Promise<Report> => {
    const response = await axiosInstance.get(`/api/team/reports/${reportId}`);
    return response.data;
