@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { SemesterType } from '@/interface/semester';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { Plus, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
@@ -48,8 +49,7 @@ export default function ManageSemesterPage() {
          toast.success('학기가 생성되었습니다.');
          semestersRefetch();
       } catch (error) {
-         console.log(error.response.data.message);
-         toast.error(error.response.data.message || '학기 생성에 실패하였습니다.');
+         toast.error(formatApiErrorMessage(error, '학기 생성에 실패하였습니다.'));
       }
    };
 
@@ -58,7 +58,6 @@ export default function ManageSemesterPage() {
    };
 
    const handleActivate = async (accademyTermId: number) => {
-      console.log(accademyTermId);
       if (!confirm('현재 학기로 설정하시겠습니까?')) {
          return;
       }
@@ -67,7 +66,7 @@ export default function ManageSemesterPage() {
          toast.success('현재 설정 학기가 변경되었습니다.');
          semestersRefetch();
       } catch (error) {
-         toast.error(error.response.data.message || '학기 설정에 실패하였습니다.');
+         toast.error(formatApiErrorMessage(error, '학기 설정에 실패하였습니다.'));
       }
    };
 

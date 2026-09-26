@@ -18,6 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { paths } from '@/const/paths';
 import { NewReport } from '@/interface/report';
 import { StudyCertificationDialog } from '@/pages/ReportAdd/components/StudyCertificationDialog';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import {
    REPORT_CONTENT_MAX_LENGTH,
    REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE,
@@ -65,6 +66,7 @@ const reportFormSchema = z.object({
       .min(1, '최소 1개의 이미지를 업로드 해주세요.')
       .max(3, '최대 3개의 이미지만 업로드 가능합니다.'),
    blobImages: z.array(z.instanceof(File)),
+   uploadedBlobPaths: z.array(z.string().nullable()),
 });
 
 type ReportFormState = z.infer<typeof reportFormSchema>;
@@ -168,6 +170,7 @@ export default function ReportEditPage() {
          courses: [],
          previewImages: [],
          blobImages: [],
+         uploadedBlobPaths: [],
       },
    });
 
@@ -182,6 +185,7 @@ export default function ReportEditPage() {
             courses: report.courses.map((course) => course.id),
             previewImages: report.images.map((image) => image.url),
             blobImages: [],
+            uploadedBlobPaths: [],
          });
       }
    }, [report, form]);
@@ -195,10 +199,15 @@ export default function ReportEditPage() {
          return;
       }
 
-      const newImagePaths: string[] = [];
-
       try {
+         let finalImages = form.getValues('images');
+         let uploadedBlobPaths = form.getValues('uploadedBlobPaths');
+
          for (const [index, file] of formData.blobImages.entries()) {
+            if (uploadedBlobPaths[index]) {
+               continue;
+            }
+
             if (index > 0) {
                await new Promise((resolve) => setTimeout(resolve, 1000));
             }
@@ -207,31 +216,37 @@ export default function ReportEditPage() {
             fd.append('image', file);
 
             const res = await ImageUploadToServer(+id, fd);
-            newImagePaths.push(res.data.imagePath);
+            finalImages = [...finalImages, res.data.imagePath];
+            uploadedBlobPaths = [...uploadedBlobPaths];
+            uploadedBlobPaths[index] = res.data.imagePath;
+            form.setValue('images', finalImages, { shouldValidate: true });
+            form.setValue('uploadedBlobPaths', uploadedBlobPaths, { shouldValidate: true });
          }
       } catch (error) {
          const errorMessage = isReportImageUploadTooLargeError(error)
             ? REPORT_IMAGE_UPLOAD_MAX_SIZE_MESSAGE
-            : REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE;
+            : formatApiErrorMessage(error, REPORT_IMAGE_UPLOAD_FAILURE_MESSAGE);
          setImageUploadError(errorMessage);
          toast.error(errorMessage);
          return;
       }
 
-      // 기존 이미지와 새 이미지 합치기
-      const existingImages = form.getValues('images');
-      const finalImages = [...existingImages, ...newImagePaths];
-
+      // 업로드가 완료된 기존/신규 이미지 경로로 보고서 수정
       const newReport = {
          title: formData.title,
          content: formData.content,
          totalMinutes: Number(formData.totalMinutes),
          participants: formData.participants,
-         images: finalImages,
+         images: form.getValues('images'),
          courses: formData.courses,
       } as NewReport;
 
-      await modifyReport(+id, newReport);
+      try {
+         await modifyReport(+id, newReport);
+      } catch (error) {
+         toast.error(formatApiErrorMessage(error, '보고서 수정에 실패했습니다.'));
+         return;
+      }
       queryClient.invalidateQueries({ queryKey: ['reports'] });
 
       toast.success('보고서 제출이 완료되었습니다.');
@@ -327,6 +342,9 @@ export default function ReportEditPage() {
          ...form.getValues('blobImages'),
          blobToFile(targetBlob, `histudy_${crypto.randomUUID()}.webp`),
       ], {
+         shouldValidate: true,
+      });
+      form.setValue('uploadedBlobPaths', [...form.getValues('uploadedBlobPaths'), null], {
          shouldValidate: true,
       });
 
@@ -431,11 +449,26 @@ export default function ReportEditPage() {
                                                       .filter(
                                                          (imgUrl) => !report?.images.some((img) => img.url === imgUrl),
                                                       ).length;
+                                                   const uploadedImagePath = form.getValues('uploadedBlobPaths')[newImageIndex];
+                                                   if (uploadedImagePath) {
+                                                      form.setValue(
+                                                         'images',
+                                                         form
+                                                            .getValues('images')
+                                                            .filter((imagePath) => imagePath !== uploadedImagePath),
+                                                      );
+                                                   }
 
                                                    form.setValue(
                                                       'blobImages',
                                                       form
                                                          .getValues('blobImages')
+                                                         .filter((_, i) => i !== newImageIndex),
+                                                   );
+                                                   form.setValue(
+                                                      'uploadedBlobPaths',
+                                                      form
+                                                         .getValues('uploadedBlobPaths')
                                                          .filter((_, i) => i !== newImageIndex),
                                                    );
                                                 }

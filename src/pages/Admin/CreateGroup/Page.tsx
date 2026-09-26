@@ -7,6 +7,7 @@ import { XIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { toast } from 'sonner';
+import { formatApiErrorMessage } from '@/utils/apiError';
 
 const cleanCourseName = (name: string) => name.replace(/\n/g, ' ');
 const cleanProfName = (prof: string) => prof.replace(/\n/g, '').trim();
@@ -21,8 +22,8 @@ export default function CreateGroupPage() {
          refetch();
          toast.success('삭제 완료!');
       },
-      onError: () => {
-         toast.error('삭제 실패');
+      onError: (error) => {
+         toast.error(formatApiErrorMessage(error, '삭제 실패'));
       },
    });
 
@@ -35,8 +36,8 @@ export default function CreateGroupPage() {
          refetch();
          toast.success('매칭 완료!');
       },
-      onError: () => {
-         toast.error('매칭 실패');
+      onError: (error) => {
+         toast.error(formatApiErrorMessage(error, '매칭 실패'));
       },
    });
 

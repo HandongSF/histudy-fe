@@ -8,6 +8,7 @@ import { editUser, readAllStudyApplyUsers } from '@/apis/manager';
 import { useQuery } from 'react-query';
 import { StudyApplyUser } from '@/interface/user';
 import SpinnerLoading from '@/components/SpinnerLoading';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { toast } from 'sonner';
 
 // Helper function to clean course names
@@ -53,7 +54,7 @@ export default function ManageStudentPage() {
          setEditingId(null);
          setFormData({});
       } catch (error) {
-         toast.error('사용자 정보 수정에 실패했습니다.');
+         toast.error(formatApiErrorMessage(error, '사용자 정보 수정에 실패했습니다.'));
       }
    };
 

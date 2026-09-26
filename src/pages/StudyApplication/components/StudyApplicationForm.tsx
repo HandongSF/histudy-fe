@@ -9,6 +9,7 @@ import { studyEnroll, StudyEnrollResponse } from '@/apis/study';
 import { paths } from '@/const/paths';
 import { Course } from '@/interface/course';
 import { SimpleUser } from '@/interface/user';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { useNavigate } from 'react-router-dom';
 import { StepAddCourses } from './StepAddCourses';
 import { StepAddFriends } from './StepAddFriend';
@@ -78,8 +79,7 @@ export function StudyApplicationForm({ currentSemesterInfo, myStudyApplication }
          navigate(paths.application.root);
       },
       onError: (error) => {
-         console.log(error);
-         toast.error('스터디 신청에 실패했습니다. 다시 시도해주세요.');
+         toast.error(formatApiErrorMessage(error, '스터디 신청에 실패했습니다. 다시 시도해주세요.'));
       },
    });
 

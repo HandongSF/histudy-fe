@@ -13,7 +13,6 @@ export const useAxiosInterceptor = () => {
    // TODO: 한페이지에서 발생한 401, 403 중복 에러 발생 처리 필요.
    const errorHandler = async (error: AxiosError) => {
       const status = error.response?.status;
-      console.log(error?.response);
       if (status === 401) {
          const refreshToken = localStorage.getItem('refreshToken');
 

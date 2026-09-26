@@ -12,6 +12,7 @@ import { Report } from '@/interface/report';
 import { SimpleUser } from '@/interface/user';
 import { roleState } from '@/store/HISAtom';
 import { getFormattedLocaleString } from '@/utils/DateFormat';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { addImagePrefix } from '@/utils/imagePrefix';
 import { ArrowLeft, BookOpen, Calendar, Clock, Edit, ImageIcon, Trash2, Users } from 'lucide-react';
 import { useMemo } from 'react';
@@ -61,10 +62,13 @@ export default function ReportDetailPage() {
       if (window.confirm('정말 삭제하시겠습니까?')) {
          // TODO: 매니저가 접근했을 때는 파라메터로 state 자체를 넣어줘야 작동하던데... 이거 수정필요
          // 수정은 했는데 확인필요 (reportData.id 로 잘 수정한듯)
-         deleteReport(report.id).then(() => {
+         try {
+            await deleteReport(report.id);
             toast.success('성공적으로 삭제되었습니다.');
             navigate(-1);
-         });
+         } catch (error) {
+            toast.error(formatApiErrorMessage(error, '보고서 삭제에 실패했습니다.'));
+         }
       }
    };
    const handleEdit = async () => {

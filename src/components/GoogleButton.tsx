@@ -3,6 +3,7 @@
 import { useSidebar } from '@/components/ui/sidebar';
 import { useSetHiState } from '@/hooks/HIState';
 import { Role } from '@/interface/role';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
@@ -56,7 +57,10 @@ export default function GoogleButton() {
                }
                setIsRegisterModalState(true);
                setUserLoginInfo(decodedToken);
+               return;
             }
+
+            toast.error(formatApiErrorMessage(error, '로그인에 실패하였습니다.'));
          });
    };
 
@@ -67,7 +71,7 @@ export default function GoogleButton() {
          type={state === 'collapsed' ? 'icon' : 'standard'}
          onSuccess={(credentialResponse) => onSuccess(credentialResponse)}
          onError={() => {
-            console.log('Login Failed');
+            toast.error('로그인에 실패하였습니다.');
          }}
          useOneTap
       />

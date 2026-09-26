@@ -39,6 +39,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AdminBanner, BannerFormPayload } from '@/interface/banner';
 import { cn } from '@/lib/utils';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { getSafeExternalUrl } from '@/utils/banner';
 import { ChevronDown, Eye, EyeOff, GripVertical, ImagePlus, Save, Trash2, X } from 'lucide-react';
 import { ChangeEvent, Fragment, useEffect, useMemo, useState } from 'react';
@@ -68,15 +69,6 @@ const DEFAULT_FORM_STATE: BannerFormState = {
 
 const NEW_BANNER_ROW_ID = 'new';
 const INVALID_REDIRECT_URL_MESSAGE = '이동 URL은 http:// 또는 https://로 시작하는 주소만 사용할 수 있습니다.';
-
-const formatErrorMessage = (error: unknown, fallback: string) => {
-   if (typeof error === 'object' && error !== null && 'response' in error) {
-      const response = (error as { response?: { data?: { message?: string } } }).response;
-      return response?.data?.message || fallback;
-   }
-
-   return fallback;
-};
 
 function SortableBannerItem({
    banner,
@@ -364,7 +356,7 @@ export default function ManageBannerPage() {
          resetEditor();
          refetch();
       } catch (error) {
-         toast.error(formatErrorMessage(error, '배너 저장에 실패했습니다.'));
+         toast.error(formatApiErrorMessage(error, '배너 저장에 실패했습니다.'));
       }
    };
 
@@ -382,7 +374,7 @@ export default function ManageBannerPage() {
          toast.success('배너가 삭제되었습니다.');
          refetch();
       } catch (error) {
-         toast.error(formatErrorMessage(error, '배너 삭제에 실패했습니다.'));
+         toast.error(formatApiErrorMessage(error, '배너 삭제에 실패했습니다.'));
       }
    };
 
@@ -397,7 +389,7 @@ export default function ManageBannerPage() {
          toast.success(banner.active ? '배너를 숨겼습니다.' : '배너를 노출했습니다.');
          refetch();
       } catch (error) {
-         toast.error(formatErrorMessage(error, '배너 노출 상태 변경에 실패했습니다.'));
+         toast.error(formatApiErrorMessage(error, '배너 노출 상태 변경에 실패했습니다.'));
       }
    };
 
@@ -429,7 +421,7 @@ export default function ManageBannerPage() {
          refetch();
       } catch (error) {
          setDisplayBanners(previousBanners);
-         toast.error(formatErrorMessage(error, '배너 순서 변경에 실패했습니다.'));
+         toast.error(formatApiErrorMessage(error, '배너 순서 변경에 실패했습니다.'));
       }
    };
 

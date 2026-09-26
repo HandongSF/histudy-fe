@@ -1,18 +1,10 @@
 import { importCourses } from '@/apis/course';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { useRef } from 'react';
 import { toast } from 'sonner';
 
 type Refetch = (options?: { throwOnError?: boolean }) => Promise<unknown> | unknown;
-
-const getUploadErrorMessage = (error: unknown) => {
-   if (axios.isAxiosError<{ message?: string }>(error)) {
-      return error.response?.data?.message || '수업 목록 업로드에 실패했습니다.';
-   }
-
-   return '수업 목록 업로드에 실패했습니다.';
-};
 
 export default function ClassRegisterButton({ refetch }: { refetch: Refetch }) {
    const fileRef = useRef<HTMLInputElement>(null);
@@ -37,7 +29,7 @@ export default function ClassRegisterButton({ refetch }: { refetch: Refetch }) {
             toast.error('수업 목록 갱신에 실패했습니다. 새로고침해 주세요.');
          }
       } catch (error) {
-         toast.error(getUploadErrorMessage(error));
+         toast.error(formatApiErrorMessage(error, '수업 목록 업로드에 실패했습니다.'));
       } finally {
          if (fileRef.current) {
             fileRef.current.value = '';

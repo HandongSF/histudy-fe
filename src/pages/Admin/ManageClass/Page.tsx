@@ -5,21 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { Course } from '@/interface/course';
-import axios from 'axios';
 import { Download, Search, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import ClassRegisterButton from './components/ClassRegisterButton';
-
-const formatDeleteErrorMessage = (error: unknown) => {
-   if (axios.isAxiosError<{ message?: string }>(error)) {
-      return error.response?.data?.message || '수업 삭제에 실패했습니다.';
-   }
-
-   return '수업 삭제에 실패했습니다.';
-};
 
 export default function ManageClassPage() {
    const [searchTerm, setSearchTerm] = useState('');
@@ -45,7 +37,7 @@ export default function ManageClassPage() {
          await removeCourse(course.id);
          toast.success('수업이 삭제되었습니다.');
       } catch (error) {
-         toast.error(formatDeleteErrorMessage(error));
+         toast.error(formatApiErrorMessage(error, '수업 삭제에 실패했습니다.'));
          return;
       }
 

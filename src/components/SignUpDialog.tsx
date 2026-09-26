@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/auth';
 import { useHIState } from '@/hooks/HIState';
 import { isRegisterModalState, userLoginInfoState } from '@/store/HISAtom';
+import { formatApiErrorMessage } from '@/utils/apiError';
 import { useState } from 'react';
 
 import { toast } from 'sonner';
@@ -58,7 +59,7 @@ export default function SignUpDialog() {
 
          setSid('');
       } catch (error) {
-         toast.error('회원가입 중 오류가 발생했습니다.');
+         toast.error(formatApiErrorMessage(error, '회원가입 중 오류가 발생했습니다.'));
       } finally {
          setIsLoading(false);
       }

@@ -248,7 +248,7 @@ test('사용 중인 수업은 삭제하지 않고 API의 충돌 사유를 안내
             code: 409,
             error: 'Conflict',
             message: '사용 중인 강의는 삭제할 수 없습니다.',
-            trace: null,
+            requestId: 'request-123',
          },
       });
    });
